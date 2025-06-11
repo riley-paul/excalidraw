@@ -9,10 +9,12 @@ import {
 } from "@/components/ui/sidebar";
 import AppSidebarUser from "./app-sidebar-user";
 import { useQuery } from "@tanstack/react-query";
-import { qCurrentUser } from "@/lib/client/queries";
+import { qCurrentUser, qDrawings } from "@/lib/client/queries";
+import AppSidebarDrawings from "./app-sidebar-drawings";
 
 const AppSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
+  const { data: drawings = [] } = useQuery(qDrawings);
 
   if (!user) return null;
 
@@ -20,8 +22,7 @@ const AppSidebar: React.FC = () => {
     <Sidebar>
       <SidebarHeader>Excalidraw</SidebarHeader>
       <SidebarContent>
-        <SidebarGroup />
-        <SidebarGroup />
+        <AppSidebarDrawings drawings={drawings} />
       </SidebarContent>
       <SidebarFooter>
         <AppSidebarUser user={user} />

@@ -1,4 +1,3 @@
-import { type ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 const id = text("id")
@@ -43,9 +42,6 @@ export const Drawing = sqliteTable("drawing", {
   userId,
   title: text().notNull().default("Untitled"),
   description: text().notNull().default(""),
-  elements: text({ mode: "json" })
-    .$type<ExcalidrawElement[]>()
-    .notNull()
-    .default([]),
+  elements: text({ mode: "json" }).notNull().default([]),
   ...timeStamps,
 });
