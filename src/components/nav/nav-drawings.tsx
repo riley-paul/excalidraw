@@ -25,12 +25,15 @@ import {
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
+import { useAtom } from "jotai/react";
+import { drawingDialogAtom } from "../drawing-dialog/drawing-dialog.store";
 
 const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
   drawing,
 }) => {
   const isMobile = useIsMobile();
   const { removeDrawing } = useMutations();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -72,12 +75,16 @@ type Props = {
 };
 
 const NavDrawings: React.FC<Props> = ({ drawings }) => {
+  const [, dispatch] = useAtom(drawingDialogAtom);
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Drawings</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton variant="outline">
+          <SidebarMenuButton
+            variant="outline"
+            onClick={() => dispatch({ type: "open" })}
+          >
             <PlusIcon />
             <span>Create new drawing</span>
           </SidebarMenuButton>
