@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {
   SidebarGroup,
+  SidebarGroupAction,
+  SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuAction,
@@ -79,25 +81,22 @@ const NavDrawings: React.FC<Props> = ({ drawings }) => {
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Drawings</SidebarGroupLabel>
-      <SidebarMenu>
-        <SidebarMenuItem>
-          <SidebarMenuButton
-            variant="outline"
-            onClick={() => dispatch({ type: "open" })}
-          >
-            <PlusIcon />
-            <span>Create new drawing</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-        {drawings.map((item) => (
-          <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton >
-              <span>{item.title}</span>
-              <NavDrawingMenu drawing={item} />
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
-      </SidebarMenu>
+      <SidebarGroupAction onClick={() => dispatch({ type: "open" })}>
+        <PlusIcon />
+        <span className="sr-only">New drawing</span>
+      </SidebarGroupAction>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {drawings.map((item) => (
+            <SidebarMenuItem key={item.title}>
+              <SidebarMenuButton>
+                <span>{item.title}</span>
+                <NavDrawingMenu drawing={item} />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          ))}
+        </SidebarMenu>
+      </SidebarGroupContent>
     </SidebarGroup>
   );
 };
