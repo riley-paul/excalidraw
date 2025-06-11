@@ -32,6 +32,7 @@ import useMutations from "@/hooks/use-mutations";
 import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "../drawing-dialog/drawing-dialog.store";
 import { alertSystemAtom } from "../alert-system/alert-system.store";
+import { Link } from "@tanstack/react-router";
 
 const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
   drawing,
@@ -117,10 +118,14 @@ const NavDrawings: React.FC<Props> = ({ drawings }) => {
         <SidebarMenu>
           {drawings.map((item) => (
             <SidebarMenuItem key={item.id}>
-              <SidebarMenuButton>
-                <span>{item.title}</span>
-                <NavDrawingMenu drawing={item} />
-              </SidebarMenuButton>
+              <Link to="/drawing/$drawingId" params={{ drawingId: item.id }}>
+                {({ isActive }) => (
+                  <SidebarMenuButton isActive={isActive}>
+                    <span>{item.title}</span>
+                    <NavDrawingMenu drawing={item} />
+                  </SidebarMenuButton>
+                )}
+              </Link>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
