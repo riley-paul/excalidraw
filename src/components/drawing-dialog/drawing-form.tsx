@@ -29,8 +29,8 @@ const schema = drawingInputs.create;
 type Schema = z.infer<typeof schema>;
 
 const DrawingForm: React.FC<Props> = ({ drawing, children }) => {
-  const { createDrawing } = useMutations();
-  const [, dispatch] = useAtom(drawingDialogAtom);
+  const { createDrawing, updateDrawing } = useMutations();
+  const [, dispatchAlertDialog] = useAtom(drawingDialogAtom);
 
   const form = useForm<Schema>({
     defaultValues: {
@@ -43,10 +43,11 @@ const DrawingForm: React.FC<Props> = ({ drawing, children }) => {
 
   const { handleSubmit } = form;
 
-  const onSubmit = handleSubmit((data) => {
-    createDrawing.mutate(data, {
-      onSuccess: () => dispatch({ type: "close" }),
-    });
+  const onSubmit = handleSubmit(async (data) => {
+    drawing
+      ? await updateDrawing.mutateAsync({ ...data, id: drawing.id })
+      : await createDrawing.mutateAsync(data);
+    dispatchAlertDialog({ type: "close" });
   });
 
   return (

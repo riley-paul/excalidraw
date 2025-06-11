@@ -19,6 +19,8 @@ import {
 import type { MinimalDrawingSelect } from "@/lib/types";
 import {
   ArrowUpRightIcon,
+  Edit2Icon,
+  EditIcon,
   LinkIcon,
   MoreHorizontalIcon,
   PlusIcon,
@@ -37,9 +39,11 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
   const isMobile = useIsMobile();
   const { removeDrawing } = useMutations();
 
-  const [, dispatch] = useAtom(alertSystemAtom);
+  const [, dispatchAlert] = useAtom(alertSystemAtom);
+  const [, dispatchDrawingDialog] = useAtom(drawingDialogAtom);
+
   const handleDeleteDrawing = () => {
-    dispatch({
+    dispatchAlert({
       type: "open",
       data: {
         type: "delete",
@@ -47,9 +51,16 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
         message: `Are you sure you want to delete "${drawing.title}"? This action cannot be undone.`,
         handleDelete: () => {
           removeDrawing.mutate(drawing);
-          dispatch({ type: "close" });
+          dispatchAlert({ type: "close" });
         },
       },
+    });
+  };
+
+  const handleEditDrawing = () => {
+    dispatchDrawingDialog({
+      type: "open",
+      drawing,
     });
   };
 
@@ -66,16 +77,16 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
         side={isMobile ? "bottom" : "right"}
         align={isMobile ? "end" : "start"}
       >
-        <DropdownMenuItem>
-          <StarOffIcon className="text-muted-foreground" />
-          <span>Remove from Favorites</span>
+        <DropdownMenuItem onClick={handleEditDrawing}>
+          <Edit2Icon className="text-muted-foreground" />
+          <span>Edit</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>
+        <DropdownMenuItem disabled>
           <LinkIcon className="text-muted-foreground" />
           <span>Copy Link</span>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem disabled>
           <ArrowUpRightIcon className="text-muted-foreground" />
           <span>Open in New Tab</span>
         </DropdownMenuItem>
@@ -105,7 +116,7 @@ const NavDrawings: React.FC<Props> = ({ drawings }) => {
       <SidebarGroupContent>
         <SidebarMenu>
           {drawings.map((item) => (
-            <SidebarMenuItem key={item.title}>
+            <SidebarMenuItem key={item.id}>
               <SidebarMenuButton>
                 <span>{item.title}</span>
                 <NavDrawingMenu drawing={item} />
