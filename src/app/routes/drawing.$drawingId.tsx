@@ -8,8 +8,7 @@ import {
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import debounce from "lodash.debounce";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SaveIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -17,15 +16,14 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
   loader: async ({ context, params }) => {
-    try {
-      const drawing = await context.queryClient.fetchQuery(
-        qDrawing(params.drawingId)
-      );
-      return { drawing };
-    } catch (error) {
-      console.error("Error fetching drawing:", error);
-      throw redirect({ to: "/" });
-    }
+    const drawing = await context.queryClient.fetchQuery(
+      qDrawing(params.drawingId)
+    );
+    return { drawing };
+  },
+  onError: () => {
+    toast.error("Failed to load drawing. Please try again.");
+    throw redirect({ to: "/" });
   },
 });
 
@@ -37,14 +35,6 @@ function RouteComponent() {
 
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
-
-  useEffect(() => {
-    if (excalidrawAPI) {
-      const sceneData = restore(drawing.content, null, null);
-      console.log("Restored scene data:", sceneData);
-      excalidrawAPI.updateScene(sceneData);
-    }
-  }, [excalidrawAPI, drawing.content]);
 
   const saveDrawing = () => {
     if (excalidrawAPI) {
