@@ -74,10 +74,11 @@ export const AppSidebarUser: React.FC<Props> = ({ user }) => {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOutIcon />
-              Log out
+            <DropdownMenuItem asChild>
+              <a href="/logout">
+                <LogOutIcon />
+                Log out
+              </a>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
