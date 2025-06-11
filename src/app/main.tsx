@@ -3,7 +3,7 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 import React, { useState } from "react";
 import "@excalidraw/excalidraw/index.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import AppSidebar from "@/components/app-sidebar";
+import NavSidebar from "@/components/nav/nav-sidebar";
 import {
   MutationCache,
   QueryClient,
@@ -30,7 +30,7 @@ const App: React.FC = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <SidebarProvider>
-        <AppSidebar />
+        <NavSidebar />
         <div className="h-screen w-full">
           <Excalidraw excalidrawAPI={setExcalidrawAPI} />
         </div>

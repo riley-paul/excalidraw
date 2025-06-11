@@ -3,16 +3,15 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarGroup,
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import AppSidebarUser from "./app-sidebar-user";
+import NavUser from "./nav-user";
 import { useQuery } from "@tanstack/react-query";
 import { qCurrentUser, qDrawings } from "@/lib/client/queries";
-import AppSidebarDrawings from "./app-sidebar-drawings";
+import NavDrawings from "./nav-drawings";
 
-const AppSidebar: React.FC = () => {
+const NavSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
   const { data: drawings = [] } = useQuery(qDrawings);
 
@@ -22,14 +21,14 @@ const AppSidebar: React.FC = () => {
     <Sidebar>
       <SidebarHeader>Excalidraw</SidebarHeader>
       <SidebarContent>
-        <AppSidebarDrawings drawings={drawings} />
+        <NavDrawings drawings={drawings} />
       </SidebarContent>
       <SidebarFooter>
-        <AppSidebarUser user={user} />
+        <NavUser user={user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
 };
 
-export default AppSidebar;
+export default NavSidebar;

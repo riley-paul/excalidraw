@@ -18,7 +18,7 @@ import { ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
 
 type Props = { user: UserSelect };
 
-export const AppSidebarUser: React.FC<Props> = ({ user }) => {
+export const NavUser: React.FC<Props> = ({ user }) => {
   const { isMobile } = useSidebar();
 
   const fallback = user.name
@@ -87,4 +87,4 @@ export const AppSidebarUser: React.FC<Props> = ({ user }) => {
   );
 };
 
-export default AppSidebarUser;
+export default NavUser;

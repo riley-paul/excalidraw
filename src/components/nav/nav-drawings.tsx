@@ -13,7 +13,6 @@ import {
   SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
-  useSidebar,
 } from "@/components/ui/sidebar";
 import type { MinimalDrawingSelect } from "@/lib/types";
 import {
@@ -29,7 +28,7 @@ type Props = {
   drawings: MinimalDrawingSelect[];
 };
 
-const AppSidebarDrawings: React.FC<Props> = ({ drawings }) => {
+const NavDrawings: React.FC<Props> = ({ drawings }) => {
   const isMobile = useIsMobile();
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
@@ -79,4 +78,4 @@ const AppSidebarDrawings: React.FC<Props> = ({ drawings }) => {
   );
 };
 
-export default AppSidebarDrawings;
+export default NavDrawings;
