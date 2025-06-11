@@ -46,7 +46,7 @@ const list: ActionHandler<
     })
     .from(Drawing)
     .where(eq(Drawing.userId, userId))
-    .orderBy(desc(Drawing.updatedAt));
+    .orderBy(desc(Drawing.createdAt));
 
   return drawings;
 };

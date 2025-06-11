@@ -3,8 +3,8 @@ import { qDrawing } from "@/lib/client/queries";
 import { Excalidraw } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { useInterval } from "usehooks-ts";
+import { useState } from "react";
+import { dequal } from "dequal";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
@@ -17,26 +17,35 @@ export const Route = createFileRoute("/drawing/$drawingId")({
 });
 
 function RouteComponent() {
-  const {
-    drawing: { elements },
-  } = Route.useLoaderData();
+  const { drawing } = Route.useLoaderData();
   const { drawingId } = Route.useParams();
+
+  const [elements, setElements] = useState(drawing.elements);
+
+  const { updateDrawing } = useMutations();
 
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
-  const { updateDrawing } = useMutations();
-
-  useInterval(() => {
-    if (excalidrawAPI) {
-      const elements = excalidrawAPI.getSceneElements();
-      updateDrawing.mutate({ elements, id: drawingId });
-    }
-  }, 5_000);
+  const saveElements = () => {
+    if (!excalidrawAPI) return;
+    const newElements = excalidrawAPI.getSceneElements();
+    if (dequal(newElements, elements)) return;
+    setElements(newElements);
+    updateDrawing.mutate({
+      id: drawingId,
+      elements: newElements,
+    });
+  };
 
   return (
     <div className="h-screen w-full">
-      <Excalidraw initialData={{ elements }} excalidrawAPI={setExcalidrawAPI} />
+      <Excalidraw
+        key={drawingId}
+        excalidrawAPI={setExcalidrawAPI}
+        initialData={{ elements: drawing.elements }}
+        onChange={saveElements}
+      />
     </div>
   );
 }
