@@ -2,15 +2,14 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 
 import React from "react";
 import "@excalidraw/excalidraw/index.css";
-import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
+import { SidebarProvider } from "./ui/sidebar";
 import AppSidebar from "./app-sidebar";
 
 const Canvas: React.FC = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <div className="h-screen w-full relative">
-        <SidebarTrigger className="absolute top-16 left-4 z-10" />
+      <div className="h-screen w-full">
         <Excalidraw />
       </div>
     </SidebarProvider>

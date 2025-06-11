@@ -5,17 +5,19 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarHeader,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 
 const AppSidebar: React.FC = () => {
   return (
     <Sidebar>
-      <SidebarHeader />
+      <SidebarHeader>Excalidraw</SidebarHeader>
       <SidebarContent>
         <SidebarGroup />
         <SidebarGroup />
       </SidebarContent>
       <SidebarFooter />
+      <SidebarRail />
     </Sidebar>
   );
 };
