@@ -7,7 +7,7 @@ export default async function seed() {
   const db = createDb(env);
   await db.delete(User);
 
-  const [{ id: userId }] = await db
+  await db
     .insert(User)
     .values({
       email: "rileypaul96@gmail.com",
