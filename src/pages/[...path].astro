@@ -1,8 +1,8 @@
 ---
-import Canvas from "@/components/canvas";
+import App from "@/app/main.tsx";
 import RootLayout from "@/layouts/root-layout.astro";
 ---
 
 <RootLayout>
-  <Canvas client:only="react" />
+  <App client:only="react" />
 </RootLayout>

@@ -2,10 +2,10 @@ import { Excalidraw } from "@excalidraw/excalidraw";
 
 import React from "react";
 import "@excalidraw/excalidraw/index.css";
-import { SidebarProvider } from "./ui/sidebar";
-import AppSidebar from "./app-sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import AppSidebar from "@/components/app-sidebar";
 
-const Canvas: React.FC = () => {
+const App: React.FC = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -16,4 +16,4 @@ const Canvas: React.FC = () => {
   );
 };
 
-export default Canvas;
+export default App;
