@@ -1,4 +1,4 @@
-import { User } from "@/db/schema";
+import { Drawing, User } from "@/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -12,3 +12,9 @@ export type UserSessionInfo = {
   userId: string;
   expiresAt: Date;
 };
+
+export const zDrawingSelect = createSelectSchema(Drawing);
+export const zDrawingInsert = createInsertSchema(Drawing);
+export type DrawingSelect = z.infer<typeof zDrawingSelect>;
+export type MinimalDrawingSelect = Omit<DrawingSelect, "elements">;
+export type DrawingInsert = z.infer<typeof zDrawingInsert>;

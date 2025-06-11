@@ -1,6 +1,6 @@
 import { Excalidraw } from "@excalidraw/excalidraw";
 
-import React from "react";
+import React, { useState } from "react";
 import "@excalidraw/excalidraw/index.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import AppSidebar from "@/components/app-sidebar";
@@ -11,6 +11,7 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
@@ -23,12 +24,15 @@ const queryClient = new QueryClient({
 });
 
 const App: React.FC = () => {
+  const [excalidrawAPI, setExcalidrawAPI] =
+    useState<ExcalidrawImperativeAPI | null>(null);
+
   return (
     <QueryClientProvider client={queryClient}>
       <SidebarProvider>
         <AppSidebar />
         <div className="h-screen w-full">
-          <Excalidraw />
+          <Excalidraw excalidrawAPI={setExcalidrawAPI} />
         </div>
         <Toaster />
       </SidebarProvider>

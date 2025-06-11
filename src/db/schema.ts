@@ -1,3 +1,4 @@
+import { type ExcalidrawElement } from "@excalidraw/excalidraw/element/types";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 const id = text("id")
@@ -34,5 +35,17 @@ export const UserSession = sqliteTable("userSession", {
   id,
   userId,
   expiresAt: integer({ mode: "timestamp_ms" }).notNull(),
+  ...timeStamps,
+});
+
+export const Drawing = sqliteTable("drawing", {
+  id,
+  userId,
+  title: text().notNull().default("Untitled"),
+  description: text().notNull().default(""),
+  elements: text({ mode: "json" })
+    .$type<ExcalidrawElement[]>()
+    .notNull()
+    .default([]),
   ...timeStamps,
 });
