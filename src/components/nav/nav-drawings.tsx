@@ -20,11 +20,9 @@ import type { MinimalDrawingSelect } from "@/lib/types";
 import {
   ArrowUpRightIcon,
   Edit2Icon,
-  EditIcon,
   LinkIcon,
   MoreHorizontalIcon,
   PlusIcon,
-  StarOffIcon,
   Trash2Icon,
 } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";

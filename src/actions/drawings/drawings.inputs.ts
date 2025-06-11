@@ -11,7 +11,7 @@ const drawingInputs = {
     id: z.string().uuid(),
     title: z.string().min(1).max(100).optional(),
     description: z.string().max(500).optional(),
-    elements: z.any().optional(),
+    content: z.any().optional(),
   }),
   remove: z.object({ id: z.string().uuid() }),
 };

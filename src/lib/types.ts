@@ -16,5 +16,5 @@ export type UserSessionInfo = {
 export const zDrawingSelect = createSelectSchema(Drawing);
 export const zDrawingInsert = createInsertSchema(Drawing);
 export type DrawingSelect = z.infer<typeof zDrawingSelect>;
-export type MinimalDrawingSelect = Omit<DrawingSelect, "elements">;
+export type MinimalDrawingSelect = Omit<DrawingSelect, "content">;
 export type DrawingInsert = z.infer<typeof zDrawingInsert>;
