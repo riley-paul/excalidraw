@@ -33,7 +33,7 @@ const AppSidebarDrawings: React.FC<Props> = ({ drawings }) => {
   const isMobile = useIsMobile();
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Favorites</SidebarGroupLabel>
+      <SidebarGroupLabel>Drawings</SidebarGroupLabel>
       <SidebarMenu>
         {drawings.map((item) => (
           <SidebarMenuItem key={item.title}>
