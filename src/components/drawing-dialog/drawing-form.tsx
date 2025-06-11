@@ -16,29 +16,42 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "../ui/textarea";
+import useMutations from "@/hooks/use-mutations";
+import { useAtom } from "jotai/react";
+import { drawingDialogAtom } from "./drawing-dialog.store";
 
-type Props = {
+type Props = React.PropsWithChildren<{
   drawing?: MinimalDrawingSelect;
-};
+}>;
 
 const schema = drawingInputs.create;
 type Schema = z.infer<typeof schema>;
 
-const DrawingForm: React.FC<Props> = ({ drawing }) => {
+const DrawingForm: React.FC<Props> = ({ drawing, children }) => {
+  const { createDrawing } = useMutations();
+  const [, dispatch] = useAtom(drawingDialogAtom);
+
   const form = useForm<Schema>({
-    defaultValues: drawing,
+    defaultValues: {
+      title: "",
+      description: "",
+      ...drawing,
+    },
     resolver: zodResolver(schema),
   });
 
   const { handleSubmit } = form;
 
   const onSubmit = handleSubmit((data) => {
-    console.log("Form submitted with data:", data);
+    createDrawing.mutate(data, {
+      onSuccess: () => dispatch({ type: "close" }),
+    });
   });
 
   return (
     <Form {...form}>
-      <form onSubmit={onSubmit} className="space-y-8">
+      <form onSubmit={onSubmit} className="space-y-6">
         <FormField
           control={form.control}
           name="title"
@@ -46,13 +59,26 @@ const DrawingForm: React.FC<Props> = ({ drawing }) => {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Great drawing" {...field} />
+                <Input placeholder="Enter a drawing title" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <FormField
+          control={form.control}
+          name="description"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Description</FormLabel>
+              <FormControl>
+                <Textarea placeholder="Describe your drawing" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        {children}
       </form>
     </Form>
   );

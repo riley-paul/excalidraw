@@ -12,6 +12,7 @@ import {
 import { Button } from "../ui/button";
 import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "./drawing-dialog.store";
+import DrawingForm from "./drawing-form";
 
 const DrawingDialog: React.FC = () => {
   const [state, dispatch] = useAtom(drawingDialogAtom);
@@ -20,26 +21,26 @@ const DrawingDialog: React.FC = () => {
       open={state.isOpen}
       onOpenChange={(open) => dispatch({ type: open ? "open" : "close" })}
     >
-      <form>
-        <DialogContent className="sm:max-w-[425px]">
-          <DialogHeader>
-            <DialogTitle>
-              {state.drawing ? "Update" : "Create"} Drawing
-            </DialogTitle>
-            <DialogDescription>
-              Make changes to your profile here. Click save when you&apos;re
-              done.
-            </DialogDescription>
-          </DialogHeader>
-
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>
+            {state.drawing ? "Update" : "Create"} Drawing
+          </DialogTitle>
+          <DialogDescription>
+            {state.drawing
+              ? "Update the details of your drawing."
+              : "Create a new drawing with the details below."}
+          </DialogDescription>
+        </DialogHeader>
+        <DrawingForm drawing={state.drawing}>
           <DialogFooter>
             <DialogClose asChild>
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button type="submit">Save changes</Button>
           </DialogFooter>
-        </DialogContent>
-      </form>
+        </DrawingForm>
+      </DialogContent>
     </Dialog>
   );
 };

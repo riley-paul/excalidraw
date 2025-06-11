@@ -4,7 +4,7 @@ import type { DrawingSelect, MinimalDrawingSelect } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Drawing } from "@/db/schema";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 const get: ActionHandler<typeof drawingInputs.get, DrawingSelect> = async (
   { id },
@@ -46,7 +46,7 @@ const list: ActionHandler<
     })
     .from(Drawing)
     .where(eq(Drawing.userId, userId))
-    .orderBy(Drawing.updatedAt);
+    .orderBy(desc(Drawing.updatedAt));
 
   return drawings;
 };

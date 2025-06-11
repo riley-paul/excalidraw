@@ -91,7 +91,7 @@ const NavDrawings: React.FC<Props> = ({ drawings }) => {
         </SidebarMenuItem>
         {drawings.map((item) => (
           <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild>
+            <SidebarMenuButton >
               <span>{item.title}</span>
               <NavDrawingMenu drawing={item} />
             </SidebarMenuButton>
