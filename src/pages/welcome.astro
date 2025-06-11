@@ -1,0 +1,32 @@
+---
+import LoginButton from "@/components/login-button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import RootLayout from "@/layouts/root-layout.astro";
+---
+
+<RootLayout>
+  <main class="flex items-center justify-center h-screen bg-secondary">
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Card Title</CardTitle>
+        <CardDescription>Card Description</CardDescription>
+        <CardAction>Card Action</CardAction>
+      </CardHeader>
+      <CardContent>
+        <p>Card Content</p>
+      </CardContent>
+      <CardFooter className="grid grid-cols-2 gap-4">
+        <LoginButton provider="google" />
+        <LoginButton provider="github" />
+      </CardFooter>
+    </Card>
+  </main>
+</RootLayout>
