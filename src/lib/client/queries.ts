@@ -10,3 +10,9 @@ export const qDrawings = queryOptions({
   queryKey: ["drawings"],
   queryFn: actions.drawings.list.orThrow,
 });
+
+export const qDrawing = (drawingId: string) =>
+  queryOptions({
+    queryKey: ["drawing", drawingId],
+    queryFn: () => actions.drawings.get.orThrow({ id: drawingId }),
+  });
