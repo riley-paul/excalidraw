@@ -8,6 +8,7 @@
     "dev:server": "astro dev --host",
     "db:push": "drizzle-kit push",
     "db:seed": "tsx src/db/seed.ts",
+    "db:studio": "drizzle-kit studio",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
