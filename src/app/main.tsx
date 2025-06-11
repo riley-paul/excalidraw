@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import DrawingDialog from "@/components/drawing-dialog/drawing-dialog";
+import AlertSystem from "@/components/alert-system/alert-system";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
@@ -37,6 +38,7 @@ const App: React.FC = () => {
         </div>
         <Toaster />
         <DrawingDialog />
+        <AlertSystem />
       </SidebarProvider>
     </QueryClientProvider>
   );

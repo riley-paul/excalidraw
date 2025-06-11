@@ -29,12 +29,29 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "../drawing-dialog/drawing-dialog.store";
+import { alertSystemAtom } from "../alert-system/alert-system.store";
 
 const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
   drawing,
 }) => {
   const isMobile = useIsMobile();
   const { removeDrawing } = useMutations();
+
+  const [, dispatch] = useAtom(alertSystemAtom);
+  const handleDeleteDrawing = () => {
+    dispatch({
+      type: "open",
+      data: {
+        type: "delete",
+        title: "Delete Drawing",
+        message: `Are you sure you want to delete "${drawing.title}"? This action cannot be undone.`,
+        handleDelete: () => {
+          removeDrawing.mutate(drawing);
+          dispatch({ type: "close" });
+        },
+      },
+    });
+  };
 
   return (
     <DropdownMenu>
@@ -63,7 +80,7 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
           <span>Open in New Tab</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => removeDrawing.mutate(drawing)}>
+        <DropdownMenuItem onClick={handleDeleteDrawing}>
           <Trash2Icon className="text-muted-foreground" />
           <span>Delete</span>
         </DropdownMenuItem>
