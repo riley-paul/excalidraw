@@ -1,6 +1,6 @@
 ---
+import Canvas from "@/components/canvas";
 import RootLayout from "@/layouts/root-layout.astro";
-import { Excalidraw } from "@excalidraw/excalidraw";
 ---
 
-<RootLayout> <Excalidraw client:load /></RootLayout>
+<RootLayout> <Canvas client:only /></RootLayout>
