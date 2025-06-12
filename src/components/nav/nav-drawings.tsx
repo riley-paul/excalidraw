@@ -30,7 +30,9 @@ import useMutations from "@/hooks/use-mutations";
 import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "../drawing-dialog/drawing-dialog.store";
 import { alertSystemAtom } from "../alert-system/alert-system.store";
-import { Link } from "@tanstack/react-router";
+import { Link, linkOptions } from "@tanstack/react-router";
+import { useCopyToClipboard } from "react-use";
+import { toast } from "sonner";
 
 const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
   drawing,
@@ -40,6 +42,8 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
   const [, dispatchDrawingDialog] = useAtom(drawingDialogAtom);
+
+  const [state, copyToClipboard] = useCopyToClipboard();
 
   const handleDeleteDrawing = () => {
     dispatchAlert({
@@ -63,6 +67,17 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
     });
   };
 
+  const handleCopyLink = () => {
+    const link = `${window.location.origin}/drawing/${drawing.id}`;
+    copyToClipboard(link);
+    toast.success("Link copied to clipboard", { description: link });
+  };
+
+  const handleOpenInNewTab = () => {
+    const link = `${window.location.origin}/drawing/${drawing.id}`;
+    window.open(link, "_blank");
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -81,11 +96,11 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
           <span>Edit</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem disabled>
+        <DropdownMenuItem onClick={handleCopyLink}>
           <LinkIcon className="text-muted-foreground" />
           <span>Copy Link</span>
         </DropdownMenuItem>
-        <DropdownMenuItem disabled>
+        <DropdownMenuItem onClick={handleOpenInNewTab}>
           <ArrowUpRightIcon className="text-muted-foreground" />
           <span>Open in New Tab</span>
         </DropdownMenuItem>
