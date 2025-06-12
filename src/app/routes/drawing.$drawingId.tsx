@@ -10,7 +10,7 @@ import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { SaveIcon } from "lucide-react";
+import { LoaderIcon, SaveIcon } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
@@ -61,7 +61,11 @@ function RouteComponent() {
       >
         <Footer>
           <Button onClick={saveDrawing} className="ml-3">
-            <SaveIcon />
+            {updateDrawing.isPending ? (
+              <LoaderIcon className="animate-spin" />
+            ) : (
+              <SaveIcon />
+            )}
             Save
           </Button>
         </Footer>
