@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import type { DrawingSelect } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { Button, DropdownMenu, IconButton, Text } from "@radix-ui/themes";
+import { DropdownMenu, Text } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import { useAtom } from "jotai";
 import React from "react";

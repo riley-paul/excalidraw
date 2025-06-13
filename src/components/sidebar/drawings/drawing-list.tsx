@@ -1,16 +1,9 @@
 import React from "react";
-import {
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-} from "@/components/ui/sidebar";
 import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "../../drawing-dialog/drawing-dialog.store";
 import type { DrawingSelect } from "@/lib/types";
 import DrawingItem from "./drawing-item";
-import { Button, Heading, IconButton } from "@radix-ui/themes";
+import { Heading, IconButton } from "@radix-ui/themes";
 
 type Props = {
   drawings: DrawingSelect[];

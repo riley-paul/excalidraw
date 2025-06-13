@@ -1,15 +1,11 @@
-import {
-  SidebarMenu,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { UserSelect } from "@/lib/types";
 import { Avatar, Button, Popover, Separator, Text } from "@radix-ui/themes";
 
 type Props = { user: UserSelect };
 
 export const UserMenu: React.FC<Props> = ({ user }) => {
-  const { isMobile } = useSidebar();
+  const isMobile = useIsMobile();
 
   const fallback = user.name
     .split(" ")
