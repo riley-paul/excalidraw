@@ -1,15 +1,15 @@
 import { ActionError, type ActionHandler } from "astro:actions";
 import type drawingInputs from "./drawings.inputs";
-import type { DrawingSelect, MinimalDrawingSelect } from "@/lib/types";
+import type { DrawingSelect, DrawingSelectWithContent } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Drawing } from "@/db/schema";
 import { and, desc, eq } from "drizzle-orm";
 
-const get: ActionHandler<typeof drawingInputs.get, DrawingSelect> = async (
-  { id },
-  c
-) => {
+const get: ActionHandler<
+  typeof drawingInputs.get,
+  DrawingSelectWithContent
+> = async ({ id }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
@@ -25,25 +25,20 @@ const get: ActionHandler<typeof drawingInputs.get, DrawingSelect> = async (
     });
   }
 
-  return drawing;
+  const content = await c.locals.runtime.env.R2_BUCKET.get(id);
+
+  return { ...drawing, content: content ? await content.text() : null };
 };
 
-const list: ActionHandler<
-  typeof drawingInputs.list,
-  MinimalDrawingSelect[]
-> = async (_, c) => {
+const list: ActionHandler<typeof drawingInputs.list, DrawingSelect[]> = async (
+  _,
+  c
+) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
   const drawings = await db
-    .select({
-      id: Drawing.id,
-      title: Drawing.title,
-      description: Drawing.description,
-      userId: Drawing.userId,
-      updatedAt: Drawing.updatedAt,
-      createdAt: Drawing.createdAt,
-    })
+    .select()
     .from(Drawing)
     .where(eq(Drawing.userId, userId))
     .orderBy(desc(Drawing.createdAt));

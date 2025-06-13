@@ -42,6 +42,5 @@ export const Drawing = sqliteTable("drawing", {
   userId,
   title: text().notNull().default("Untitled"),
   description: text().notNull().default(""),
-  content: text({ mode: "json" }).notNull().default(""),
   ...timeStamps,
 });
