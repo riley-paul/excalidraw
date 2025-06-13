@@ -78,12 +78,14 @@ function RouteComponent() {
       >
         <Footer>
           <RadixProvider overrideAppearance="light">
-            <Button onClick={handleSave} variant="soft">
-              <Spinner loading={saveDrawing.isPending}>
-                <SaveIcon className="size-4" />
-              </Spinner>
-              Save
-            </Button>
+            <div className="ml-3">
+              <Button onClick={handleSave} variant="soft">
+                <Spinner loading={saveDrawing.isPending}>
+                  <i className="fas fa-save"></i>
+                </Spinner>
+                Save
+              </Button>
+            </div>
           </RadixProvider>
         </Footer>
       </Excalidraw>

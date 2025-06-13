@@ -10,6 +10,7 @@ import NavUser from "./nav-user";
 import { useQuery } from "@tanstack/react-query";
 import { qCurrentUser, qDrawings } from "@/lib/client/queries";
 import NavDrawings from "./nav-drawings";
+import RadixProvider from "../radix-provider";
 
 const NavSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
@@ -18,16 +19,18 @@ const NavSidebar: React.FC = () => {
   if (!user) return null;
 
   return (
-    <Sidebar>
-      <SidebarHeader>Excalidraw</SidebarHeader>
-      <SidebarContent>
-        <NavDrawings drawings={drawings} />
-      </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={user} />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    <RadixProvider overrideAppearance="dark">
+      <Sidebar>
+        <SidebarHeader>Excalidraw</SidebarHeader>
+        <SidebarContent>
+          <NavDrawings drawings={drawings} />
+        </SidebarContent>
+        <SidebarFooter>
+          <NavUser user={user} />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    </RadixProvider>
   );
 };
 

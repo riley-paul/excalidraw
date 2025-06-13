@@ -9,7 +9,7 @@ type Props = React.PropsWithChildren<{
 const RadixProvider: React.FC<Props> = ({ children, overrideAppearance }) => {
   return (
     <Theme
-      appearance={overrideAppearance ?? "dark"}
+      appearance={overrideAppearance ?? "light"}
       accentColor={ACCENT_COLOR}
       grayColor="gray"
       radius="large"
