@@ -132,6 +132,9 @@ const NavDrawings: React.FC<Props> = ({ drawings }) => {
               <Link to="/drawing/$drawingId" params={{ drawingId: item.id }}>
                 {({ isActive }) => (
                   <SidebarMenuButton isActive={isActive}>
+                    <div className="size-8 bg-white">
+                      <img src={`/thumnail/${item.id}.png`} />
+                    </div>
                     <span>{item.title}</span>
                     <NavDrawingMenu drawing={item} />
                   </SidebarMenuButton>

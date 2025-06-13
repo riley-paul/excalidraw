@@ -33,13 +33,12 @@ export default function useMutations() {
   });
 
   const saveDrawing = useMutation({
-    mutationFn: (data: { id: string; content: File; thumbnail?: File }) => {
+    mutationFn: (data: { id: string; content: File; thumbnail: File }) => {
       const formData = new FormData();
       formData.append("id", data.id);
       formData.append("content", data.content);
-      if (data.thumbnail) {
-        formData.append("thumbnail", data.thumbnail);
-      }
+      formData.append("thumbnail", data.thumbnail);
+
       return actions.drawings.save.orThrow(formData);
     },
     onSuccess: () => {

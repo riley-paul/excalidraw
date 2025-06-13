@@ -2,6 +2,8 @@ import useMutations from "@/hooks/use-mutations";
 import { qDrawing } from "@/lib/client/queries";
 import {
   Excalidraw,
+  exportToBlob,
+  exportToCanvas,
   Footer,
   restore,
   serializeAsJSON,
@@ -37,17 +39,26 @@ function RouteComponent() {
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (excalidrawAPI) {
       const elements = excalidrawAPI.getSceneElements();
       const appState = excalidrawAPI.getAppState();
       const files = excalidrawAPI.getFiles();
 
-      const json = serializeAsJSON(elements, appState, files, "local");
-      const file = new File([json], `${drawing.id}.json`, {
+      const contentJson = serializeAsJSON(elements, appState, files, "local");
+      const content = new File([contentJson], `${drawing.id}.json`, {
         type: "application/json",
       });
-      saveDrawing.mutate({ id: drawingId, content: file });
+
+      const thumbnailBlob = await exportToBlob({
+        elements,
+        appState,
+        files,
+      });
+      const thumbnail = new File([thumbnailBlob], `${drawing.id}.png`, {
+        type: "image/png",
+      });
+      saveDrawing.mutate({ id: drawingId, content, thumbnail });
     }
   };
 

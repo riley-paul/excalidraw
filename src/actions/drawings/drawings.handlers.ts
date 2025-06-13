@@ -124,9 +124,7 @@ const save: ActionHandler<typeof drawingInputs.save, boolean> = async (
   }
 
   await c.locals.runtime.env.R2_BUCKET.put(id, content);
-  if (thumbnail) {
-    await c.locals.runtime.env.R2_BUCKET.put(`${id}-thumbnail`, thumbnail);
-  }
+  await c.locals.runtime.env.R2_BUCKET.put(`${id}-thumbnail`, thumbnail);
 
   return true;
 };
