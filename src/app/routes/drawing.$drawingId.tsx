@@ -31,24 +31,22 @@ function RouteComponent() {
   const { drawing } = Route.useLoaderData();
   const { drawingId } = Route.useParams();
 
-  const { updateDrawing } = useMutations();
+  const { saveDrawing } = useMutations();
 
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
-  const saveDrawing = () => {
+  const handleSave = () => {
     if (excalidrawAPI) {
       const elements = excalidrawAPI.getSceneElements();
       const appState = excalidrawAPI.getAppState();
       const files = excalidrawAPI.getFiles();
 
       const json = serializeAsJSON(elements, appState, files, "local");
-      updateDrawing.mutate(
-        { id: drawingId, content: JSON.parse(json) },
-        {
-          onSuccess: () => toast.success("Drawing saved successfully!"),
-        }
-      );
+      const file = new File([json], `${drawing.id}.json`, {
+        type: "application/json",
+      });
+      saveDrawing.mutate({ id: drawingId, content: file });
     }
   };
 
@@ -60,8 +58,8 @@ function RouteComponent() {
         excalidrawAPI={setExcalidrawAPI}
       >
         <Footer>
-          <Button onClick={saveDrawing} className="ml-3">
-            {updateDrawing.isPending ? (
+          <Button onClick={handleSave} className="ml-3">
+            {saveDrawing.isPending ? (
               <LoaderIcon className="animate-spin" />
             ) : (
               <SaveIcon />

@@ -2,6 +2,7 @@ import { qDrawings } from "@/lib/client/queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { actions } from "astro:actions";
+import { toast } from "sonner";
 
 export default function useMutations() {
   const queryClient = useQueryClient();
@@ -31,5 +32,20 @@ export default function useMutations() {
     },
   });
 
-  return { createDrawing, removeDrawing, updateDrawing };
+  const saveDrawing = useMutation({
+    mutationFn: (data: { id: string; content: File; thumbnail?: File }) => {
+      const formData = new FormData();
+      formData.append("id", data.id);
+      formData.append("content", data.content);
+      if (data.thumbnail) {
+        formData.append("thumbnail", data.thumbnail);
+      }
+      return actions.drawings.save.orThrow(formData);
+    },
+    onSuccess: () => {
+      toast.success("Drawing saved successfully!");
+    },
+  });
+
+  return { createDrawing, removeDrawing, updateDrawing, saveDrawing };
 }
