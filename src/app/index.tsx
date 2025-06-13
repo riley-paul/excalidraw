@@ -9,9 +9,9 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { Toaster } from "@/components/ui/sonner";
 import AlertSystem from "@/components/alert-system/alert-system";
 import RadixProvider from "@/components/radix-provider";
+import CustomToaster from "@/components/custom-toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
@@ -44,7 +44,7 @@ const App: React.FC = () => {
     <QueryClientProvider client={queryClient}>
       <RadixProvider>
         <RouterProvider router={router} />
-        <Toaster />
+        <CustomToaster />
         <AlertSystem />
       </RadixProvider>
     </QueryClientProvider>

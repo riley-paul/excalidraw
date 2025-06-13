@@ -3,6 +3,26 @@
 
 @theme {
   --color-*: initial;
+  --font-*: initial;
+  --shadow-*: initial;
+  --text-*: initial;
+  --rounded-*: initial;
 }
 
 @import "radix-themes-tw";
+
+* {
+  @apply border-gray-6;
+}
+
+.radix-themes {
+  --cursor-button: pointer;
+  --cursor-checkbox: pointer;
+  --cursor-disabled: default;
+  --cursor-link: pointer;
+  --cursor-menu-item: pointer;
+  --cursor-radio: pointer;
+  --cursor-slider-thumb: grab;
+  --cursor-slider-thumb-active: grabbing;
+  --cursor-switch: pointer;
+}

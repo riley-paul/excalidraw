@@ -1,20 +1,10 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
 import type { UserSelect } from "@/lib/types";
-import { ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
+import { Avatar, Button, Popover, Separator, Text } from "@radix-ui/themes";
 
 type Props = { user: UserSelect };
 
@@ -30,58 +20,59 @@ export const NavUser: React.FC<Props> = ({ user }) => {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+        <Popover.Root>
+          <Popover.Trigger>
+            <Button
+              variant="ghost"
+              color="gray"
+              className="h-auto p-2 rounded-3 w-full"
             >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatarUrl ?? ""} alt={user.name} />
-                <AvatarFallback className="rounded-lg">
-                  {fallback}
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="text-muted-foreground truncate text-xs">
+              <Avatar
+                src={user.avatarUrl ?? ""}
+                alt={user.name}
+                fallback={fallback}
+              />
+              <div className="grid flex-1 text-left">
+                <Text size="2" weight="medium" truncate>
+                  {user.name}
+                </Text>
+                <Text size="1" color="gray" truncate>
                   {user.email}
-                </span>
+                </Text>
               </div>
-              <ChevronsUpDownIcon className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg"
+              <i className="fas fa-caret-right size-4" />
+            </Button>
+          </Popover.Trigger>
+          <Popover.Content
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
+            className="w-64 grid gap-3"
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatarUrl ?? ""} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">
-                    {fallback}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="text-muted-foreground truncate text-xs">
-                    {user.email}
-                  </span>
-                </div>
+            <header className="flex gap-2 items-center">
+              <Avatar
+                src={user.avatarUrl ?? ""}
+                alt={user.name}
+                fallback={fallback}
+              />
+              <div className="grid flex-1 leading-0.5">
+                <Text weight="medium" truncate>
+                  {user.name}
+                </Text>
+                <Text color="gray" size="2">
+                  {user.email}
+                </Text>
               </div>
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
+            </header>
+            <Separator size="4" orientation="horizontal" />
+            <Button asChild className="w-full" variant="soft">
               <a href="/logout">
-                <LogOutIcon />
+                <i className="fas fa-arrow-right-from-bracket" />
                 Log out
               </a>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </Button>
+          </Popover.Content>
+        </Popover.Root>
       </SidebarMenuItem>
     </SidebarMenu>
   );
