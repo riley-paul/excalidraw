@@ -3,7 +3,7 @@ import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "../../drawing-dialog/drawing-dialog.store";
 import type { DrawingSelect } from "@/lib/types";
 import DrawingItem from "./drawing-item";
-import { Button, Heading, IconButton } from "@radix-ui/themes";
+import { Button, Heading } from "@radix-ui/themes";
 
 type Props = {
   drawings: DrawingSelect[];
