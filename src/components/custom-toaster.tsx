@@ -1,13 +1,10 @@
 import { Spinner } from "@radix-ui/themes";
 import React from "react";
 import { Toaster } from "sonner";
-import { useDarkMode } from "usehooks-ts";
 
 const CustomToaster: React.FC = () => {
-  const { isDarkMode } = useDarkMode();
   return (
     <Toaster
-      theme={isDarkMode ? "dark" : "light"}
       toastOptions={{
         className: "bg-panel backdrop-blur border border-gray-6",
       }}
