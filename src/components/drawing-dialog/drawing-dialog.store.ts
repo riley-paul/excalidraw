@@ -1,14 +1,12 @@
-import type { MinimalDrawingSelect } from "@/lib/types";
+import type { DrawingSelect } from "@/lib/types";
 import { atomWithReducer } from "jotai/utils";
 
 type State = {
   isOpen: boolean;
-  drawing: MinimalDrawingSelect | undefined;
+  drawing: DrawingSelect | undefined;
 };
 
-type Action =
-  | { type: "open"; drawing?: MinimalDrawingSelect }
-  | { type: "close" };
+type Action = { type: "open"; drawing?: DrawingSelect } | { type: "close" };
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {

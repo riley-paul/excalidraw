@@ -1,6 +1,6 @@
 import React from "react";
 import drawingInputs from "@/actions/drawings/drawings.inputs";
-import type { MinimalDrawingSelect } from "@/lib/types";
+import type { DrawingSelect } from "@/lib/types";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
@@ -20,7 +20,7 @@ import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "./drawing-dialog.store";
 
 type Props = React.PropsWithChildren<{
-  drawing?: MinimalDrawingSelect;
+  drawing?: DrawingSelect;
 }>;
 
 const schema = drawingInputs.create;

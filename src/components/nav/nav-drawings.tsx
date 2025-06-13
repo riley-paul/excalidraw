@@ -29,7 +29,7 @@ import useMutations from "@/hooks/use-mutations";
 import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "../drawing-dialog/drawing-dialog.store";
 import { alertSystemAtom } from "../alert-system/alert-system.store";
-import { Link, linkOptions } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
 import type { DrawingSelect } from "@/lib/types";
@@ -41,7 +41,7 @@ const NavDrawingMenu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   const [, dispatchAlert] = useAtom(alertSystemAtom);
   const [, dispatchDrawingDialog] = useAtom(drawingDialogAtom);
 
-  const [state, copyToClipboard] = useCopyToClipboard();
+  const [, copyToClipboard] = useCopyToClipboard();
 
   const handleDeleteDrawing = () => {
     dispatchAlert({
