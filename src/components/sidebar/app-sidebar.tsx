@@ -7,6 +7,7 @@ import DrawingList from "./drawings/drawing-list";
 import RadixProvider from "../radix-provider";
 import Sidebar from "./sidebar";
 import { Heading } from "@radix-ui/themes";
+import { Link } from "@tanstack/react-router";
 
 const AppSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
@@ -17,9 +18,11 @@ const AppSidebar: React.FC = () => {
   return (
     <RadixProvider overrideAppearance="dark">
       <Sidebar>
-        <header className="p-3">
-          <Heading>Exacalidraw</Heading>
-        </header>
+        <Link to="/">
+          <header className="p-3">
+            <Heading>Exacalidraw</Heading>
+          </header>
+        </Link>
         <div className="flex-1">
           <DrawingList drawings={drawings} />
         </div>

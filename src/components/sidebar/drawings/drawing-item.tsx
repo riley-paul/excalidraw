@@ -4,7 +4,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import type { DrawingSelect } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { DropdownMenu, Text } from "@radix-ui/themes";
+import { DropdownMenu, IconButton, Text } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import { useAtom } from "jotai";
 import React from "react";
@@ -60,10 +60,16 @@ const Menu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <button className="flex size-4 items-center justify-center">
+        <IconButton
+          className="size-4!"
+          size="1"
+          radius="full"
+          variant="ghost"
+          color="gray"
+        >
           <i className="fas fa-ellipsis" />
           <span className="sr-only">More</span>
-        </button>
+        </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
         className="w-56 rounded-lg"

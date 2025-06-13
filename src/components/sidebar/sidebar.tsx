@@ -23,7 +23,7 @@ const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
       )}
       {isMobile && isOpen && (
         <div
-          className="bg-panel-translucent fixed inset-0 z-10 backdrop-blur"
+          className="bg-panel-translucent fixed inset-0 z-50 backdrop-blur"
           onClick={() => setIsOpen(false)}
         />
       )}

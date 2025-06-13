@@ -11,10 +11,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function Component() {
   return (
-    <>
+    <div className="flex">
       <AppSidebar />
       <Outlet />
       <DrawingDialog />
-    </>
+    </div>
   );
 }
