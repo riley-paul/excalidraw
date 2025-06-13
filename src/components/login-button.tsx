@@ -1,5 +1,5 @@
+import { Button } from "@radix-ui/themes";
 import React from "react";
-import { Button } from "./ui/button";
 
 type ProviderDetails = {
   name: string;
@@ -64,7 +64,7 @@ type Props = {
 const LoginButton: React.FC<Props> = ({ provider }) => {
   const { name, icon, url } = providers[provider];
   return (
-    <Button asChild size="sm" className="gap-3">
+    <Button asChild size="2" className="gap-3">
       <a href={url}>
         Login with {name} {icon}
       </a>
