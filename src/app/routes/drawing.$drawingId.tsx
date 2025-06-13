@@ -62,7 +62,7 @@ function RouteComponent() {
     <div className="h-screen w-full">
       <Excalidraw
         key={drawingId}
-        initialData={restore(JSON.parse(drawing.content ?? ""), null, null)}
+        initialData={restore(JSON.parse(drawing.content ?? "{}"), null, null)}
         excalidrawAPI={setExcalidrawAPI}
       >
         <Footer>
