@@ -12,6 +12,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LoaderIcon, SaveIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useEventListener } from "usehooks-ts";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
@@ -49,6 +50,13 @@ function RouteComponent() {
       saveDrawing.mutate({ id: drawingId, content: file });
     }
   };
+
+  useEventListener("keydown", (event) => {
+    if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      handleSave();
+    }
+  });
 
   return (
     <div className="h-screen w-full">

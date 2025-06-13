@@ -16,7 +16,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import type { MinimalDrawingSelect } from "@/lib/types";
 import {
   ArrowUpRightIcon,
   Edit2Icon,
@@ -31,12 +30,11 @@ import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "../drawing-dialog/drawing-dialog.store";
 import { alertSystemAtom } from "../alert-system/alert-system.store";
 import { Link, linkOptions } from "@tanstack/react-router";
-import { useCopyToClipboard } from "react-use";
 import { toast } from "sonner";
+import { useCopyToClipboard } from "usehooks-ts";
+import type { DrawingSelect } from "@/lib/types";
 
-const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
-  drawing,
-}) => {
+const NavDrawingMenu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   const isMobile = useIsMobile();
   const { removeDrawing } = useMutations();
 
@@ -115,7 +113,7 @@ const NavDrawingMenu: React.FC<{ drawing: MinimalDrawingSelect }> = ({
 };
 
 type Props = {
-  drawings: MinimalDrawingSelect[];
+  drawings: DrawingSelect[];
 };
 
 const NavDrawings: React.FC<Props> = ({ drawings }) => {
