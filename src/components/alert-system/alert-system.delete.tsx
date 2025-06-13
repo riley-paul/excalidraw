@@ -1,14 +1,6 @@
 import React from "react";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
 import type { DeleteAlertProps } from "./alert-system.types";
+import { AlertDialog, Button } from "@radix-ui/themes";
 
 const AlertSystemContentDelete: React.FC<DeleteAlertProps> = ({
   title,
@@ -17,16 +9,18 @@ const AlertSystemContentDelete: React.FC<DeleteAlertProps> = ({
 }) => {
   return (
     <>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{title}</AlertDialogTitle>
-        <AlertDialogDescription>{message}</AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Cancel</AlertDialogCancel>
-        <AlertDialogAction asChild onClick={handleDelete}>
-          <Button variant="destructive">Delete</Button>
-        </AlertDialogAction>
-      </AlertDialogFooter>
+      <AlertDialog.Title>{title}</AlertDialog.Title>
+      <AlertDialog.Description>{message}</AlertDialog.Description>
+      <footer className="mt-4 flex justify-end gap-3">
+        <AlertDialog.Cancel>
+          <Button variant="soft" color="gray">
+            Cancel
+          </Button>
+        </AlertDialog.Cancel>
+        <AlertDialog.Action onClick={handleDelete}>
+          <Button color="red">Delete</Button>
+        </AlertDialog.Action>
+      </footer>
     </>
   );
 };

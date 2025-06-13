@@ -1,12 +1,6 @@
 import React from "react";
-import {
-  AlertDialogCancel,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import type { ErrorAlertProps } from "./alert-system.types";
+import { AlertDialog, Button } from "@radix-ui/themes";
 
 const AlertSystemContentError: React.FC<ErrorAlertProps> = ({
   title,
@@ -14,13 +8,13 @@ const AlertSystemContentError: React.FC<ErrorAlertProps> = ({
 }) => {
   return (
     <>
-      <AlertDialogHeader>
-        <AlertDialogTitle>{title}</AlertDialogTitle>
-        <AlertDialogDescription>{message}</AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel>Ok</AlertDialogCancel>
-      </AlertDialogFooter>
+      <AlertDialog.Title>{title}</AlertDialog.Title>
+      <AlertDialog.Description>{message}</AlertDialog.Description>
+      <footer className="mt-4 flex justify-end gap-3">
+        <AlertDialog.Cancel>
+          <Button>Ok</Button>
+        </AlertDialog.Cancel>
+      </footer>
     </>
   );
 };

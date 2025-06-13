@@ -1,12 +1,5 @@
 import React from "react";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
   SidebarGroup,
   SidebarGroupAction,
   SidebarGroupContent,
@@ -16,14 +9,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  ArrowUpRightIcon,
-  Edit2Icon,
-  LinkIcon,
-  MoreHorizontalIcon,
-  PlusIcon,
-  Trash2Icon,
-} from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import { useAtom } from "jotai/react";
@@ -33,6 +18,7 @@ import { Link } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
 import type { DrawingSelect } from "@/lib/types";
+import { DropdownMenu } from "@radix-ui/themes";
 
 const NavDrawingMenu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   const isMobile = useIsMobile();
@@ -77,38 +63,38 @@ const NavDrawingMenu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>
         <SidebarMenuAction showOnHover>
-          <MoreHorizontalIcon />
+          <i className="fas fa-ellipsis" />
           <span className="sr-only">More</span>
         </SidebarMenuAction>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content
         className="w-56 rounded-lg"
         side={isMobile ? "bottom" : "right"}
         align={isMobile ? "end" : "start"}
       >
-        <DropdownMenuItem onClick={handleEditDrawing}>
-          <Edit2Icon className="text-muted-foreground" />
+        <DropdownMenu.Item onClick={handleEditDrawing}>
+          <i className="fas fa-pen opacity-70" />
           <span>Edit</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleCopyLink}>
-          <LinkIcon className="text-muted-foreground" />
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item onClick={handleCopyLink}>
+          <i className="fas fa-link opacity-70" />
           <span>Copy Link</span>
-        </DropdownMenuItem>
-        <DropdownMenuItem onClick={handleOpenInNewTab}>
-          <ArrowUpRightIcon className="text-muted-foreground" />
+        </DropdownMenu.Item>
+        <DropdownMenu.Item onClick={handleOpenInNewTab}>
+          <i className="fas fa-up-right-from-square opacity-70" />
           <span>Open in New Tab</span>
-        </DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={handleDeleteDrawing}>
-          <Trash2Icon className="text-muted-foreground" />
+        </DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item onClick={handleDeleteDrawing}>
+          <i className="fas fa-trash opacity-70" />
           <span>Delete</span>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+        </DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   );
 };
 
@@ -122,7 +108,7 @@ const NavDrawings: React.FC<Props> = ({ drawings }) => {
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>Drawings</SidebarGroupLabel>
       <SidebarGroupAction onClick={() => dispatch({ type: "open" })}>
-        <PlusIcon />
+        <i className="fas fa-plus fa-sm" />
         <span className="sr-only">New drawing</span>
       </SidebarGroupAction>
       <SidebarGroupContent>

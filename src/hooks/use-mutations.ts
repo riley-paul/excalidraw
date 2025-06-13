@@ -22,6 +22,7 @@ export default function useMutations() {
     onSuccess: (_, { id }) => {
       if (drawingId === id) navigate({ to: "/" });
       queryClient.invalidateQueries({ queryKey: qDrawings.queryKey });
+      toast.success("Drawing deleted successfully!");
     },
   });
 
