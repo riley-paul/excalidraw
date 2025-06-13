@@ -77,7 +77,7 @@ function RouteComponent() {
         <Footer>
           <RadixProvider overrideAppearance="light">
             <div className="ml-3">
-              <Button onClick={handleSave} variant="soft">
+              <Button onClick={handleSave} variant="soft" className="h-[2.25rem]!">
                 <Spinner loading={saveDrawing.isPending}>
                   <i className="fas fa-save"></i>
                 </Spinner>

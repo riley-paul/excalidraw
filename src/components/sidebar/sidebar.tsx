@@ -49,7 +49,7 @@ const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
           >
             <div
               className={cn(
-                "bg-gray-6 group-hover:bg-gray-8 m-0 h-full w-[4px] rounded-full p-0 transition ease-out group-hover:w-[6px]",
+                "bg-gray-7 group-hover:bg-gray-8 m-0 h-full w-[4px] rounded-full p-0 transition ease-out group-hover:w-[6px]",
                 "focus:bg-gray-9",
               )}
             />
