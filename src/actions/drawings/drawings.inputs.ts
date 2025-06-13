@@ -14,5 +14,10 @@ const drawingInputs = {
     content: z.any().optional(),
   }),
   remove: z.object({ id: z.string().uuid() }),
+  save: z.object({
+    id: z.string().uuid(),
+    content: z.instanceof(File),
+    thumbnail: z.instanceof(File).optional(),
+  }),
 };
 export default drawingInputs;

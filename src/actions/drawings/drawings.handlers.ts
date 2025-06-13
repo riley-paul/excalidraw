@@ -109,11 +109,39 @@ const remove: ActionHandler<typeof drawingInputs.remove, boolean> = async (
   return true;
 };
 
+const save: ActionHandler<typeof drawingInputs.save, boolean> = async (
+  { id, content, thumbnail },
+  c
+) => {
+  const db = createDb(c.locals.runtime.env);
+  const userId = isAuthorized(c).id;
+
+  const [drawing] = await db
+    .select()
+    .from(Drawing)
+    .where(and(eq(Drawing.userId, userId), eq(Drawing.id, id)));
+
+  if (!drawing) {
+    throw new ActionError({
+      code: "NOT_FOUND",
+      message: `Drawing with id ${id} not found.`,
+    });
+  }
+
+  await c.locals.runtime.env.R2_BUCKET.put(id, content);
+  if (thumbnail) {
+    await c.locals.runtime.env.R2_BUCKET.put(`${id}-thumbnail`, thumbnail);
+  }
+
+  return true;
+};
+
 const drawingHandlers = {
   get,
   list,
   create,
   update,
   remove,
+  save,
 };
 export default drawingHandlers;

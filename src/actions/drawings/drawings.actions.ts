@@ -22,6 +22,12 @@ export const update = defineAction({
   handler: drawingHandlers.update,
 });
 
+export const save = defineAction({
+  accept: "form",
+  input: drawingInputs.save,
+  handler: drawingHandlers.save,
+});
+
 export const remove = defineAction({
   input: drawingInputs.remove,
   handler: drawingHandlers.remove,
