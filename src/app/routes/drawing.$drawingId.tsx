@@ -14,15 +14,10 @@ import { toast } from "sonner";
 import { useEventListener } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
+import { actions } from "astro:actions";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
-  loader: async ({ context, params }) => {
-    const drawing = await context.queryClient.fetchQuery(
-      qDrawing(params.drawingId),
-    );
-    return { drawing };
-  },
   onError: () => {
     toast.error("Failed to load drawing. Please try again.");
     throw redirect({ to: "/" });
@@ -30,7 +25,6 @@ export const Route = createFileRoute("/drawing/$drawingId")({
 });
 
 function RouteComponent() {
-  const { drawing } = Route.useLoaderData();
   const { drawingId } = Route.useParams();
 
   const { saveDrawing } = useMutations();
@@ -45,7 +39,7 @@ function RouteComponent() {
       const files = excalidrawAPI.getFiles();
 
       const contentJson = serializeAsJSON(elements, appState, files, "local");
-      const content = new File([contentJson], `${drawing.id}.json`, {
+      const content = new File([contentJson], `${drawingId}.json`, {
         type: "application/json",
       });
 
@@ -54,7 +48,7 @@ function RouteComponent() {
         appState,
         files,
       })) as Blob;
-      const thumbnail = new File([thumbnailBlob], `${drawing.id}.png`, {
+      const thumbnail = new File([thumbnailBlob], `${drawingId}.png`, {
         type: "image/png",
       });
       saveDrawing.mutate({ id: drawingId, content, thumbnail });
@@ -72,7 +66,12 @@ function RouteComponent() {
     <div className="h-screen w-full">
       <Excalidraw
         key={drawingId}
-        initialData={restore(JSON.parse(drawing.content ?? "{}"), null, null)}
+        initialData={async () => {
+          const { content } = await actions.drawings.get.orThrow({
+            id: drawingId,
+          });
+          return restore(JSON.parse(content ?? "{}"), null, null);
+        }}
         excalidrawAPI={setExcalidrawAPI}
       >
         <Footer>
