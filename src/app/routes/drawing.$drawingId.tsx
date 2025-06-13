@@ -10,7 +10,6 @@ import {
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { LoaderIcon, SaveIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useEventListener } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
@@ -20,7 +19,7 @@ export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
   loader: async ({ context, params }) => {
     const drawing = await context.queryClient.fetchQuery(
-      qDrawing(params.drawingId)
+      qDrawing(params.drawingId),
     );
     return { drawing };
   },

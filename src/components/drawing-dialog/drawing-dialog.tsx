@@ -2,7 +2,7 @@ import React from "react";
 import { useAtom } from "jotai/react";
 import { drawingDialogAtom } from "./drawing-dialog.store";
 import DrawingForm from "./drawing-form";
-import { Button, Dialog, Inset } from "@radix-ui/themes";
+import { Button, Dialog } from "@radix-ui/themes";
 
 const DrawingDialog: React.FC = () => {
   const [state, dispatch] = useAtom(drawingDialogAtom);
