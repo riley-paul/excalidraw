@@ -3,7 +3,6 @@ import { qDrawing } from "@/lib/client/queries";
 import {
   Excalidraw,
   exportToBlob,
-  exportToCanvas,
   Footer,
   restore,
   serializeAsJSON,
@@ -11,10 +10,11 @@ import {
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { LoaderIcon, SaveIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useEventListener } from "usehooks-ts";
+import { Button, Spinner } from "@radix-ui/themes";
+import RadixProvider from "@/components/radix-provider";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
@@ -50,11 +50,11 @@ function RouteComponent() {
         type: "application/json",
       });
 
-      const thumbnailBlob = await exportToBlob({
+      const thumbnailBlob = (await exportToBlob({
         elements,
         appState,
         files,
-      });
+      })) as Blob;
       const thumbnail = new File([thumbnailBlob], `${drawing.id}.png`, {
         type: "image/png",
       });
@@ -77,14 +77,14 @@ function RouteComponent() {
         excalidrawAPI={setExcalidrawAPI}
       >
         <Footer>
-          <Button onClick={handleSave} className="ml-3">
-            {saveDrawing.isPending ? (
-              <LoaderIcon className="animate-spin" />
-            ) : (
-              <SaveIcon />
-            )}
-            Save
-          </Button>
+          <RadixProvider overrideAppearance="light">
+            <Button onClick={handleSave} variant="soft">
+              <Spinner loading={saveDrawing.isPending}>
+                <SaveIcon className="size-4" />
+              </Spinner>
+              Save
+            </Button>
+          </RadixProvider>
         </Footer>
       </Excalidraw>
     </div>

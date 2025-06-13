@@ -13,9 +13,9 @@ const providers: Record<string, ProviderDetails> = {
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        height="24"
+        height="100%"
         viewBox="0 0 24 24"
-        width="24"
+        width="100%"
       >
         <path
           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -42,11 +42,11 @@ const providers: Record<string, ProviderDetails> = {
     name: "GitHub",
     icon: (
       <svg
-        height="32"
+        height="100%"
         aria-hidden="true"
         viewBox="0 0 24 24"
         version="1.1"
-        width="32"
+        width="100%"
         data-view-component="true"
         fill="white"
       >
@@ -64,9 +64,9 @@ type Props = {
 const LoginButton: React.FC<Props> = ({ provider }) => {
   const { name, icon, url } = providers[provider];
   return (
-    <Button asChild size="2" className="gap-3">
+    <Button asChild size="2" variant="soft">
       <a href={url}>
-        Login with {name} {icon}
+        <span>Login with {name}</span> <span className="size-4">{icon}</span>
       </a>
     </Button>
   );
