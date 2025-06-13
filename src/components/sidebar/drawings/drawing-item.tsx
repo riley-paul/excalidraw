@@ -10,6 +10,7 @@ import { useAtom } from "jotai";
 import React from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
+import { DateTime } from "luxon";
 
 type Props = {
   drawing: DrawingSelect;
@@ -111,16 +112,25 @@ const DrawingItem: React.FC<Props> = ({ drawing }) => {
             "bg-accent-6 hover:bg-accent-6": isActive,
           })}
         >
-          <div className="size-8 bg-white">
-            <img src={`/thumnail/${id}.png`} />
+          <div className="rounded-2 size-16 bg-white p-0.5">
+            <img
+              className="h-full w-full object-contain"
+              src={`/thumbnail/${id}.png`}
+            />
           </div>
-          <Text
-            weight={isActive ? "bold" : "medium"}
-            size="2"
-            className="flex-1"
-          >
-            {title}
-          </Text>
+          <div className="grid flex-1">
+            <Text weight={isActive ? "bold" : "medium"} size="2">
+              {title}
+            </Text>
+            <Text size="1" color="gray">
+              {DateTime.fromISO(drawing.updatedAt).toRelative()}
+            </Text>
+            {drawing.description && (
+              <Text size="1" mt="1">
+                {drawing.description}
+              </Text>
+            )}
+          </div>
           <Menu drawing={drawing} />
         </div>
       )}
