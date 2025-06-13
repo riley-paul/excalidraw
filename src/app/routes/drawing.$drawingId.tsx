@@ -1,5 +1,4 @@
 import useMutations from "@/hooks/use-mutations";
-import { qDrawing } from "@/lib/client/queries";
 import {
   Excalidraw,
   exportToBlob,
@@ -62,22 +61,26 @@ function RouteComponent() {
     }
   });
 
+  const loadInitialData = async () => {
+    const { content } = await actions.drawings.get.orThrow({ id: drawingId });
+    return restore(JSON.parse(content ?? "{}"), null, null);
+  };
+
   return (
     <div className="h-screen w-full">
       <Excalidraw
         key={drawingId}
-        initialData={async () => {
-          const { content } = await actions.drawings.get.orThrow({
-            id: drawingId,
-          });
-          return restore(JSON.parse(content ?? "{}"), null, null);
-        }}
+        initialData={loadInitialData}
         excalidrawAPI={setExcalidrawAPI}
       >
         <Footer>
           <RadixProvider overrideAppearance="light">
             <div className="ml-3">
-              <Button onClick={handleSave} variant="soft" className="h-[2.25rem]!">
+              <Button
+                onClick={handleSave}
+                variant="soft"
+                className="h-[2.25rem]!"
+              >
                 <Spinner loading={saveDrawing.isPending}>
                   <i className="fas fa-save"></i>
                 </Spinner>
