@@ -32,7 +32,7 @@ const get: ActionHandler<
 
 const list: ActionHandler<typeof drawingInputs.list, DrawingSelect[]> = async (
   _,
-  c
+  c,
 ) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
@@ -85,7 +85,7 @@ const update: ActionHandler<
 
 const remove: ActionHandler<typeof drawingInputs.remove, boolean> = async (
   { id },
-  c
+  c,
 ) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
@@ -101,12 +101,15 @@ const remove: ActionHandler<typeof drawingInputs.remove, boolean> = async (
     });
   }
 
+  await c.locals.runtime.env.R2_BUCKET.delete(id);
+  await c.locals.runtime.env.R2_BUCKET.delete(`${id}-thumbnail`);
+
   return true;
 };
 
 const save: ActionHandler<typeof drawingInputs.save, boolean> = async (
   { id, content, thumbnail },
-  c
+  c,
 ) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;

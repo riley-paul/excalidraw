@@ -1,26 +1,21 @@
-import React from "react";
-import {
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
+import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
+import { drawingDialogAtom } from "@/components/drawing-dialog/drawing-dialog.store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
-import { useAtom } from "jotai/react";
-import { drawingDialogAtom } from "../drawing-dialog/drawing-dialog.store";
-import { alertSystemAtom } from "../alert-system/alert-system.store";
+import type { DrawingSelect } from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { Button, DropdownMenu, IconButton, Text } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
+import { useAtom } from "jotai";
+import React from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
-import type { DrawingSelect } from "@/lib/types";
-import { DropdownMenu } from "@radix-ui/themes";
 
-const NavDrawingMenu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
+type Props = {
+  drawing: DrawingSelect;
+};
+
+const Menu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   const isMobile = useIsMobile();
   const { removeDrawing } = useMutations();
 
@@ -65,10 +60,10 @@ const NavDrawingMenu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <SidebarMenuAction showOnHover>
+        <button className="flex size-4 items-center justify-center">
           <i className="fas fa-ellipsis" />
           <span className="sr-only">More</span>
-        </SidebarMenuAction>
+        </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
         className="w-56 rounded-lg"
@@ -98,40 +93,33 @@ const NavDrawingMenu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   );
 };
 
-type Props = {
-  drawings: DrawingSelect[];
-};
-
-const NavDrawings: React.FC<Props> = ({ drawings }) => {
-  const [, dispatch] = useAtom(drawingDialogAtom);
+const DrawingItem: React.FC<Props> = ({ drawing }) => {
+  const { id, title } = drawing;
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-      <SidebarGroupLabel>Drawings</SidebarGroupLabel>
-      <SidebarGroupAction onClick={() => dispatch({ type: "open" })}>
-        <i className="fas fa-plus fa-sm" />
-        <span className="sr-only">New drawing</span>
-      </SidebarGroupAction>
-      <SidebarGroupContent>
-        <SidebarMenu>
-          {drawings.map((item) => (
-            <SidebarMenuItem key={item.id}>
-              <Link to="/drawing/$drawingId" params={{ drawingId: item.id }}>
-                {({ isActive }) => (
-                  <SidebarMenuButton isActive={isActive}>
-                    <div className="size-8 bg-white">
-                      <img src={`/thumnail/${item.id}.png`} />
-                    </div>
-                    <span>{item.title}</span>
-                    <NavDrawingMenu drawing={item} />
-                  </SidebarMenuButton>
-                )}
-              </Link>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroupContent>
-    </SidebarGroup>
+    <Link to="/drawing/$drawingId" params={{ drawingId: id }}>
+      {({ isActive }) => (
+        <div
+          className={cn({
+            "hover:bg-accent-3 flex items-center gap-3 px-3 py-2 transition-colors":
+              true,
+            "bg-accent-6 hover:bg-accent-6": isActive,
+          })}
+        >
+          <div className="size-8 bg-white">
+            <img src={`/thumnail/${id}.png`} />
+          </div>
+          <Text
+            weight={isActive ? "bold" : "medium"}
+            size="2"
+            className="flex-1"
+          >
+            {title}
+          </Text>
+          <Menu drawing={drawing} />
+        </div>
+      )}
+    </Link>
   );
 };
 
-export default NavDrawings;
+export default DrawingItem;
