@@ -33,7 +33,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
           <i className="fas fa-chevron-right text-1" />
         </button>
       </Popover.Trigger>
-      <Popover.Content maxWidth="10rem" side="right" align="end" className="grid gap-3">
+      <Popover.Content maxWidth="10rem" side="right" className="grid gap-3">
         <header className="flex items-center gap-2">
           <Avatar
             src={user.avatarUrl ?? ""}

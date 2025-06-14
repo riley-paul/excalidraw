@@ -22,7 +22,6 @@ const Menu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
   const [, dispatchDrawingDialog] = useAtom(drawingDialogAtom);
-
   const [, copyToClipboard] = useCopyToClipboard();
 
   const handleDeleteDrawing = () => {
@@ -102,6 +101,8 @@ const Menu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
 
 const DrawingItem: React.FC<Props> = ({ drawing }) => {
   const { id, title } = drawing;
+  const [showThumbnailFallback, setShowThumbnailFallback] =
+    React.useState(false);
   return (
     <Link to="/drawing/$drawingId" params={{ drawingId: id }}>
       {({ isActive }) => (
@@ -112,11 +113,18 @@ const DrawingItem: React.FC<Props> = ({ drawing }) => {
             "bg-accent-6 hover:bg-accent-6": isActive,
           })}
         >
-          <div className="rounded-2 size-16 bg-white p-0.5">
-            <img
-              className="h-full w-full object-contain"
-              src={`/thumbnail/${id}.png`}
-            />
+          <div className="rounded-2 flex size-16 items-center justify-center bg-white p-0.5">
+            {showThumbnailFallback ? (
+              <i className="fas fa-image text-gray-11 text-6" />
+            ) : (
+              <img
+                className="h-full w-full object-contain"
+                src={`/thumbnail/${id}.png`}
+                onError={() => {
+                  setShowThumbnailFallback(true);
+                }}
+              />
+            )}
           </div>
           <div className="grid flex-1">
             <Text weight={isActive ? "bold" : "medium"} size="2">
