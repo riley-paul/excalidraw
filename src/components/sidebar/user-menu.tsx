@@ -30,15 +30,10 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
               {user.email}
             </Text>
           </div>
-          <i className="fas fa-caret-right size-4" />
+          <i className="fas fa-chevron-right text-1" />
         </button>
       </Popover.Trigger>
-      <Popover.Content
-        side={isMobile ? "bottom" : "right"}
-        align="end"
-        sideOffset={4}
-        className="grid w-64 gap-3"
-      >
+      <Popover.Content maxWidth="10rem" side="right" align="end" className="grid gap-3">
         <header className="flex items-center gap-2">
           <Avatar
             src={user.avatarUrl ?? ""}
