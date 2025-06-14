@@ -5,7 +5,7 @@ import useMutations from "@/hooks/use-mutations";
 import type { DrawingSelect } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { DropdownMenu, IconButton, Text } from "@radix-ui/themes";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { useAtom } from "jotai";
 import React from "react";
 import { toast } from "sonner";
@@ -25,18 +25,20 @@ const Menu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
   const [, copyToClipboard] = useCopyToClipboard();
 
   const handleDeleteDrawing = () => {
-    dispatchAlert({
-      type: "open",
-      data: {
-        type: "delete",
-        title: "Delete Drawing",
-        message: `Are you sure you want to delete "${drawing.title}"? This action cannot be undone.`,
-        handleDelete: () => {
-          removeDrawing.mutate(drawing);
-          dispatchAlert({ type: "close" });
-        },
-      },
-    });
+    removeDrawing.mutate(drawing);
+
+    // dispatchAlert({
+    //   type: "open",
+    //   data: {
+    //     type: "delete",
+    //     title: "Delete Drawing",
+    //     message: `Are you sure you want to delete "${drawing.title}"? This action cannot be undone.`,
+    //     handleDelete: () => {
+    //       removeDrawing.mutate(drawing);
+    //       dispatchAlert({ type: "close" });
+    //     },
+    //   },
+    // });
   };
 
   const handleEditDrawing = () => {
@@ -68,7 +70,6 @@ const Menu: React.FC<{ drawing: DrawingSelect }> = ({ drawing }) => {
           color="gray"
         >
           <i className="fas fa-ellipsis" />
-          <span className="sr-only">More</span>
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content
@@ -103,46 +104,52 @@ const DrawingItem: React.FC<Props> = ({ drawing }) => {
   const { id, title } = drawing;
   const [showThumbnailFallback, setShowThumbnailFallback] =
     React.useState(false);
+
+  const { pathname } = useLocation();
+  const isActive = pathname.startsWith(`/drawing/${id}`);
+
   return (
-    <Link to="/drawing/$drawingId" params={{ drawingId: id }}>
-      {({ isActive }) => (
-        <div
-          className={cn({
-            "hover:bg-accent-3 flex items-center gap-3 px-3 py-2 transition-colors":
-              true,
-            "bg-accent-6 hover:bg-accent-6": isActive,
-          })}
-        >
-          <div className="rounded-2 flex size-16 items-center justify-center bg-white p-0.5">
-            {showThumbnailFallback ? (
-              <i className="fas fa-image text-gray-11 text-6" />
-            ) : (
-              <img
-                className="h-full w-full object-contain"
-                src={`/thumbnail/${id}.png`}
-                onError={() => {
-                  setShowThumbnailFallback(true);
-                }}
-              />
-            )}
-          </div>
-          <div className="grid flex-1">
-            <Text weight={isActive ? "bold" : "medium"} size="2">
-              {title}
-            </Text>
-            <Text size="1" color="gray">
-              {DateTime.fromISO(drawing.updatedAt).toRelative()}
-            </Text>
-            {drawing.description && (
-              <Text size="1" mt="1">
-                {drawing.description}
-              </Text>
-            )}
-          </div>
-          <Menu drawing={drawing} />
+    <div
+      className={cn({
+        "hover:bg-accent-3 flex items-center gap-3 px-3 py-2 transition-colors":
+          true,
+        "bg-accent-6 hover:bg-accent-6": isActive,
+      })}
+    >
+      <Link
+        to="/drawing/$drawingId"
+        params={{ drawingId: id }}
+        className="flex w-full items-center gap-3"
+      >
+        <div className="rounded-2 flex size-16 items-center justify-center bg-white p-0.5">
+          {showThumbnailFallback ? (
+            <i className="fas fa-image text-gray-11 text-6" />
+          ) : (
+            <img
+              className="h-full w-full object-contain"
+              src={`/thumbnail/${id}.png`}
+              onError={() => {
+                setShowThumbnailFallback(true);
+              }}
+            />
+          )}
         </div>
-      )}
-    </Link>
+        <div className="grid flex-1">
+          <Text weight={isActive ? "bold" : "medium"} size="2">
+            {title}
+          </Text>
+          <Text size="1" color="gray">
+            {DateTime.fromISO(drawing.updatedAt).toRelative()}
+          </Text>
+          {drawing.description && (
+            <Text size="1" mt="1">
+              {drawing.description}
+            </Text>
+          )}
+        </div>
+      </Link>
+      <Menu drawing={drawing} />
+    </div>
   );
 };
 

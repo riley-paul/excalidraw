@@ -4,6 +4,7 @@ import { drawingDialogAtom } from "../../drawing-dialog/drawing-dialog.store";
 import type { DrawingSelect } from "@/lib/types";
 import DrawingItem from "./drawing-item";
 import { Button, Heading } from "@radix-ui/themes";
+import ScrollShadowWrapper from "@/components/scroll-shadow-wrapper";
 
 type Props = {
   drawings: DrawingSelect[];
@@ -12,7 +13,7 @@ type Props = {
 const DrawingList: React.FC<Props> = ({ drawings }) => {
   const [, dispatch] = useAtom(drawingDialogAtom);
   return (
-    <article className="grid gap-3 py-4">
+    <article className="grid gap-3 overflow-hidden">
       <header className="flex h-4 items-center justify-between gap-2 px-3">
         <Heading
           as="h2"
@@ -32,11 +33,11 @@ const DrawingList: React.FC<Props> = ({ drawings }) => {
           <span>Add Drawing</span>
         </Button>
       </header>
-      <section className="grid">
+      <ScrollShadowWrapper>
         {drawings.map((drawing) => (
           <DrawingItem key={drawing.id} drawing={drawing} />
         ))}
-      </section>
+      </ScrollShadowWrapper>
     </article>
   );
 };

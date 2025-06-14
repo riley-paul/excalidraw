@@ -1,12 +1,9 @@
-import { useIsMobile } from "@/hooks/use-mobile";
 import type { UserSelect } from "@/lib/types";
 import { Avatar, Button, Popover, Separator, Text } from "@radix-ui/themes";
 
 type Props = { user: UserSelect };
 
 export const UserMenu: React.FC<Props> = ({ user }) => {
-  const isMobile = useIsMobile();
-
   const fallback = user.name
     .split(" ")
     .map((n) => n[0])

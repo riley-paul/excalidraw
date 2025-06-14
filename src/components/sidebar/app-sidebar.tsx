@@ -8,7 +8,6 @@ import RadixProvider from "../radix-provider";
 import Sidebar from "./sidebar";
 import { Heading } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
-import ScrollShadowWrapper from "../scroll-shadow-wrapper";
 
 const AppSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
@@ -20,13 +19,11 @@ const AppSidebar: React.FC = () => {
     <RadixProvider overrideAppearance="dark">
       <Sidebar>
         <Link to="/">
-          <header className="p-3">
+          <header className="p-3 pb-6">
             <Heading>Exacalidraw</Heading>
           </header>
         </Link>
-        <ScrollShadowWrapper>
-          <DrawingList drawings={drawings} />
-        </ScrollShadowWrapper>
+        <DrawingList drawings={drawings} />
         <UserMenu user={user} />
       </Sidebar>
     </RadixProvider>
