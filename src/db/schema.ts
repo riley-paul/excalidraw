@@ -1,4 +1,9 @@
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import {
+  integer,
+  sqliteTable,
+  text,
+  type AnySQLiteColumn,
+} from "drizzle-orm/sqlite-core";
 
 const id = text("id")
   .primaryKey()
@@ -42,5 +47,16 @@ export const Drawing = sqliteTable("drawing", {
   userId,
   title: text().notNull().default("Untitled"),
   description: text().notNull().default(""),
+  parentFolderId: text().references(() => Folder.id, { onDelete: "set null" }),
+  ...timeStamps,
+});
+
+export const Folder = sqliteTable("folder", {
+  id,
+  userId,
+  name: text().notNull().default("New Folder"),
+  parentFolderId: text().references((): AnySQLiteColumn => Folder.id, {
+    onDelete: "set null",
+  }),
   ...timeStamps,
 });
