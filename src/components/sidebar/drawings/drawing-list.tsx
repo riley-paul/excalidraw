@@ -13,7 +13,7 @@ type Props = {
 const DrawingList: React.FC<Props> = ({ drawings }) => {
   const [, dispatch] = useAtom(drawingDialogAtom);
   return (
-    <article className="grid gap-3 overflow-hidden">
+    <article className="grid gap-3 overflow-hidden py-2">
       <header className="flex h-4 items-center justify-between gap-2 px-3">
         <Heading
           as="h2"
