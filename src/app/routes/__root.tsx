@@ -1,4 +1,3 @@
-import DrawingDialog from "@/components/drawing-dialog/drawing-dialog";
 import AppSidebar from "@/components/sidebar/app-sidebar";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
@@ -14,7 +13,6 @@ function Component() {
     <div className="flex">
       <AppSidebar />
       <Outlet />
-      <DrawingDialog />
     </div>
   );
 }

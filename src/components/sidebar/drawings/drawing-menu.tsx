@@ -1,5 +1,4 @@
 import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
-import { drawingDialogAtom } from "@/components/drawing-dialog/drawing-dialog.store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import type { DrawingSelect } from "@/lib/types";
@@ -8,6 +7,7 @@ import { useAtom } from "jotai";
 import React from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
+import { z } from "zod/v4";
 
 type Props = {
   drawing: DrawingSelect;
@@ -15,10 +15,9 @@ type Props = {
 
 const DrawingMenu: React.FC<Props> = ({ drawing }) => {
   const isMobile = useIsMobile();
-  const { removeDrawing } = useMutations();
+  const { removeDrawing, updateDrawing } = useMutations();
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
-  const [, dispatchDrawingDialog] = useAtom(drawingDialogAtom);
   const [, copyToClipboard] = useCopyToClipboard();
 
   const handleDeleteDrawing = () => {
@@ -27,7 +26,7 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
       data: {
         type: "delete",
         title: "Delete Drawing",
-        message: `Are you sure you want to delete "${drawing.title}"? This action cannot be undone.`,
+        message: `Are you sure you want to delete "${drawing.name}"? This action cannot be undone.`,
         handleDelete: () => {
           removeDrawing.mutate(drawing);
           dispatchAlert({ type: "close" });
@@ -37,9 +36,24 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
   };
 
   const handleEditDrawing = () => {
-    dispatchDrawingDialog({
+    dispatchAlert({
       type: "open",
-      drawing,
+      data: {
+        type: "input",
+        title: "Edit Drawing",
+        message: "Update the name of your drawing",
+        value: drawing.name,
+        placeholder: "Enter new drawing name",
+        schema: z.string().min(1).max(100),
+        handleSubmit: (value: string) => {
+          updateDrawing.mutate({
+            id: drawing.id,
+            name: value,
+          });
+          dispatchAlert({ type: "close" });
+          toast.success("Drawing updated successfully");
+        },
+      },
     });
   };
 

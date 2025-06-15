@@ -11,7 +11,7 @@ type Props = {
 };
 
 const DrawingItem: React.FC<Props> = ({ drawing }) => {
-  const { id, title } = drawing;
+  const { id, name } = drawing;
   const [showThumbnailFallback, setShowThumbnailFallback] =
     React.useState(false);
 
@@ -46,16 +46,11 @@ const DrawingItem: React.FC<Props> = ({ drawing }) => {
         </div>
         <div className="grid flex-1">
           <Text weight={isActive ? "bold" : "medium"} size="2">
-            {title}
+            {name}
           </Text>
           <Text size="1" color="gray">
             {DateTime.fromISO(drawing.updatedAt).toRelative()}
           </Text>
-          {drawing.description && (
-            <Text size="1" mt="1">
-              {drawing.description}
-            </Text>
-          )}
         </div>
       </Link>
       <DrawingMenu drawing={drawing} />

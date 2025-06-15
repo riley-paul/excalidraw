@@ -4,14 +4,11 @@ const drawingInputs = {
   get: z.object({ id: z.string().uuid() }),
   list: z.any(),
   create: z.object({
-    title: z.string().min(1).max(100),
-    description: z.string().max(500).optional(),
+    name: z.string().min(1).max(100),
   }),
   update: z.object({
     id: z.string().uuid(),
-    title: z.string().min(1).max(100).optional(),
-    description: z.string().max(500).optional(),
-    content: z.any().optional(),
+    name: z.string().min(1).max(100).optional(),
   }),
   remove: z.object({ id: z.string().uuid() }),
   save: z.object({

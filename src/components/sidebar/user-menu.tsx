@@ -1,11 +1,5 @@
 import type { UserSelect } from "@/lib/types";
-import {
-  Avatar,
-  Button,
-  DropdownMenu,
-  Separator,
-  Text,
-} from "@radix-ui/themes";
+import { Avatar, DropdownMenu, Text } from "@radix-ui/themes";
 
 type Props = { user: UserSelect };
 

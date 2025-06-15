@@ -45,8 +45,7 @@ export const UserSession = sqliteTable("userSession", {
 export const Drawing = sqliteTable("drawing", {
   id,
   userId,
-  title: text().notNull().default("Untitled"),
-  description: text().notNull().default(""),
+  name: text().notNull().default("Untitled"),
   parentFolderId: text().references(() => Folder.id, { onDelete: "set null" }),
   ...timeStamps,
 });

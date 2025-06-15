@@ -21,7 +21,7 @@ const AppSidebar: React.FC = () => {
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/">
             <Heading>
-              <i className="fas fa-pen-nib text-accent-9 mr-2 fa-sm"></i>
+              <i className="fas fa-pen-nib text-accent-9 mr-2"></i>
               <span>Excalidraw</span>
             </Heading>
           </Link>
