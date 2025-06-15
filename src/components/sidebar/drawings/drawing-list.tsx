@@ -34,6 +34,12 @@ const DrawingList: React.FC = () => {
   const { data: folders } = useSuspenseQuery(qFolders);
   const treeNodes = buildTree(folders, drawings);
 
+  React.useEffect(() => {
+    console.log("Folders:", folders);
+    console.log("Drawings:", drawings);
+    console.log("Tree Nodes:", treeNodes);
+  }, [treeNodes]);
+
   return (
     <ScrollShadowWrapper>
       {treeNodes.map((node) => (

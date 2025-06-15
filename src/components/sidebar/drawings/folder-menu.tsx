@@ -1,21 +1,19 @@
 import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
-import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import { qFolders } from "@/lib/client/queries";
-import type { DrawingSelect, FolderSelect } from "@/lib/types";
+import type { FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import React from "react";
 import { toast } from "sonner";
-import { useCopyToClipboard } from "usehooks-ts";
 import { z } from "zod/v4";
 
 type Props = {
   folder: FolderSelect;
 };
 
-const FolderMenu: React.FC<Props> = ({ folder }) => {
+const FolderMenu: React.FC<Props> = ({ folder: { id, name } }) => {
   const { removeFolder, updateFolder } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
 
@@ -27,9 +25,9 @@ const FolderMenu: React.FC<Props> = ({ folder }) => {
       data: {
         type: "delete",
         title: "Delete Drawing",
-        message: `Are you sure you want to delete "${folder.name}"? This action cannot be undone.`,
+        message: `Are you sure you want to delete "${name}"? This action cannot be undone.`,
         handleDelete: () => {
-          removeFolder.mutate(folder);
+          removeFolder.mutate({ id });
           dispatchAlert({ type: "close" });
         },
       },
@@ -43,14 +41,11 @@ const FolderMenu: React.FC<Props> = ({ folder }) => {
         type: "input",
         title: "Edit Folder",
         message: "Update the name of your folder",
-        value: folder.name,
+        value: name,
         placeholder: "Enter new folder name",
         schema: z.string().min(1).max(100),
         handleSubmit: (value: string) => {
-          updateFolder.mutate({
-            id: folder.id,
-            name: value,
-          });
+          updateFolder.mutate({ id, name: value });
           dispatchAlert({ type: "close" });
           toast.success("Folder updated successfully");
         },
@@ -86,11 +81,9 @@ const FolderMenu: React.FC<Props> = ({ folder }) => {
             {folders.map((folder) => (
               <DropdownMenu.Item
                 key={folder.id}
+                disabled={folder.id === id}
                 onClick={() => {
-                  updateFolder.mutate({
-                    id: folder.id,
-                    parentFolderId: folder.id,
-                  });
+                  updateFolder.mutate({ id, parentFolderId: folder.id });
                   toast.success(`Moved to "${folder.name}"`);
                 }}
               >

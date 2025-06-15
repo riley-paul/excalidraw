@@ -14,7 +14,9 @@ type Props = {
   drawing: DrawingSelect;
 };
 
-const DrawingMenu: React.FC<Props> = ({ drawing }) => {
+const DrawingMenu: React.FC<Props> = ({
+  drawing: { id, name, parentFolderId },
+}) => {
   const { removeDrawing, updateDrawing } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
 
@@ -27,9 +29,9 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
       data: {
         type: "delete",
         title: "Delete Drawing",
-        message: `Are you sure you want to delete "${drawing.name}"? This action cannot be undone.`,
+        message: `Are you sure you want to delete "${name}"? This action cannot be undone.`,
         handleDelete: () => {
-          removeDrawing.mutate(drawing);
+          removeDrawing.mutate({ id });
           dispatchAlert({ type: "close" });
         },
       },
@@ -43,14 +45,11 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
         type: "input",
         title: "Edit Drawing",
         message: "Update the name of your drawing",
-        value: drawing.name,
+        value: name,
         placeholder: "Enter new drawing name",
         schema: z.string().min(1).max(100),
         handleSubmit: (value: string) => {
-          updateDrawing.mutate({
-            id: drawing.id,
-            name: value,
-          });
+          updateDrawing.mutate({ id, name: value });
           dispatchAlert({ type: "close" });
           toast.success("Drawing updated successfully");
         },
@@ -59,13 +58,13 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
   };
 
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/drawing/${drawing.id}`;
+    const link = `${window.location.origin}/drawing/${id}`;
     copyToClipboard(link);
     toast.success("Link copied to clipboard", { description: link });
   };
 
   const handleOpenInNewTab = () => {
-    const link = `${window.location.origin}/drawing/${drawing.id}`;
+    const link = `${window.location.origin}/drawing/${id}`;
     window.open(link, "_blank");
   };
 
@@ -97,11 +96,9 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
             {folders.map((folder) => (
               <DropdownMenu.Item
                 key={folder.id}
+                disabled={folder.id === parentFolderId}
                 onClick={() => {
-                  updateDrawing.mutate({
-                    id: drawing.id,
-                    parentFolderId: folder.id,
-                  });
+                  updateDrawing.mutate({ id, parentFolderId: folder.id });
                   toast.success(`Moved to "${folder.name}"`);
                 }}
               >
