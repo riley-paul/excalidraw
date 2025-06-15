@@ -6,17 +6,25 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
 import { ScrollArea } from "@radix-ui/themes";
+import { useAtom } from "jotai";
+import { openFoldersAtom } from "./drawing-list.store";
 
 const TreeNodeComponent: React.FC<{ node: TreeNode }> = ({ node }) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
+  const [openFolders, setOpenFolders] = useAtom(openFoldersAtom);
 
   if (node.type === "folder") {
+    const isExpanded = openFolders[node.id] || false;
     return (
       <div className="grid">
         <FolderItem
           folder={node}
           isExpanded={isExpanded}
-          onClick={() => setIsExpanded((prev) => !prev)}
+          onClick={() =>
+            setOpenFolders((prev) => ({
+              ...prev,
+              [node.id]: !prev[node.id],
+            }))
+          }
           depth={node.depth}
         />
         {isExpanded &&
