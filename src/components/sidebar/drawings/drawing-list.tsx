@@ -16,6 +16,7 @@ const TreeNodeComponent: React.FC<{ node: TreeNode }> = ({ node }) => {
           folder={node}
           isExpanded={isExpanded}
           onClick={() => setIsExpanded((prev) => !prev)}
+          depth={node.depth}
         />
         {isExpanded &&
           node.children.map((child) => (

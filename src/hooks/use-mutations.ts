@@ -55,11 +55,28 @@ export default function useMutations() {
     },
   });
 
+  const updateFolder = useMutation({
+    mutationFn: actions.folders.update.orThrow,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: qFolders.queryKey });
+    },
+  });
+
+  const removeFolder = useMutation({
+    mutationFn: actions.folders.remove.orThrow,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: qFolders.queryKey });
+      toast.success("Folder deleted successfully!");
+    },
+  });
+
   return {
     createDrawing,
     removeDrawing,
     updateDrawing,
     saveDrawing,
     createFolder,
+    updateFolder,
+    removeFolder,
   };
 }

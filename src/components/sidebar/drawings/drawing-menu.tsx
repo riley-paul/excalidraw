@@ -1,5 +1,4 @@
 import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
-import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import { qFolders } from "@/lib/client/queries";
 import type { DrawingSelect } from "@/lib/types";
@@ -16,7 +15,6 @@ type Props = {
 };
 
 const DrawingMenu: React.FC<Props> = ({ drawing }) => {
-  const isMobile = useIsMobile();
   const { removeDrawing, updateDrawing } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
 

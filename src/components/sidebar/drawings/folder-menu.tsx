@@ -16,12 +16,10 @@ type Props = {
 };
 
 const FolderMenu: React.FC<Props> = ({ folder }) => {
-  const isMobile = useIsMobile();
-  const { removeDrawing, updateDrawing } = useMutations();
+  const { removeFolder, updateFolder } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
-  const [, copyToClipboard] = useCopyToClipboard();
 
   const handleDeleteDrawing = () => {
     dispatchAlert({
@@ -31,7 +29,7 @@ const FolderMenu: React.FC<Props> = ({ folder }) => {
         title: "Delete Drawing",
         message: `Are you sure you want to delete "${folder.name}"? This action cannot be undone.`,
         handleDelete: () => {
-          // removeDrawing.mutate(drawing);
+          removeFolder.mutate(folder);
           dispatchAlert({ type: "close" });
         },
       },
@@ -49,10 +47,10 @@ const FolderMenu: React.FC<Props> = ({ folder }) => {
         placeholder: "Enter new folder name",
         schema: z.string().min(1).max(100),
         handleSubmit: (value: string) => {
-          // updateDrawing.mutate({
-          //   id: folder.id,
-          //   name: value,
-          // });
+          updateFolder.mutate({
+            id: folder.id,
+            name: value,
+          });
           dispatchAlert({ type: "close" });
           toast.success("Folder updated successfully");
         },
@@ -89,10 +87,10 @@ const FolderMenu: React.FC<Props> = ({ folder }) => {
               <DropdownMenu.Item
                 key={folder.id}
                 onClick={() => {
-                  // updateDrawing.mutate({
-                  //   id: drawing.id,
-                  //   parentFolderId: folder.id,
-                  // });
+                  updateFolder.mutate({
+                    id: folder.id,
+                    parentFolderId: folder.id,
+                  });
                   toast.success(`Moved to "${folder.name}"`);
                 }}
               >
