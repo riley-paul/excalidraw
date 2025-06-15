@@ -1,4 +1,4 @@
-import { qDrawings } from "@/lib/client/queries";
+import { qDrawings, qFolders } from "@/lib/client/queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { actions } from "astro:actions";
@@ -50,6 +50,7 @@ export default function useMutations() {
   const createFolder = useMutation({
     mutationFn: actions.folders.create.orThrow,
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: qFolders.queryKey });
       toast.success("Folder created successfully!");
     },
   });
