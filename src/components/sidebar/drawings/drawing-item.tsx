@@ -31,7 +31,7 @@ const DrawingItem: React.FC<Props> = ({ drawing }) => {
         params={{ drawingId: id }}
         className="flex w-full items-center gap-3"
       >
-        <div className="rounded-2 flex size-16 items-center justify-center bg-white p-0.5">
+        <div className="rounded-2 flex size-12 items-center justify-center bg-white p-0.5">
           {showThumbnailFallback ? (
             <i className="fas fa-image text-gray-11 text-6" />
           ) : (
