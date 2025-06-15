@@ -1,17 +1,13 @@
 import React from "react";
-import { useAtom } from "jotai/react";
-import { drawingDialogAtom } from "../../drawing-dialog/drawing-dialog.store";
-import type { DrawingSelect } from "@/lib/types";
 import DrawingItem from "./drawing-item";
-import { Button, DropdownMenu, Heading } from "@radix-ui/themes";
 import ScrollShadowWrapper from "@/components/scroll-shadow-wrapper";
+import { qDrawings, qFolders } from "@/lib/client/queries";
+import { useQuery } from "@tanstack/react-query";
 
-type Props = {
-  drawings: DrawingSelect[];
-};
+const DrawingList: React.FC = () => {
+  const { data: drawings = [] } = useQuery(qDrawings);
+  const { data: folders = [] } = useQuery(qFolders);
 
-const DrawingList: React.FC<Props> = ({ drawings }) => {
-  const [, dispatchDrawingDialog] = useAtom(drawingDialogAtom);
   return (
     <ScrollShadowWrapper>
       {drawings.map((drawing) => (
