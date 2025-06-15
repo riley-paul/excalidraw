@@ -3,7 +3,7 @@ import React from "react";
 import UserMenu from "./user-menu";
 import { useQuery } from "@tanstack/react-query";
 import { qCurrentUser } from "@/lib/client/queries";
-import DrawingList from "./drawings/drawing-list";
+import DrawingList from "../drawings/drawing-list";
 import RadixProvider from "../radix-provider";
 import Sidebar from "./sidebar";
 import { Heading, Separator } from "@radix-ui/themes";
