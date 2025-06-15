@@ -20,7 +20,10 @@ const AppSidebar: React.FC = () => {
       <Sidebar>
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/">
-            <Heading>Excalidraw</Heading>
+            <Heading>
+              <i className="fas fa-pen-nib text-accent-9 mr-2 fa-sm"></i>
+              <span>Excalidraw</span>
+            </Heading>
           </Link>
           <AddMenu />
         </header>
