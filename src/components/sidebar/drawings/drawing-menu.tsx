@@ -12,10 +12,14 @@ import { z } from "zod/v4";
 
 type Props = {
   drawing: DrawingSelect;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 };
 
 const DrawingMenu: React.FC<Props> = ({
   drawing: { id, name, parentFolderId },
+  isOpen,
+  setIsOpen,
 }) => {
   const { removeDrawing, updateDrawing } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
@@ -69,7 +73,7 @@ const DrawingMenu: React.FC<Props> = ({
   };
 
   return (
-    <DropdownMenu.Root modal={false}>
+    <DropdownMenu.Root modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu.Trigger>
         <IconButton
           className="size-4!"

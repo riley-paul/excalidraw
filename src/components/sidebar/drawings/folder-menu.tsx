@@ -11,9 +11,15 @@ import { z } from "zod/v4";
 
 type Props = {
   folder: FolderSelect;
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
 };
 
-const FolderMenu: React.FC<Props> = ({ folder: { id, name } }) => {
+const FolderMenu: React.FC<Props> = ({
+  folder: { id, name },
+  isOpen,
+  setIsOpen,
+}) => {
   const { removeFolder, updateFolder } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
 
@@ -54,7 +60,7 @@ const FolderMenu: React.FC<Props> = ({ folder: { id, name } }) => {
   };
 
   return (
-    <DropdownMenu.Root modal={false}>
+    <DropdownMenu.Root modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu.Trigger>
         <IconButton
           className="size-4!"
