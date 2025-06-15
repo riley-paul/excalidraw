@@ -47,5 +47,18 @@ export default function useMutations() {
     },
   });
 
-  return { createDrawing, removeDrawing, updateDrawing, saveDrawing };
+  const createFolder = useMutation({
+    mutationFn: actions.folders.create.orThrow,
+    onSuccess: () => {
+      toast.success("Folder created successfully!");
+    },
+  });
+
+  return {
+    createDrawing,
+    removeDrawing,
+    updateDrawing,
+    saveDrawing,
+    createFolder,
+  };
 }

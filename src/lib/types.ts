@@ -1,4 +1,4 @@
-import { Drawing, User } from "@/db/schema";
+import { Drawing, Folder, User } from "@/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "zod/v4";
 
@@ -20,3 +20,8 @@ export type DrawingSelectWithContent = DrawingSelect & {
   content: string | null;
 };
 export type DrawingInsert = z.infer<typeof zDrawingInsert>;
+
+export const zFolderSelect = createSelectSchema(Folder);
+export const zFolderInsert = createInsertSchema(Folder);
+export type FolderSelect = z.infer<typeof zFolderSelect>;
+export type FolderInsert = z.infer<typeof zFolderInsert>;
