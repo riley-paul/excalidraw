@@ -2,7 +2,7 @@ import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
 import { useIsMobile } from "@/hooks/use-mobile";
 import useMutations from "@/hooks/use-mutations";
 import { qFolders } from "@/lib/client/queries";
-import type { DrawingSelect } from "@/lib/types";
+import type { DrawingSelect, FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -12,10 +12,10 @@ import { useCopyToClipboard } from "usehooks-ts";
 import { z } from "zod/v4";
 
 type Props = {
-  drawing: DrawingSelect;
+  folder: FolderSelect;
 };
 
-const DrawingMenu: React.FC<Props> = ({ drawing }) => {
+const FolderMenu: React.FC<Props> = ({ folder }) => {
   const isMobile = useIsMobile();
   const { removeDrawing, updateDrawing } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
@@ -29,9 +29,9 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
       data: {
         type: "delete",
         title: "Delete Drawing",
-        message: `Are you sure you want to delete "${drawing.name}"? This action cannot be undone.`,
+        message: `Are you sure you want to delete "${folder.name}"? This action cannot be undone.`,
         handleDelete: () => {
-          removeDrawing.mutate(drawing);
+          // removeDrawing.mutate(drawing);
           dispatchAlert({ type: "close" });
         },
       },
@@ -43,32 +43,21 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
       type: "open",
       data: {
         type: "input",
-        title: "Edit Drawing",
-        message: "Update the name of your drawing",
-        value: drawing.name,
-        placeholder: "Enter new drawing name",
+        title: "Edit Folder",
+        message: "Update the name of your folder",
+        value: folder.name,
+        placeholder: "Enter new folder name",
         schema: z.string().min(1).max(100),
         handleSubmit: (value: string) => {
-          updateDrawing.mutate({
-            id: drawing.id,
-            name: value,
-          });
+          // updateDrawing.mutate({
+          //   id: folder.id,
+          //   name: value,
+          // });
           dispatchAlert({ type: "close" });
-          toast.success("Drawing updated successfully");
+          toast.success("Folder updated successfully");
         },
       },
     });
-  };
-
-  const handleCopyLink = () => {
-    const link = `${window.location.origin}/drawing/${drawing.id}`;
-    copyToClipboard(link);
-    toast.success("Link copied to clipboard", { description: link });
-  };
-
-  const handleOpenInNewTab = () => {
-    const link = `${window.location.origin}/drawing/${drawing.id}`;
-    window.open(link, "_blank");
   };
 
   return (
@@ -100,10 +89,10 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
               <DropdownMenu.Item
                 key={folder.id}
                 onClick={() => {
-                  updateDrawing.mutate({
-                    id: drawing.id,
-                    parentFolderId: folder.id,
-                  });
+                  // updateDrawing.mutate({
+                  //   id: drawing.id,
+                  //   parentFolderId: folder.id,
+                  // });
                   toast.success(`Moved to "${folder.name}"`);
                 }}
               >
@@ -112,15 +101,6 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
             ))}
           </DropdownMenu.SubContent>
         </DropdownMenu.Sub>
-        <DropdownMenu.Separator />
-        <DropdownMenu.Item onClick={handleCopyLink}>
-          <i className="fas fa-link opacity-70" />
-          <span>Copy Link</span>
-        </DropdownMenu.Item>
-        <DropdownMenu.Item onClick={handleOpenInNewTab}>
-          <i className="fas fa-up-right-from-square opacity-70" />
-          <span>Open in New Tab</span>
-        </DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleDeleteDrawing}>
           <i className="fas fa-trash opacity-70" />
@@ -131,4 +111,4 @@ const DrawingMenu: React.FC<Props> = ({ drawing }) => {
   );
 };
 
-export default DrawingMenu;
+export default FolderMenu;

@@ -8,9 +8,10 @@ import DrawingMenu from "./drawing-menu";
 
 type Props = {
   drawing: DrawingSelect;
+  depth: number;
 };
 
-const DrawingItem: React.FC<Props> = ({ drawing }) => {
+const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const { id, name } = drawing;
   const [showThumbnailFallback, setShowThumbnailFallback] =
     React.useState(false);
@@ -25,6 +26,7 @@ const DrawingItem: React.FC<Props> = ({ drawing }) => {
           true,
         "bg-accent-6 hover:bg-accent-6": isActive,
       })}
+      style={{ paddingLeft: `${0.75 + depth}rem` }}
     >
       <Link
         to="/drawing/$drawingId"
