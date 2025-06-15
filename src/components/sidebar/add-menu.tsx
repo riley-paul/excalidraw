@@ -6,7 +6,7 @@ import { Button, DropdownMenu, IconButton } from "@radix-ui/themes";
 const AddMenu: React.FC = () => {
   const [, dispatchDrawingDialog] = useAtom(drawingDialogAtom);
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger>
         <IconButton size="3" variant="soft" radius="full">
           <i className="fas fa-plus" />

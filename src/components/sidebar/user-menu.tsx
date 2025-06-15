@@ -1,5 +1,11 @@
 import type { UserSelect } from "@/lib/types";
-import { Avatar, Button, Popover, Separator, Text } from "@radix-ui/themes";
+import {
+  Avatar,
+  Button,
+  DropdownMenu,
+  Separator,
+  Text,
+} from "@radix-ui/themes";
 
 type Props = { user: UserSelect };
 
@@ -11,9 +17,9 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
     .toUpperCase();
 
   return (
-    <Popover.Root>
-      <Popover.Trigger>
-        <button className="hover:bg-gray-3 flex items-center gap-3 p-3 transition-colors">
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger>
+        <button className="hover:bg-gray-3 flex cursor-pointer items-center gap-3 p-3 transition-colors">
           <Avatar
             src={user.avatarUrl ?? ""}
             alt={user.name}
@@ -27,11 +33,11 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
               {user.email}
             </Text>
           </div>
-          <i className="fas fa-chevron-right text-1" />
+          <i className="fas fa-chevron-right text-1 size-4" />
         </button>
-      </Popover.Trigger>
-      <Popover.Content maxWidth="10rem" side="right" className="grid gap-3">
-        <header className="flex items-center gap-2">
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content side="right" className="grid gap-3">
+        <header className="flex items-center gap-2 p-2">
           <Avatar
             src={user.avatarUrl ?? ""}
             alt={user.name}
@@ -46,15 +52,15 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
             </Text>
           </div>
         </header>
-        <Separator size="4" orientation="horizontal" />
-        <Button asChild className="w-full" variant="soft">
-          <a href="/logout">
-            <i className="fas fa-arrow-right-from-bracket" />
-            Log out
-          </a>
-        </Button>
-      </Popover.Content>
-    </Popover.Root>
+        <DropdownMenu.Separator />
+        <a href="/logout">
+          <DropdownMenu.Item>
+            <i className="fas fa-arrow-right-from-bracket opacity-70" />
+            <span>Log out</span>
+          </DropdownMenu.Item>
+        </a>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   );
 };
 
