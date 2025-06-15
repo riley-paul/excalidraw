@@ -11,6 +11,11 @@ export const qDrawings = queryOptions({
   queryFn: actions.drawings.list.orThrow,
 });
 
+export const qFolders = queryOptions({
+  queryKey: ["folders"],
+  queryFn: actions.folders.list.orThrow,
+});
+
 export const qDrawing = (drawingId: string) =>
   queryOptions({
     queryKey: ["drawing", drawingId],

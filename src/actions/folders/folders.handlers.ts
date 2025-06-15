@@ -4,6 +4,21 @@ import type { FolderSelect } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Folder } from "@/db/schema";
+import { asc, eq } from "drizzle-orm";
+
+const list: ActionHandler<typeof folderInputs.list, FolderSelect[]> = async (
+  _,
+  c,
+) => {
+  const db = createDb(c.locals.runtime.env);
+  const userId = isAuthorized(c).id;
+  const folders = await db
+    .select()
+    .from(Folder)
+    .where(eq(Folder.userId, userId))
+    .orderBy(asc(Folder.name));
+  return folders;
+};
 
 const create: ActionHandler<typeof folderInputs.create, FolderSelect> = async (
   { name, parentFolderId },
@@ -24,5 +39,5 @@ const create: ActionHandler<typeof folderInputs.create, FolderSelect> = async (
   return newFolder;
 };
 
-const folderHanlders = { create };
+const folderHanlders = { list, create };
 export default folderHanlders;
