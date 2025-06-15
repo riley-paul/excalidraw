@@ -20,7 +20,8 @@ const FolderMenu: React.FC<Props> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const { removeFolder, updateFolder } = useMutations();
+  const { removeFolder, updateFolder, createDrawing, createFolder } =
+    useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
@@ -30,8 +31,8 @@ const FolderMenu: React.FC<Props> = ({
       type: "open",
       data: {
         type: "delete",
-        title: "Delete Drawing",
-        message: `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+        title: "Delete Folder",
+        message: `Are you sure you want to delete "${name}"? This action cannot be undone. Drawings in this folder will not be deleted.`,
         handleDelete: () => {
           removeFolder.mutate({ id });
           dispatchAlert({ type: "close" });
@@ -59,6 +60,42 @@ const FolderMenu: React.FC<Props> = ({
     });
   };
 
+  const handleAddDrawing = () => {
+    dispatchAlert({
+      type: "open",
+      data: {
+        type: "input",
+        title: "Add Drawing",
+        message: `Drawing will be created in "${name}"`,
+        value: "",
+        placeholder: "Enter drawing name",
+        schema: z.string().min(1).max(100),
+        handleSubmit: (value: string) => {
+          createDrawing.mutate({ name: value, parentFolderId: id });
+          dispatchAlert({ type: "close" });
+        },
+      },
+    });
+  };
+
+  const handleAddFolder = () => {
+    dispatchAlert({
+      type: "open",
+      data: {
+        type: "input",
+        title: "Add Folder",
+        message: `Folder will be created in "${name}"`,
+        value: "",
+        placeholder: "Enter folder name",
+        schema: z.string().min(1).max(100),
+        handleSubmit: (value: string) => {
+          createFolder.mutate({ name: value, parentFolderId: id });
+          dispatchAlert({ type: "close" });
+        },
+      },
+    });
+  };
+
   return (
     <DropdownMenu.Root modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu.Trigger>
@@ -80,7 +117,7 @@ const FolderMenu: React.FC<Props> = ({
 
         <DropdownMenu.Sub>
           <DropdownMenu.SubTrigger>
-            <i className="fas fa-folder opacity-70"></i>
+            <i className="fas fa-arrow-right opacity-70"></i>
             <span>Move</span>
           </DropdownMenu.SubTrigger>
           <DropdownMenu.SubContent>
@@ -98,6 +135,15 @@ const FolderMenu: React.FC<Props> = ({
             ))}
           </DropdownMenu.SubContent>
         </DropdownMenu.Sub>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item onClick={handleAddDrawing}>
+          <i className="fas fa-pen-nib opacity-70"></i>
+          <span>Add drawing</span>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item onClick={handleAddFolder}>
+          <i className="fas fa-folder opacity-70"></i>
+          <span>Add folder</span>
+        </DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleDeleteDrawing}>
           <i className="fas fa-trash opacity-70" />

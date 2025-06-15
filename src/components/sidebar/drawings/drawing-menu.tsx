@@ -93,7 +93,7 @@ const DrawingMenu: React.FC<Props> = ({
 
         <DropdownMenu.Sub>
           <DropdownMenu.SubTrigger>
-            <i className="fas fa-folder opacity-70"></i>
+            <i className="fas fa-arrow-right opacity-70"></i>
             <span>Move</span>
           </DropdownMenu.SubTrigger>
           <DropdownMenu.SubContent>

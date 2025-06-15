@@ -5,6 +5,7 @@ import { qDrawings, qFolders } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
+import { ScrollArea } from "@radix-ui/themes";
 
 const TreeNodeComponent: React.FC<{ node: TreeNode }> = ({ node }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
@@ -41,11 +42,11 @@ const DrawingList: React.FC = () => {
   }, [treeNodes]);
 
   return (
-    <ScrollShadowWrapper>
+    <ScrollArea className="flex-1">
       {treeNodes.map((node) => (
         <TreeNodeComponent key={node.id} node={node} />
       ))}
-    </ScrollShadowWrapper>
+    </ScrollArea>
   );
 };
 
