@@ -5,6 +5,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import React from "react";
 import { DateTime } from "luxon";
 import DrawingMenu from "./drawing-menu";
+import useRelativeTime from "@/hooks/use-relative-time";
 
 type Props = {
   drawing: DrawingSelect;
@@ -21,6 +22,8 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
 
   const { pathname } = useLocation();
   const isActive = pathname.startsWith(`/drawing/${id}`);
+
+  const relativeTime = useRelativeTime(drawing.updatedAt);
 
   return (
     <div
@@ -54,7 +57,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
             {name}
           </Text>
           <Text size="1" color="gray">
-            {DateTime.fromISO(drawing.updatedAt).toRelative()}
+            {relativeTime}
           </Text>
         </div>
       </Link>
