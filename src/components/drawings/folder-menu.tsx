@@ -1,4 +1,5 @@
 import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
+import useFileTree from "@/hooks/use-file-tree";
 import useMutations from "@/hooks/use-mutations";
 import { qFolders } from "@/lib/client/queries";
 import type { FolderSelect } from "@/lib/types";
@@ -24,7 +25,7 @@ type Props = {
 };
 
 const FolderMenu: React.FC<Props> = ({
-  folder: { id, name },
+  folder: { id, name, parentFolderId },
   isOpen,
   setIsOpen,
 }) => {
@@ -104,6 +105,19 @@ const FolderMenu: React.FC<Props> = ({
     });
   };
 
+  const { openFolder } = useFileTree();
+
+  const handleMoveFolder = async (folder: FolderSelect | null) => {
+    if (!folder) {
+      await updateFolder.mutateAsync({ id, parentFolderId: null });
+      toast.success(`Moved to root folder`);
+      return;
+    }
+    await updateFolder.mutateAsync({ id, parentFolderId: folder.id });
+    toast.success(`Moved to "${folder.name}"`);
+    openFolder(folder.id);
+  };
+
   return (
     <DropdownMenu.Root modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu.Trigger>
@@ -129,14 +143,17 @@ const FolderMenu: React.FC<Props> = ({
             <span>Move</span>
           </DropdownMenu.SubTrigger>
           <DropdownMenu.SubContent>
+            <DropdownMenu.Item
+              disabled={parentFolderId === null}
+              onClick={() => handleMoveFolder(null)}
+            >
+              <span className="italic">Root</span>
+            </DropdownMenu.Item>
             {folders.map((folder) => (
               <DropdownMenu.Item
                 key={folder.id}
                 disabled={folder.id === id}
-                onClick={() => {
-                  updateFolder.mutate({ id, parentFolderId: folder.id });
-                  toast.success(`Moved to "${folder.name}"`);
-                }}
+                onClick={() => handleMoveFolder(folder)}
               >
                 <span>{folder.name}</span>
               </DropdownMenu.Item>

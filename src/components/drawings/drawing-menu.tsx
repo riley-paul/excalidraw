@@ -81,7 +81,12 @@ const DrawingMenu: React.FC<Props> = ({
     window.open(link, "_blank");
   };
 
-  const handleMoveDrawing = async (folder: FolderSelect) => {
+  const handleMoveDrawing = async (folder: FolderSelect | null) => {
+    if (!folder) {
+      await updateDrawing.mutateAsync({ id, parentFolderId: null });
+      toast.success(`Moved to root folder`);
+      return;
+    }
     await updateDrawing.mutateAsync({ id, parentFolderId: folder.id });
     toast.success(`Moved to "${folder.name}"`);
     openFolder(folder.id);
@@ -114,6 +119,12 @@ const DrawingMenu: React.FC<Props> = ({
             <span>Move</span>
           </DropdownMenu.SubTrigger>
           <DropdownMenu.SubContent>
+            <DropdownMenu.Item
+              disabled={parentFolderId === null}
+              onClick={() => handleMoveDrawing(null)}
+            >
+              <span className="italic">Root</span>
+            </DropdownMenu.Item>
             {folders.map((folder) => (
               <DropdownMenu.Item
                 key={folder.id}
