@@ -19,6 +19,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
             src={user.avatarUrl ?? ""}
             alt={user.name}
             fallback={fallback}
+            radius="full"
           />
           <div className="grid flex-1 text-left">
             <Text size="2" weight="medium" truncate>
@@ -37,6 +38,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
             src={user.avatarUrl ?? ""}
             alt={user.name}
             fallback={fallback}
+            radius="full"
           />
           <div className="grid flex-1 leading-0.5">
             <Text weight="medium" truncate>
