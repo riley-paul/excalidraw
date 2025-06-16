@@ -11,7 +11,6 @@ import {
   ExternalLinkIcon,
   FolderInputIcon,
   Link2Icon,
-  MoveRightIcon,
   PencilIcon,
 } from "lucide-react";
 import React from "react";

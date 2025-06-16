@@ -1,12 +1,11 @@
 import React from "react";
 import DrawingItem from "./drawing-item";
-import { qDrawings, qFolders } from "@/lib/client/queries";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { buildTree, type TreeNode } from "./tree.utils";
+import { type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
 import { ScrollArea } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import { openFoldersAtom } from "./drawing-list.store";
+import useFileTree from "@/hooks/use-file-tree";
 
 const TreeNodeComponent: React.FC<{ node: TreeNode }> = ({ node }) => {
   const [openFolders, setOpenFolders] = useAtom(openFoldersAtom);
@@ -38,9 +37,7 @@ const TreeNodeComponent: React.FC<{ node: TreeNode }> = ({ node }) => {
 };
 
 const DrawingList: React.FC = () => {
-  const { data: drawings } = useSuspenseQuery(qDrawings);
-  const { data: folders } = useSuspenseQuery(qFolders);
-  const treeNodes = buildTree(folders, drawings);
+  const { treeNodes } = useFileTree();
 
   return (
     <ScrollArea className="flex-1">

@@ -7,10 +7,10 @@ import {
   serializeAsJSON,
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { createFileRoute, redirect, useBlocker } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { useState } from "react";
 import { toast } from "sonner";
-import { useEventListener, useInterval } from "usehooks-ts";
+import { useEventListener } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
