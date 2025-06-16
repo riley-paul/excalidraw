@@ -14,6 +14,7 @@ import { useEventListener, useInterval } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
+import { SaveIcon } from "lucide-react";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
@@ -86,7 +87,7 @@ function RouteComponent() {
                 disabled={isLoading}
               >
                 <Spinner loading={isLoading}>
-                  <i className="fas fa-save"></i>
+                  <SaveIcon className="size-4" />
                 </Spinner>
                 Save
               </Button>

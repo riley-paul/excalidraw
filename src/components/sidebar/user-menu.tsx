@@ -1,5 +1,6 @@
 import type { UserSelect } from "@/lib/types";
 import { Avatar, DropdownMenu, Text } from "@radix-ui/themes";
+import { ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
 
 type Props = { user: UserSelect };
 
@@ -27,7 +28,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
               {user.email}
             </Text>
           </div>
-          <i className="fas fa-chevron-right text-1 size-4" />
+          <ChevronsUpDownIcon className="size-4 opacity-70" />
         </button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content side="right" className="grid gap-3">
@@ -49,7 +50,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
         <DropdownMenu.Separator />
         <a href="/logout">
           <DropdownMenu.Item>
-            <i className="fas fa-arrow-right-from-bracket opacity-70" />
+            <LogOutIcon className="size-4 opacity-70" />
             <span>Log out</span>
           </DropdownMenu.Item>
         </a>

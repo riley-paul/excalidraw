@@ -5,6 +5,14 @@ import type { FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
+import {
+  DeleteIcon,
+  EllipsisIcon,
+  FolderInputIcon,
+  FolderPlusIcon,
+  PencilIcon,
+  PenToolIcon,
+} from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 import { z } from "zod/v4";
@@ -106,18 +114,18 @@ const FolderMenu: React.FC<Props> = ({
           variant="ghost"
           color="gray"
         >
-          <i className="fas fa-ellipsis" />
+          <EllipsisIcon className="size-4" />
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item onClick={handleEditDrawing}>
-          <i className="fas fa-pen opacity-70" />
+          <PencilIcon className="size-4 opacity-70" />
           <span>Edit</span>
         </DropdownMenu.Item>
 
         <DropdownMenu.Sub>
           <DropdownMenu.SubTrigger>
-            <i className="fas fa-arrow-right opacity-70"></i>
+            <FolderInputIcon className="size-4 opacity-70" />
             <span>Move</span>
           </DropdownMenu.SubTrigger>
           <DropdownMenu.SubContent>
@@ -137,16 +145,16 @@ const FolderMenu: React.FC<Props> = ({
         </DropdownMenu.Sub>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleAddDrawing}>
-          <i className="fas fa-pen-nib opacity-70"></i>
+          <PenToolIcon className="size-4 opacity-70" />
           <span>Add drawing</span>
         </DropdownMenu.Item>
         <DropdownMenu.Item onClick={handleAddFolder}>
-          <i className="fas fa-folder opacity-70"></i>
+          <FolderPlusIcon className="size-4 opacity-70" />
           <span>Add folder</span>
         </DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleDeleteDrawing}>
-          <i className="fas fa-trash opacity-70" />
+          <DeleteIcon className="size-4 opacity-70" />
           <span>Delete</span>
         </DropdownMenu.Item>
       </DropdownMenu.Content>

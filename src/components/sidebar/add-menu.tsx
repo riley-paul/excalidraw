@@ -4,6 +4,7 @@ import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { alertSystemAtom } from "../alert-system/alert-system.store";
 import { z } from "zod/v4";
 import useMutations from "@/hooks/use-mutations";
+import { FolderPlusIcon, PenToolIcon, PlusIcon } from "lucide-react";
 
 const AddMenu: React.FC = () => {
   const [, dispatchAlert] = useAtom(alertSystemAtom);
@@ -50,16 +51,16 @@ const AddMenu: React.FC = () => {
     <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger>
         <IconButton size="3" variant="soft" radius="full">
-          <i className="fas fa-plus" />
+          <PlusIcon className="size-5" />
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item onClick={handleAddDrawing}>
-          <i className="fas fa-pen-nib opacity-70"></i>
+          <PenToolIcon className="size-4 opacity-70" />
           <span>Add drawing</span>
         </DropdownMenu.Item>
         <DropdownMenu.Item onClick={handleAddFolder}>
-          <i className="fas fa-folder opacity-70"></i>
+          <FolderPlusIcon className="size-4 opacity-70" />
           <span>Add folder</span>
         </DropdownMenu.Item>
       </DropdownMenu.Content>

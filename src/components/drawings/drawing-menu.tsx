@@ -5,6 +5,15 @@ import type { DrawingSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
+import {
+  DeleteIcon,
+  EllipsisIcon,
+  ExternalLinkIcon,
+  FolderInputIcon,
+  Link2Icon,
+  MoveRightIcon,
+  PencilIcon,
+} from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
@@ -82,18 +91,18 @@ const DrawingMenu: React.FC<Props> = ({
           variant="ghost"
           color="gray"
         >
-          <i className="fas fa-ellipsis" />
+          <EllipsisIcon className="size-4" />
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item onClick={handleEditDrawing}>
-          <i className="fas fa-pen opacity-70" />
+          <PencilIcon className="size-4 opacity-70" />
           <span>Edit</span>
         </DropdownMenu.Item>
 
         <DropdownMenu.Sub>
           <DropdownMenu.SubTrigger>
-            <i className="fas fa-arrow-right opacity-70"></i>
+            <FolderInputIcon className="size-4 opacity-70" />
             <span>Move</span>
           </DropdownMenu.SubTrigger>
           <DropdownMenu.SubContent>
@@ -113,16 +122,16 @@ const DrawingMenu: React.FC<Props> = ({
         </DropdownMenu.Sub>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleCopyLink}>
-          <i className="fas fa-link opacity-70" />
+          <Link2Icon className="size-4 opacity-70" />
           <span>Copy Link</span>
         </DropdownMenu.Item>
         <DropdownMenu.Item onClick={handleOpenInNewTab}>
-          <i className="fas fa-up-right-from-square opacity-70" />
+          <ExternalLinkIcon className="size-4 opacity-70" />
           <span>Open in New Tab</span>
         </DropdownMenu.Item>
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleDeleteDrawing}>
-          <i className="fas fa-trash opacity-70" />
+          <DeleteIcon className="size-4 opacity-70" />
           <span>Delete</span>
         </DropdownMenu.Item>
       </DropdownMenu.Content>

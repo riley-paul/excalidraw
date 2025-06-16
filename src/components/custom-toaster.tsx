@@ -1,4 +1,5 @@
 import { Spinner } from "@radix-ui/themes";
+import { CircleCheckIcon, InfoIcon, TriangleAlertIcon } from "lucide-react";
 import React from "react";
 import { Toaster } from "sonner";
 
@@ -10,9 +11,9 @@ const CustomToaster: React.FC = () => {
       }}
       icons={{
         loading: <Spinner />,
-        success: <i className="fa-solid fa-circle-check text-green-10" />,
-        error: <i className="fa-solid fa-exclamation-triangle text-red-10" />,
-        info: <i className="fa-solid fa-circle-info" />,
+        success: <CircleCheckIcon className="text-green-10 size-4" />,
+        error: <TriangleAlertIcon className="text-red-10 size-4" />,
+        info: <InfoIcon className="size-4" />,
       }}
     />
   );

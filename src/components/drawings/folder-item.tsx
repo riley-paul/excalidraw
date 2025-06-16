@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Text } from "@radix-ui/themes";
 import React from "react";
 import FolderMenu from "./folder-menu";
+import { FolderIcon, FolderOpenIcon } from "lucide-react";
 
 type Props = {
   folder: FolderSelect;
@@ -29,12 +30,11 @@ const FolderItem: React.FC<Props> = ({
         onClick={onClick}
         className="flex flex-1 cursor-pointer items-center gap-2"
       >
-        <i
-          className={cn(
-            "fas size-4 opacity-70",
-            isExpanded ? "fa-folder-open" : "fa-folder",
-          )}
-        />
+        {isExpanded ? (
+          <FolderOpenIcon className="size-4 opacity-70" />
+        ) : (
+          <FolderIcon className="size-4 opacity-70" />
+        )}
         <Text size="2" weight="medium" align="left">
           {folder.name}
         </Text>

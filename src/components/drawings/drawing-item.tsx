@@ -5,6 +5,7 @@ import { Link, useLocation } from "@tanstack/react-router";
 import React from "react";
 import DrawingMenu from "./drawing-menu";
 import useRelativeTime from "@/hooks/use-relative-time";
+import { ImageIcon } from "lucide-react";
 
 type Props = {
   drawing: DrawingSelect;
@@ -40,7 +41,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
       >
         <div className="rounded-2 flex size-12 items-center justify-center bg-white p-0.5">
           {showThumbnailFallback ? (
-            <i className="fas fa-image text-gray-11 text-6" />
+            <ImageIcon className="text-gray-11 size-6" />
           ) : (
             <img
               className="h-full w-full object-contain"

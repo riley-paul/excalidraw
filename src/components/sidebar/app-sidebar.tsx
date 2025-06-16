@@ -9,6 +9,7 @@ import Sidebar from "./sidebar";
 import { Heading, Separator } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "./add-menu";
+import { PenToolIcon } from "lucide-react";
 
 const AppSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
@@ -21,7 +22,7 @@ const AppSidebar: React.FC = () => {
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/">
             <Heading>
-              <i className="fas fa-pen-nib text-accent-9 mr-2"></i>
+              <PenToolIcon className="text-accent-9 mr-2 size-6 inline" />
               <span>Excalidraw</span>
             </Heading>
           </Link>
