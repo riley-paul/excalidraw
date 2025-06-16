@@ -28,8 +28,11 @@ export default function useMutations() {
 
   const updateDrawing = useMutation({
     mutationFn: actions.drawings.update.orThrow,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: qDrawings.queryKey });
+    onSuccess: (data) => {
+      queryClient.setQueryData(qDrawings.queryKey, (prev) => {
+        if (!prev) return prev;
+        return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
+      });
     },
   });
 
@@ -39,10 +42,13 @@ export default function useMutations() {
       formData.append("id", data.id);
       formData.append("content", data.content);
       formData.append("thumbnail", data.thumbnail);
-
       return actions.drawings.save.orThrow(formData);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      queryClient.setQueryData(qDrawings.queryKey, (prev) => {
+        if (!prev) return prev;
+        return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
+      });
       toast.success("Drawing saved successfully!");
     },
   });
@@ -57,8 +63,11 @@ export default function useMutations() {
 
   const updateFolder = useMutation({
     mutationFn: actions.folders.update.orThrow,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: qFolders.queryKey });
+    onSuccess: (data) => {
+      queryClient.setQueryData(qFolders.queryKey, (prev) => {
+        if (!prev) return prev;
+        return prev.map((f) => (f.id === data.id ? { ...f, ...data } : f));
+      });
     },
   });
 
@@ -66,6 +75,7 @@ export default function useMutations() {
     mutationFn: actions.folders.remove.orThrow,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: qFolders.queryKey });
+      queryClient.invalidateQueries({ queryKey: qDrawings.queryKey });
       toast.success("Folder deleted successfully!");
     },
   });

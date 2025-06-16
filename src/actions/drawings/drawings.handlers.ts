@@ -107,7 +107,7 @@ const remove: ActionHandler<typeof drawingInputs.remove, boolean> = async (
   return true;
 };
 
-const save: ActionHandler<typeof drawingInputs.save, boolean> = async (
+const save: ActionHandler<typeof drawingInputs.save, DrawingSelect> = async (
   { id, content, thumbnail },
   c,
 ) => {
@@ -126,10 +126,18 @@ const save: ActionHandler<typeof drawingInputs.save, boolean> = async (
     });
   }
 
-  await c.locals.runtime.env.R2_BUCKET.put(id, content);
-  await c.locals.runtime.env.R2_BUCKET.put(`${id}-thumbnail`, thumbnail);
+  await Promise.all([
+    c.locals.runtime.env.R2_BUCKET.put(id, content),
+    c.locals.runtime.env.R2_BUCKET.put(`${id}-thumbnail`, thumbnail),
+  ]);
 
-  return true;
+  const [updated] = await db
+    .update(Drawing)
+    .set({ updatedAt: new Date().toISOString() })
+    .where(and(eq(Drawing.userId, userId), eq(Drawing.id, id)))
+    .returning();
+
+  return updated;
 };
 
 const drawingHandlers = {
