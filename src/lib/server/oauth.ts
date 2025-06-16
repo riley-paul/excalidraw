@@ -49,20 +49,28 @@ export const getGithubUser = async (accessToken: string) => {
     const res = await fetch("https://api.github.com/user", fetchInit);
     if (!res.ok) {
       const errorText = await res.text();
+      const error = await res
+        .json()
+        .then((data) => JSON.stringify(data, null, 2));
       console.error(
         "Failed to fetch user:",
         res.status,
         res.statusText,
         errorText,
       );
-      throw new Error("Failed to fetch user");
+      throw new Error(`Failed to fetch user\n\n${error}`);
     }
     return zGithubUser.parse(await res.json());
   };
 
   const getEmails = async () => {
     const res = await fetch("https://api.github.com/user/emails", fetchInit);
-    if (!res.ok) throw new Error("Failed to fetch emails");
+    if (!res.ok) {
+      const error = await res
+        .json()
+        .then((data) => JSON.stringify(data, null, 2));
+      throw new Error(`Failed to fetch emails\n\n${error}`);
+    }
     return z.array(zGithubEmail).parse(await res.json());
   };
 
