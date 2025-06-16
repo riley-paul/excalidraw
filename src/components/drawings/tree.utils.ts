@@ -1,16 +1,23 @@
 import type { DrawingSelect, FolderSelect } from "@/lib/types";
 
-export type TreeNode =
-  | ({ type: "folder"; depth: number } & FolderSelect & {
-        children: TreeNode[];
-      })
-  | ({ type: "drawing"; depth: number } & DrawingSelect);
+type FolderNode = {
+  type: "folder";
+  depth: number;
+  children: TreeNode[];
+} & FolderSelect;
+
+type DrawingNode = {
+  type: "drawing";
+  depth: number;
+} & DrawingSelect;
+
+export type TreeNode = FolderNode | DrawingNode;
 
 export function buildTree(
   folders: FolderSelect[],
   drawings: DrawingSelect[],
 ): TreeNode[] {
-  const folderMap: Record<string, TreeNode> = {};
+  const folderMap: Record<string, FolderNode> = {};
 
   // Step 1: initialize folders with empty children (depth will be added later)
   folders.forEach((folder) => {

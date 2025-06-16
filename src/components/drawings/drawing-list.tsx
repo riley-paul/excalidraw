@@ -1,6 +1,5 @@
 import React from "react";
 import DrawingItem from "./drawing-item";
-import ScrollShadowWrapper from "@/components/scroll-shadow-wrapper";
 import { qDrawings, qFolders } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { buildTree, type TreeNode } from "./tree.utils";

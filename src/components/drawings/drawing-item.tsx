@@ -5,7 +5,6 @@ import { Link, useLocation } from "@tanstack/react-router";
 import React from "react";
 import { DateTime } from "luxon";
 import DrawingMenu from "./drawing-menu";
-import { useHover } from "usehooks-ts";
 
 type Props = {
   drawing: DrawingSelect;
@@ -15,7 +14,6 @@ type Props = {
 const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const ref = React.useRef<HTMLDivElement>(null);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
-  const isHovering = useHover(ref);
 
   const { id, name } = drawing;
   const [showThumbnailFallback, setShowThumbnailFallback] =
@@ -28,7 +26,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
     <div
       ref={ref}
       className={cn(
-        "hover:bg-accent-3 flex items-center gap-3 px-3 py-2 transition-colors",
+        "hover:bg-accent-3 group flex items-center gap-3 px-3 py-2 transition-colors ease-out",
         isActive && "bg-accent-6 hover:bg-accent-6",
       )}
       style={{ paddingLeft: `${0.75 + depth}rem` }}
@@ -60,13 +58,18 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
           </Text>
         </div>
       </Link>
-      {(isHovering || isMenuOpen) && (
+      <div
+        className={cn(
+          "flex items-center justify-center transition-opacity ease-out group-hover:opacity-100",
+          !isMenuOpen && "opacity-0",
+        )}
+      >
         <DrawingMenu
           drawing={drawing}
           isOpen={isMenuOpen}
           setIsOpen={setIsMenuOpen}
         />
-      )}
+      </div>
     </div>
   );
 };

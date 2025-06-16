@@ -3,7 +3,6 @@ import { cn } from "@/lib/utils";
 import { Text } from "@radix-ui/themes";
 import React from "react";
 import FolderMenu from "./folder-menu";
-import { useHover } from "usehooks-ts";
 
 type Props = {
   folder: FolderSelect;
@@ -19,12 +18,11 @@ const FolderItem: React.FC<Props> = ({
   depth,
 }) => {
   const ref = React.useRef<HTMLDivElement>(null);
-  const isHovering = useHover(ref);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   return (
     <div
       ref={ref}
-      className="hover:bg-accent-3 flex w-full items-center gap-2 px-3 py-2 transition-colors"
+      className="hover:bg-accent-3 group flex w-full items-center gap-2 px-3 py-2 transition-colors ease-out"
       style={{ paddingLeft: `${0.75 + depth}rem` }}
     >
       <button
@@ -41,13 +39,18 @@ const FolderItem: React.FC<Props> = ({
           {folder.name}
         </Text>
       </button>
-      {(isHovering || isMenuOpen) && (
+      <div
+        className={cn(
+          "flex items-center justify-center transition-opacity ease-out group-hover:opacity-100",
+          !isMenuOpen && "opacity-0",
+        )}
+      >
         <FolderMenu
           folder={folder}
           isOpen={isMenuOpen}
           setIsOpen={setIsMenuOpen}
         />
-      )}
+      </div>
     </div>
   );
 };
