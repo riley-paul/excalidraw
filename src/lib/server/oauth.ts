@@ -42,6 +42,7 @@ export const getGithubUser = async (accessToken: string) => {
     headers: {
       Authorization: `Bearer ${accessToken}`,
       "User-Agent": "Todos/1.0",
+      "X-GitHub-Api-Version": "2022-11-28",
     },
   };
 
