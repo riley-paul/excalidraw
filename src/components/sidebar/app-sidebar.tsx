@@ -21,8 +21,8 @@ const AppSidebar: React.FC = () => {
       <Sidebar>
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/">
-            <Heading>
-              <PenToolIcon className="text-accent-9 mr-2 inline size-6" />
+            <Heading className="flex items-center gap-2">
+              <PenToolIcon className="text-accent-9 size-7" />
               <span>Excalidraw</span>
             </Heading>
           </Link>
