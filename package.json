@@ -19,6 +19,7 @@
     "@astrojs/react": "^4.3.0",
     "@cloudflare/workers-types": "^4.20250610.0",
     "@excalidraw/excalidraw": "^0.18.0",
+    "@fontsource-variable/assistant": "^5.2.7",
     "@hookform/resolvers": "^5.1.1",
     "@libsql/client": "^0.15.9",
     "@radix-ui/themes": "^3.2.1",

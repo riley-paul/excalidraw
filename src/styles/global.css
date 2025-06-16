@@ -16,6 +16,7 @@
 }
 
 .radix-themes {
+  --default-font-family: "Assistant Variable", sans-serif;
   --cursor-button: pointer;
   --cursor-checkbox: pointer;
   --cursor-disabled: default;
