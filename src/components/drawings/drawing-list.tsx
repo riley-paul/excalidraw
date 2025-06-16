@@ -1,33 +1,35 @@
 import React from "react";
 import DrawingItem from "./drawing-item";
-import { type TreeNode } from "./tree.utils";
+import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
 import { ScrollArea } from "@radix-ui/themes";
-import { useAtom } from "jotai";
-import { openFoldersAtom } from "./drawing-list.store";
 import useFileTree from "@/hooks/use-file-tree";
+import { qDrawings, qFolders } from "@/lib/client/queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-const TreeNodeComponent: React.FC<{ node: TreeNode }> = ({ node }) => {
-  const [openFolders, setOpenFolders] = useAtom(openFoldersAtom);
-
+const TreeNodeComponent: React.FC<{
+  node: TreeNode;
+  treeNodes: TreeNode[];
+}> = ({ node, treeNodes }) => {
+  const { folderIsOpen, openFolder, closeFolder } = useFileTree(treeNodes);
   if (node.type === "folder") {
-    const isExpanded = openFolders[node.id] || false;
     return (
       <div className="grid">
         <FolderItem
           folder={node}
-          isExpanded={isExpanded}
+          isExpanded={folderIsOpen(node.id)}
           onClick={() =>
-            setOpenFolders((prev) => ({
-              ...prev,
-              [node.id]: !prev[node.id],
-            }))
+            folderIsOpen(node.id) ? closeFolder(node.id) : openFolder(node.id)
           }
           depth={node.depth}
         />
-        {isExpanded &&
+        {folderIsOpen(node.id) &&
           node.children.map((child) => (
-            <TreeNodeComponent key={child.id} node={child} />
+            <TreeNodeComponent
+              key={child.id}
+              node={child}
+              treeNodes={treeNodes}
+            />
           ))}
       </div>
     );
@@ -37,12 +39,14 @@ const TreeNodeComponent: React.FC<{ node: TreeNode }> = ({ node }) => {
 };
 
 const DrawingList: React.FC = () => {
-  const { treeNodes } = useFileTree();
+  const { data: drawings } = useSuspenseQuery(qDrawings);
+  const { data: folders } = useSuspenseQuery(qFolders);
+  const treeNodes = buildTree(folders, drawings);
 
   return (
     <ScrollArea className="flex-1">
       {treeNodes.map((node) => (
-        <TreeNodeComponent key={node.id} node={node} />
+        <TreeNodeComponent key={node.id} node={node} treeNodes={treeNodes} />
       ))}
     </ScrollArea>
   );
