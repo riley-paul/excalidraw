@@ -68,3 +68,20 @@ export function buildTree(
 
   return roots;
 }
+
+export function getParentFolderIds(
+  folderId: string,
+  folders: FolderSelect[],
+): string[] {
+  const folderMap = new Map(folders.map((f) => [f.id, f]));
+
+  const parentIds: string[] = [];
+  let current = folderMap.get(folderId);
+
+  while (current && current.parentFolderId) {
+    parentIds.push(current.parentFolderId);
+    current = folderMap.get(current.parentFolderId);
+  }
+
+  return parentIds;
+}

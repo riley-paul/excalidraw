@@ -10,7 +10,6 @@ import { Heading, Separator } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "./add-menu";
 import { PenToolIcon } from "lucide-react";
-import { TreeProvider } from "../drawings/tree-provider";
 
 const AppSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
@@ -30,9 +29,7 @@ const AppSidebar: React.FC = () => {
           <AddMenu />
         </header>
         <Separator size="4" orientation="horizontal" />
-        <TreeProvider>
-          <DrawingList />
-        </TreeProvider>
+        <DrawingList />
         <Separator size="4" orientation="horizontal" />
         <UserMenu user={user} />
       </Sidebar>

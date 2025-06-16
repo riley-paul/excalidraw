@@ -1,7 +1,8 @@
-import { TreeContext } from "@/components/drawings/tree-provider";
+import { getParentFolderIds } from "@/components/drawings/tree.utils";
+import { qFolders } from "@/lib/client/queries";
+import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { useContext } from "react";
 
 const openFoldersAtom = atomWithStorage<Record<string, boolean>>(
   "openFolders",
@@ -9,8 +10,8 @@ const openFoldersAtom = atomWithStorage<Record<string, boolean>>(
 );
 
 export default function useFileTree() {
-  const treeNodes = useContext(TreeContext);
   const [openFolders, setOpenFolders] = useAtom(openFoldersAtom);
+  const { data: folders = [] } = useQuery(qFolders);
 
   const closeFolder = (folderId: string) => {
     setOpenFolders((prev) => ({
@@ -24,23 +25,13 @@ export default function useFileTree() {
   };
 
   const openFolder = (folderId: string) => {
-    // open all parent folders
-    const openParentFolders = (id: string) => {
-      const folder = treeNodes.find((node) => node.id === id);
-      if (folder && folder.parentFolderId) {
-        setOpenFolders((prev) => ({
-          ...prev,
-          [folder.parentFolderId!]: true,
-        }));
-        openParentFolders(folder.parentFolderId);
-      }
-    };
+    const foldersToOpen = getParentFolderIds(folderId, folders);
     setOpenFolders((prev) => ({
       ...prev,
       [folderId]: true,
+      ...Object.fromEntries(foldersToOpen.map((id) => [id, true])),
     }));
-    openParentFolders(folderId);
   };
 
-  return { treeNodes, folderIsOpen, closeFolder, openFolder };
+  return { folderIsOpen, closeFolder, openFolder };
 }

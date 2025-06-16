@@ -1,7 +1,8 @@
 import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
+import useFileTree from "@/hooks/use-file-tree";
 import useMutations from "@/hooks/use-mutations";
 import { qFolders } from "@/lib/client/queries";
-import type { DrawingSelect } from "@/lib/types";
+import type { DrawingSelect, FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
@@ -80,6 +81,14 @@ const DrawingMenu: React.FC<Props> = ({
     window.open(link, "_blank");
   };
 
+  const handleMoveDrawing = async (folder: FolderSelect) => {
+    await updateDrawing.mutateAsync({ id, parentFolderId: folder.id });
+    toast.success(`Moved to "${folder.name}"`);
+    openFolder(folder.id);
+  };
+
+  const { openFolder } = useFileTree();
+
   return (
     <DropdownMenu.Root modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu.Trigger>
@@ -109,10 +118,7 @@ const DrawingMenu: React.FC<Props> = ({
               <DropdownMenu.Item
                 key={folder.id}
                 disabled={folder.id === parentFolderId}
-                onClick={() => {
-                  updateDrawing.mutate({ id, parentFolderId: folder.id });
-                  toast.success(`Moved to "${folder.name}"`);
-                }}
+                onClick={() => handleMoveDrawing(folder)}
               >
                 <span>{folder.name}</span>
               </DropdownMenu.Item>
