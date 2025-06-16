@@ -1,17 +1,15 @@
 import React from "react";
 import DrawingItem from "./drawing-item";
-import { buildTree, type TreeNode } from "./tree.utils";
+import { type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
 import { ScrollArea } from "@radix-ui/themes";
 import useFileTree from "@/hooks/use-file-tree";
-import { qDrawings, qFolders } from "@/lib/client/queries";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { TreeContext } from "./tree-provider";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
-  treeNodes: TreeNode[];
-}> = ({ node, treeNodes }) => {
-  const { folderIsOpen, openFolder, closeFolder } = useFileTree(treeNodes);
+}> = ({ node }) => {
+  const { folderIsOpen, openFolder, closeFolder } = useFileTree();
   if (node.type === "folder") {
     return (
       <div className="grid">
@@ -25,11 +23,7 @@ const TreeNodeComponent: React.FC<{
         />
         {folderIsOpen(node.id) &&
           node.children.map((child) => (
-            <TreeNodeComponent
-              key={child.id}
-              node={child}
-              treeNodes={treeNodes}
-            />
+            <TreeNodeComponent key={child.id} node={child} />
           ))}
       </div>
     );
@@ -39,14 +33,11 @@ const TreeNodeComponent: React.FC<{
 };
 
 const DrawingList: React.FC = () => {
-  const { data: drawings } = useSuspenseQuery(qDrawings);
-  const { data: folders } = useSuspenseQuery(qFolders);
-  const treeNodes = buildTree(folders, drawings);
-
+  const treeNodes = React.useContext(TreeContext);
   return (
     <ScrollArea className="flex-1">
       {treeNodes.map((node) => (
-        <TreeNodeComponent key={node.id} node={node} treeNodes={treeNodes} />
+        <TreeNodeComponent key={node.id} node={node} />
       ))}
     </ScrollArea>
   );

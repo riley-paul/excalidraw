@@ -1,13 +1,15 @@
-import { type TreeNode } from "@/components/drawings/tree.utils";
+import { TreeContext } from "@/components/drawings/tree-provider";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { useContext } from "react";
 
 const openFoldersAtom = atomWithStorage<Record<string, boolean>>(
   "openFolders",
   {},
 );
 
-export default function useFileTree(treeNodes: TreeNode[]) {
+export default function useFileTree() {
+  const treeNodes = useContext(TreeContext);
   const [openFolders, setOpenFolders] = useAtom(openFoldersAtom);
 
   const closeFolder = (folderId: string) => {

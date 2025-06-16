@@ -10,6 +10,7 @@ import { Heading, Separator } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "./add-menu";
 import { PenToolIcon } from "lucide-react";
+import { TreeProvider } from "../drawings/tree-provider";
 
 const AppSidebar: React.FC = () => {
   const { data: user } = useQuery(qCurrentUser);
@@ -22,14 +23,16 @@ const AppSidebar: React.FC = () => {
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/">
             <Heading>
-              <PenToolIcon className="text-accent-9 mr-2 size-6 inline" />
+              <PenToolIcon className="text-accent-9 mr-2 inline size-6" />
               <span>Excalidraw</span>
             </Heading>
           </Link>
           <AddMenu />
         </header>
         <Separator size="4" orientation="horizontal" />
-        <DrawingList />
+        <TreeProvider>
+          <DrawingList />
+        </TreeProvider>
         <Separator size="4" orientation="horizontal" />
         <UserMenu user={user} />
       </Sidebar>
