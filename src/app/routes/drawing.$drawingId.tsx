@@ -7,10 +7,10 @@ import {
   serializeAsJSON,
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, redirect, useBlocker } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useEventListener } from "usehooks-ts";
+import { useEventListener, useInterval } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
@@ -25,14 +25,16 @@ export const Route = createFileRoute("/drawing/$drawingId")({
 
 function RouteComponent() {
   const { drawingId } = Route.useParams();
-
   const { saveDrawing } = useMutations();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
   const handleSave = async () => {
     if (excalidrawAPI) {
+      setIsLoading(true);
       const elements = excalidrawAPI.getSceneElements();
       const appState = excalidrawAPI.getAppState();
       const files = excalidrawAPI.getFiles();
@@ -50,7 +52,8 @@ function RouteComponent() {
       const thumbnail = new File([thumbnailBlob], `${drawingId}.png`, {
         type: "image/png",
       });
-      saveDrawing.mutate({ id: drawingId, content, thumbnail });
+      await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
+      setIsLoading(false);
     }
   };
 
@@ -80,8 +83,9 @@ function RouteComponent() {
                 onClick={handleSave}
                 variant="soft"
                 className="h-[2.25rem]!"
+                disabled={isLoading}
               >
-                <Spinner loading={saveDrawing.isPending}>
+                <Spinner loading={isLoading}>
                   <i className="fas fa-save"></i>
                 </Spinner>
                 Save
