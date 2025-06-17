@@ -8,13 +8,14 @@ import {
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useDocumentTitle, useEventListener } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
+import useFileTree from "@/hooks/use-file-tree";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
@@ -29,10 +30,16 @@ export const Route = createFileRoute("/drawing/$drawingId")({
 
 function RouteComponent() {
   const { drawingId } = Route.useParams();
-  const { name } = Route.useLoaderData();
+  const { name, parentFolderId } = Route.useLoaderData();
   const { saveDrawing } = useMutations();
+  const { openFolder } = useFileTree();
 
+  // Effects
   useDocumentTitle(name);
+  useEffect(() => {
+    if (!parentFolderId) return;
+    openFolder(parentFolderId);
+  }, []);
 
   const [isLoading, setIsLoading] = useState(false);
 
