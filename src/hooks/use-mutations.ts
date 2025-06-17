@@ -1,4 +1,4 @@
-import { qDrawings, qFolders } from "@/lib/client/queries";
+import { qDrawing, qDrawings, qFolders } from "@/lib/client/queries";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { actions } from "astro:actions";
@@ -32,6 +32,10 @@ export default function useMutations() {
       queryClient.setQueryData(qDrawings.queryKey, (prev) => {
         if (!prev) return prev;
         return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
+      });
+      queryClient.setQueryData(qDrawing(data.id).queryKey, (prev) => {
+        if (!prev) return prev;
+        return { ...prev, ...data };
       });
     },
   });

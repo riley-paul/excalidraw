@@ -16,11 +16,13 @@ import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
 import useFileTree from "@/hooks/use-file-tree";
+import { qDrawing } from "@/lib/client/queries";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
-  loader: async ({ params: { drawingId } }) => {
-    return actions.drawings.get.orThrow({ id: drawingId });
+  loader: async ({ params: { drawingId }, context: { queryClient } }) => {
+    return queryClient.ensureQueryData(qDrawing(drawingId));
   },
   onError: () => {
     toast.error("Failed to load drawing. Please try again.");
@@ -30,7 +32,9 @@ export const Route = createFileRoute("/drawing/$drawingId")({
 
 function RouteComponent() {
   const { drawingId } = Route.useParams();
-  const { name, parentFolderId } = Route.useLoaderData();
+  const {
+    data: { name, parentFolderId },
+  } = useSuspenseQuery(qDrawing(drawingId));
   const { saveDrawing } = useMutations();
   const { openFolder } = useFileTree();
 
