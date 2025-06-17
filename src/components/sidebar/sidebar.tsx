@@ -2,14 +2,25 @@ import React from "react";
 
 import { useAtom } from "jotai";
 import { desktopSidebarOpenAtom, mobileSidebarOpenAtom } from "./sidebar.store";
-import { cn } from "@/lib/utils";
+import { cn, getIsTyping } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useEventListener } from "usehooks-ts";
 
 const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useAtom(
     isMobile ? mobileSidebarOpenAtom : desktopSidebarOpenAtom,
   );
+
+  useEventListener("keydown", (e) => {
+    if (getIsTyping()) return;
+    if (e.code === "KeyB") {
+      setIsOpen((prev) => !prev);
+    }
+    if (isMobile && e.code === "Escape") {
+      setIsOpen(false);
+    }
+  });
 
   return (
     <>
@@ -50,7 +61,7 @@ const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
             <div
               className={cn(
                 "bg-gray-7 group-hover:bg-gray-8 m-0 h-full w-[4px] rounded-full p-0 transition ease-out group-hover:w-[6px]",
-                "focus:bg-gray-9",
+                !isOpen && "bg-gray-12 group-hover:bg-gray-11",
               )}
             />
           </button>

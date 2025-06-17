@@ -17,3 +17,9 @@ export function formatFileSize(bytes: number, decimals = 0): string {
 
   return `${size} ${sizes[i]}`;
 }
+
+export const getIsTyping = () =>
+  document.activeElement?.tagName === "INPUT" ||
+  document.activeElement?.tagName === "TEXTAREA" ||
+  // @ts-expect-error
+  document.activeElement?.isContentEditable;
