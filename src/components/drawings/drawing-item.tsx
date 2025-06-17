@@ -26,8 +26,6 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const relativeTime = useRelativeTime(drawing.updatedAt);
   const formattedFileSize = formatFileSize(drawing.fileSize ?? 0);
 
-  console.log(drawing);
-
   return (
     <div
       ref={ref}
