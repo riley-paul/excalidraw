@@ -1,5 +1,5 @@
 import type { DrawingSelect } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn, formatFileSize } from "@/lib/utils";
 import { Text } from "@radix-ui/themes";
 import { Link, useLocation } from "@tanstack/react-router";
 import React from "react";
@@ -24,6 +24,9 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const isActive = pathname.startsWith(`/drawing/${id}`);
 
   const relativeTime = useRelativeTime(drawing.updatedAt);
+  const formattedFileSize = formatFileSize(drawing.fileSize ?? 0);
+
+  console.log(drawing);
 
   return (
     <div
@@ -57,7 +60,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
             {name}
           </Text>
           <Text size="1" color="gray">
-            {relativeTime}
+            {relativeTime} · {formattedFileSize}
           </Text>
         </div>
       </Link>

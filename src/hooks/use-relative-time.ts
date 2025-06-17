@@ -2,7 +2,8 @@ import { DateTime } from "luxon";
 import { useEffect, useState } from "react";
 import { useInterval } from "usehooks-ts";
 
-const getRelativeTime = (date: string) => DateTime.fromISO(date).toRelative();
+const getRelativeTime = (date: string) =>
+  DateTime.fromISO(date).toRelative({ style: "short" });
 
 export default function useRelativeTime(
   date: string,
