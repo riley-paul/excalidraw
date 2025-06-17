@@ -1,5 +1,5 @@
 import type { FolderSelect } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client/utils";
 import { Text } from "@radix-ui/themes";
 import React from "react";
 import FolderMenu from "./folder-menu";

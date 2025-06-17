@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/client/utils";
 import { ScrollArea } from "@radix-ui/themes";
 import {
   type CSSProperties,

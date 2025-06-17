@@ -1,5 +1,5 @@
 import type { DrawingSelect } from "@/lib/types";
-import { cn, formatFileSize } from "@/lib/utils";
+import { cn, formatFileSize } from "@/lib/client/utils";
 import { Text } from "@radix-ui/themes";
 import { Link, useLocation } from "@tanstack/react-router";
 import React from "react";

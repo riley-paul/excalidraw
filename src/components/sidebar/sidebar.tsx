@@ -2,7 +2,7 @@ import React from "react";
 
 import { useAtom } from "jotai";
 import { desktopSidebarOpenAtom, mobileSidebarOpenAtom } from "./sidebar.store";
-import { cn, getIsTyping } from "@/lib/utils";
+import { cn, getIsTyping } from "@/lib/client/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useEventListener } from "usehooks-ts";
 
