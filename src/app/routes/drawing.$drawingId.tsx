@@ -10,7 +10,7 @@ import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
-import { useEventListener } from "usehooks-ts";
+import { useDocumentTitle, useEventListener } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
@@ -18,6 +18,9 @@ import { SaveIcon } from "lucide-react";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
+  loader: async ({ params: { drawingId } }) => {
+    return actions.drawings.get.orThrow({ id: drawingId });
+  },
   onError: () => {
     toast.error("Failed to load drawing. Please try again.");
     throw redirect({ to: "/" });
@@ -26,7 +29,10 @@ export const Route = createFileRoute("/drawing/$drawingId")({
 
 function RouteComponent() {
   const { drawingId } = Route.useParams();
+  const { name } = Route.useLoaderData();
   const { saveDrawing } = useMutations();
+
+  useDocumentTitle(name);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -66,7 +72,10 @@ function RouteComponent() {
   });
 
   const loadInitialData = async () => {
-    const { content } = await actions.drawings.get.orThrow({ id: drawingId });
+    const { content } = await actions.drawings.get.orThrow({
+      id: drawingId,
+      withContent: true,
+    });
     return restore(JSON.parse(content ?? "{}"), null, null);
   };
 

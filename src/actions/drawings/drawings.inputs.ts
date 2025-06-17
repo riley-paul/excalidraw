@@ -1,7 +1,10 @@
 import { z } from "zod";
 
 const drawingInputs = {
-  get: z.object({ id: z.string().uuid() }),
+  get: z.object({
+    id: z.string().uuid(),
+    withContent: z.boolean().default(false),
+  }),
   list: z.any(),
   create: z.object({
     name: z.string().min(1).max(100),

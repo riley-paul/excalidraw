@@ -9,7 +9,7 @@ import { and, desc, eq } from "drizzle-orm";
 const get: ActionHandler<
   typeof drawingInputs.get,
   DrawingSelectWithContent
-> = async ({ id }, c) => {
+> = async ({ id, withContent }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
@@ -25,8 +25,11 @@ const get: ActionHandler<
     });
   }
 
-  const content = await c.locals.runtime.env.R2_BUCKET.get(id);
+  if (!withContent) {
+    return { ...drawing, content: null };
+  }
 
+  const content = await c.locals.runtime.env.R2_BUCKET.get(id);
   return { ...drawing, content: content ? await content.text() : null };
 };
 
