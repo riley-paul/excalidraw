@@ -46,7 +46,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
           ) : (
             <img
               className="h-full w-full object-contain"
-              src={`/thumbnail/${id}.png`}
+              src={`/thumbnail/${id}.png?cache=${drawing.updatedAt}`}
               onError={() => {
                 setShowThumbnailFallback(true);
               }}
