@@ -4,6 +4,7 @@ import { Text } from "@radix-ui/themes";
 import React from "react";
 import FolderMenu from "./folder-menu";
 import { FolderIcon, FolderOpenIcon } from "lucide-react";
+import ItemContainer from "./item-container";
 
 type Props = {
   folder: FolderSelect;
@@ -18,14 +19,9 @@ const FolderItem: React.FC<Props> = ({
   onClick,
   depth,
 }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   return (
-    <div
-      ref={ref}
-      className="hover:bg-accent-3 group flex w-full items-center gap-2 px-3 py-2 transition-colors ease-out"
-      style={{ paddingLeft: `${0.75 + depth}rem` }}
-    >
+    <ItemContainer depth={depth}>
       <button
         onClick={onClick}
         className="flex flex-1 cursor-pointer items-center gap-2"
@@ -51,7 +47,7 @@ const FolderItem: React.FC<Props> = ({
           setIsOpen={setIsMenuOpen}
         />
       </div>
-    </div>
+    </ItemContainer>
   );
 };
 

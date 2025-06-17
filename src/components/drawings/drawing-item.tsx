@@ -6,6 +6,7 @@ import React from "react";
 import DrawingMenu from "./drawing-menu";
 import useRelativeTime from "@/hooks/use-relative-time";
 import { ImageIcon } from "lucide-react";
+import ItemContainer from "./item-container";
 
 type Props = {
   drawing: DrawingSelect;
@@ -13,7 +14,6 @@ type Props = {
 };
 
 const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
-  const ref = React.useRef<HTMLDivElement>(null);
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const { id, name } = drawing;
@@ -27,14 +27,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const formattedFileSize = formatFileSize(drawing.fileSize ?? 0);
 
   return (
-    <div
-      ref={ref}
-      className={cn(
-        "hover:bg-accent-3 group flex items-center gap-3 px-3 py-2 transition-colors ease-out",
-        isActive && "bg-accent-6 hover:bg-accent-6",
-      )}
-      style={{ paddingLeft: `${0.75 + depth}rem` }}
-    >
+    <ItemContainer depth={depth} isActive={isActive}>
       <Link
         to="/drawing/$drawingId"
         params={{ drawingId: id }}
@@ -74,7 +67,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
           setIsOpen={setIsMenuOpen}
         />
       </div>
-    </div>
+    </ItemContainer>
   );
 };
 
