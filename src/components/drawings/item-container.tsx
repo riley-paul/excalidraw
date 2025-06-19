@@ -19,10 +19,12 @@ type Props = React.PropsWithChildren<{
   depth: number;
   isActive?: boolean;
   isOverlay?: boolean;
+  isDroppable?: boolean;
+  itemId: string;
 }>;
 
 const ItemContainer: React.FC<Props> = (props) => {
-  const { isActive, depth, isOverlay, children } = props;
+  const { depth, isActive, isOverlay, isDroppable, itemId, children } = props;
 
   const elementRef = useRef<HTMLDivElement>(null);
   const { draggableState, setDraggableState, setDraggableIdle } =
@@ -35,6 +37,7 @@ const ItemContainer: React.FC<Props> = (props) => {
     return combine(
       draggable({
         element,
+        getInitialData: () => ({ id: itemId }),
         onGenerateDragPreview({ location, nativeSetDragImage }) {
           setCustomNativeDragPreview({
             nativeSetDragImage,
@@ -44,9 +47,54 @@ const ItemContainer: React.FC<Props> = (props) => {
             },
           });
         },
+        onDragStart() {
+          setDraggableState({ type: "is-dragging" });
+        },
+        onDrop() {
+          setDraggableIdle();
+        },
+      }),
+      dropTargetForElements({
+        element,
+        canDrop({ source }) {
+          // not allowing dropping on yourself
+          if (source.element === element) return false;
+          return Boolean(isDroppable);
+        },
+        getData() {
+          return { id: itemId };
+        },
+        getIsSticky() {
+          return true;
+        },
+        onDragEnter({ self }) {
+          const closestEdge = extractClosestEdge(self.data);
+          setDraggableState({ type: "is-dragging-over", closestEdge });
+        },
+        onDrag({ self, source }) {
+          const closestEdge = extractClosestEdge(self.data);
+
+          // Only need to update react state if nothing has changed.
+          // Prevents re-rendering.
+          setDraggableState((current) => {
+            if (
+              current.type === "is-dragging-over" &&
+              current.closestEdge === closestEdge
+            ) {
+              return current;
+            }
+            return { type: "is-dragging-over", closestEdge };
+          });
+        },
+        onDragLeave() {
+          setDraggableIdle();
+        },
+        onDrop() {
+          setDraggableIdle();
+        },
       }),
     );
-  });
+  }, [itemId, isDroppable]);
 
   return (
     <>
@@ -55,7 +103,8 @@ const ItemContainer: React.FC<Props> = (props) => {
         className={cn(
           "hover:bg-accent-3 group flex items-center gap-3 py-2 pr-4 pl-3 transition-colors ease-out",
           isActive && "bg-accent-6 hover:bg-accent-6",
-          isOverlay && "rounded-2 w-[320px] border bg-accent-3",
+          isOverlay && "rounded-2 bg-accent-3 w-[320px] border",
+          draggableState.type === "is-dragging-over" && "bg-accent-4",
         )}
         style={{ paddingLeft: `${0.75 + depth}rem` }}
       >
