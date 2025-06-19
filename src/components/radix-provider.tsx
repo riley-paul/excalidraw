@@ -13,6 +13,7 @@ const RadixProvider: React.FC<Props> = ({ children, overrideAppearance }) => {
       accentColor={ACCENT_COLOR}
       grayColor="gray"
       radius="large"
+      hasBackground={false}
     >
       {children}
     </Theme>

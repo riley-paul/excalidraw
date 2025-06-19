@@ -32,6 +32,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
         to="/drawing/$drawingId"
         params={{ drawingId: id }}
         className="flex w-full items-center gap-3"
+        draggable={false}
       >
         <div className="rounded-2 flex size-12 items-center justify-center bg-white p-0.5">
           {showThumbnailFallback ? (
