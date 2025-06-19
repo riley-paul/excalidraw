@@ -14,7 +14,6 @@ import invariant from "tiny-invariant";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import useDraggableState from "@/hooks/use-draggable-state";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { toast } from "sonner";
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
 import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
@@ -110,7 +109,7 @@ const DrawingList: React.FC = () => {
         const closestEdge = extractClosestEdge(self.data);
         setDraggableState({ type: "is-dragging-over", closestEdge });
       },
-      onDrag({ self, source }) {
+      onDrag({ self }) {
         const closestEdge = extractClosestEdge(self.data);
 
         // Only need to update react state if nothing has changed.

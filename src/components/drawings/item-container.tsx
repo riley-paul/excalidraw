@@ -65,7 +65,7 @@ const ItemContainer: React.FC<Props> = (props) => {
           setDraggableState({ type: "is-dragging-over", closestEdge });
           setIsOver(true);
         },
-        onDrag({ self, source }) {
+        onDrag({ self }) {
           const closestEdge = extractClosestEdge(self.data);
 
           // Only need to update react state if nothing has changed.
