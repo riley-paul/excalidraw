@@ -57,6 +57,11 @@ const ItemContainer: React.FC<Props> = (props) => {
       }),
       dropTargetForElements({
         element,
+        canDrop({ source }) {
+          // not allowing dropping on yourself
+          if (source.element === element) return false;
+          return true;
+        },
         getData() {
           return dragData;
         },
@@ -101,6 +106,7 @@ const ItemContainer: React.FC<Props> = (props) => {
           isActive && "bg-accent-6 hover:bg-accent-6",
           isOverlay && "rounded-2 bg-accent-3 w-[320px] border",
           draggableState.type === "is-dragging-over" && "bg-accent-4",
+          draggableState.type === "is-dragging" && "opacity-50",
         )}
         style={{ paddingLeft: `${0.75 + depth}rem` }}
       >

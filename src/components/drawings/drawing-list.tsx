@@ -137,7 +137,7 @@ const DrawingList: React.FC = () => {
     <ScrollArea
       ref={elementRef}
       className={cn(
-        "flex-1",
+        "flex-1 pb-16",
         draggableState.type === "is-dragging-over" && "bg-accent-1",
       )}
     >
