@@ -27,7 +27,11 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const formattedFileSize = formatFileSize(drawing.fileSize ?? 0);
 
   return (
-    <ItemContainer depth={depth} isActive={isActive} itemId={id}>
+    <ItemContainer
+      depth={depth}
+      isActive={isActive}
+      dragData={{ id, type: "drawing" }}
+    >
       <Link
         to="/drawing/$drawingId"
         params={{ drawingId: id }}

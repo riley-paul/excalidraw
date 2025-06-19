@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import DrawingItem from "./drawing-item";
 import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
@@ -6,6 +6,10 @@ import { ScrollArea } from "@radix-ui/themes";
 import useFileTree from "@/hooks/use-file-tree";
 import { qDrawings, qFolders } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
+
+import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import { zDragData } from "./drag.utils";
+import useMutations from "@/hooks/use-mutations";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -37,6 +41,41 @@ const DrawingList: React.FC = () => {
   const { data: drawings } = useSuspenseQuery(qDrawings);
   const { data: folders } = useSuspenseQuery(qFolders);
   const treeNodes = buildTree(folders, drawings);
+
+  const { updateDrawing, updateFolder } = useMutations();
+
+  useEffect(() => {
+    return monitorForElements({
+      onDrop({ source, location }) {
+        const target = location.current.dropTargets[0];
+        if (!target) return;
+
+        try {
+          const sourceData = zDragData.parse(source.data);
+          const targetData = zDragData.parse(target.data);
+
+          if (sourceData.type === "drawing") {
+            updateDrawing.mutate({
+              id: sourceData.id,
+              parentFolderId: targetData.id,
+            });
+            return;
+          }
+
+          if (sourceData.type === "folder") {
+            updateFolder.mutate({
+              id: sourceData.id,
+              parentFolderId: targetData.id,
+            });
+            return;
+          }
+        } catch (error) {
+          console.error("Could not perform drag and drop", error);
+          return;
+        }
+      },
+    });
+  });
 
   return (
     <ScrollArea className="flex-1">

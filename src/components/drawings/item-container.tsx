@@ -14,17 +14,18 @@ import invariant from "tiny-invariant";
 import useDraggableState from "@/hooks/use-draggable-state";
 import { Portal } from "@radix-ui/themes";
 import RadixProvider from "../radix-provider";
+import type { DragData } from "./drag.utils";
 
 type Props = React.PropsWithChildren<{
   depth: number;
   isActive?: boolean;
   isOverlay?: boolean;
   isDroppable?: boolean;
-  itemId: string;
+  dragData: DragData;
 }>;
 
 const ItemContainer: React.FC<Props> = (props) => {
-  const { depth, isActive, isOverlay, isDroppable, itemId, children } = props;
+  const { depth, isActive, isOverlay, isDroppable, dragData, children } = props;
 
   const elementRef = useRef<HTMLDivElement>(null);
   const { draggableState, setDraggableState, setDraggableIdle } =
@@ -37,7 +38,7 @@ const ItemContainer: React.FC<Props> = (props) => {
     return combine(
       draggable({
         element,
-        getInitialData: () => ({ id: itemId }),
+        getInitialData: () => dragData,
         onGenerateDragPreview({ location, nativeSetDragImage }) {
           setCustomNativeDragPreview({
             nativeSetDragImage,
@@ -62,7 +63,7 @@ const ItemContainer: React.FC<Props> = (props) => {
           return Boolean(isDroppable);
         },
         getData() {
-          return { id: itemId };
+          return dragData;
         },
         getIsSticky() {
           return true;
@@ -94,7 +95,7 @@ const ItemContainer: React.FC<Props> = (props) => {
         },
       }),
     );
-  }, [itemId, isDroppable]);
+  }, [dragData, isDroppable]);
 
   return (
     <>

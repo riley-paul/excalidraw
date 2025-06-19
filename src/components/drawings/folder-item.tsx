@@ -21,7 +21,11 @@ const FolderItem: React.FC<Props> = ({
 }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   return (
-    <ItemContainer depth={depth} isDroppable itemId={folder.id}>
+    <ItemContainer
+      depth={depth}
+      isDroppable
+      dragData={{ id: folder.id, type: "folder" }}
+    >
       <button
         onClick={onClick}
         className="flex flex-1 cursor-pointer items-center gap-2"
