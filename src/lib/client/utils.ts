@@ -37,3 +37,17 @@ export const centerDragPreviewOnMouse = (
 
   return () => ({ x: leftOffset, y: topOffset });
 };
+
+export const triggerElementFlash = (element: HTMLElement) => {
+  element.animate(
+    [
+      { backgroundColor: "rgba(120,120,120,0.5)" },
+      { backgroundColor: "transparent" },
+    ],
+    {
+      duration: 1000,
+      easing: "cubic-bezier(0.25, 0.1, 0.25, 1.0)",
+      iterations: 1,
+    },
+  );
+};

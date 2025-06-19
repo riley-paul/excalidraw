@@ -1,9 +1,6 @@
 import { centerDragPreviewOnMouse, cn } from "@/lib/client/utils";
 import React, { useEffect, useRef } from "react";
-import {
-  attachClosestEdge,
-  extractClosestEdge,
-} from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import {
   draggable,
   dropTargetForElements,
@@ -20,12 +17,11 @@ type Props = React.PropsWithChildren<{
   depth: number;
   isActive?: boolean;
   isOverlay?: boolean;
-  isDroppable?: boolean;
   dragData: DragData;
 }>;
 
 const ItemContainer: React.FC<Props> = (props) => {
-  const { depth, isActive, isOverlay, isDroppable, dragData, children } = props;
+  const { depth, isActive, isOverlay, dragData, children } = props;
 
   const elementRef = useRef<HTMLDivElement>(null);
   const { draggableState, setDraggableState, setDraggableIdle } =
@@ -60,7 +56,7 @@ const ItemContainer: React.FC<Props> = (props) => {
         canDrop({ source }) {
           // not allowing dropping on yourself
           if (source.element === element) return false;
-          return Boolean(isDroppable);
+          return true;
         },
         getData() {
           return dragData;
@@ -95,7 +91,7 @@ const ItemContainer: React.FC<Props> = (props) => {
         },
       }),
     );
-  }, [dragData, isDroppable]);
+  }, [dragData]);
 
   return (
     <>

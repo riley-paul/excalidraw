@@ -43,6 +43,7 @@ const DrawingList: React.FC = () => {
   const treeNodes = buildTree(folders, drawings);
 
   const { updateDrawing, updateFolder } = useMutations();
+  const { openFolder } = useFileTree();
 
   useEffect(() => {
     return monitorForElements({
@@ -50,28 +51,24 @@ const DrawingList: React.FC = () => {
         const target = location.current.dropTargets[0];
         if (!target) return;
 
-        try {
-          const sourceData = zDragData.parse(source.data);
-          const targetData = zDragData.parse(target.data);
+        const sourceData = zDragData.parse(source.data);
+        const targetData = zDragData.parse(target.data);
 
-          if (sourceData.type === "drawing") {
-            updateDrawing.mutate({
-              id: sourceData.id,
-              parentFolderId: targetData.id,
-            });
-            return;
-          }
+        if (targetData.type === "folder") {
+          const data = { id: sourceData.id, parentFolderId: targetData.id };
+          if (sourceData.type === "drawing") updateDrawing.mutate(data);
+          if (sourceData.type === "folder") updateFolder.mutate(data);
+          openFolder(targetData.id);
+        }
 
-          if (sourceData.type === "folder") {
-            updateFolder.mutate({
-              id: sourceData.id,
-              parentFolderId: targetData.id,
-            });
-            return;
-          }
-        } catch (error) {
-          console.error("Could not perform drag and drop", error);
-          return;
+        if (targetData.type === "drawing") {
+          const data = {
+            id: sourceData.id,
+            parentFolderId: targetData.parentFolderId,
+          };
+          if (sourceData.type === "drawing") updateDrawing.mutate(data);
+          if (sourceData.type === "folder") updateFolder.mutate(data);
+          if (targetData.parentFolderId) openFolder(targetData.parentFolderId);
         }
       },
     });

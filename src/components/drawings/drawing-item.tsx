@@ -30,7 +30,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
     <ItemContainer
       depth={depth}
       isActive={isActive}
-      dragData={{ id, type: "drawing" }}
+      dragData={{ id, type: "drawing", parentFolderId: drawing.parentFolderId }}
     >
       <Link
         to="/drawing/$drawingId"

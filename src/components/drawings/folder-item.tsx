@@ -23,8 +23,11 @@ const FolderItem: React.FC<Props> = ({
   return (
     <ItemContainer
       depth={depth}
-      isDroppable
-      dragData={{ id: folder.id, type: "folder" }}
+      dragData={{
+        id: folder.id,
+        type: "folder",
+        parentFolderId: folder.parentFolderId,
+      }}
     >
       <button
         onClick={onClick}
