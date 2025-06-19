@@ -16,6 +16,8 @@ import useDraggableState from "@/hooks/use-draggable-state";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { toast } from "sonner";
 import { cn } from "@/lib/client/utils";
+import { useAtom } from "jotai";
+import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -78,13 +80,16 @@ const DrawingList: React.FC = () => {
         }
 
         if (targetData.type === "root") {
-          toast.success("dropping on root");
+          const data = { id: sourceData.id, parentFolderId: null };
+          if (sourceData.type === "drawing") updateDrawing.mutate(data);
+          if (sourceData.type === "folder") updateFolder.mutate(data);
         }
       },
     });
   });
 
   const elementRef = useRef<HTMLDivElement>(null);
+  const [isOverItem] = useAtom(isDraggingOverDrawingListItemAtom);
   const { draggableState, setDraggableState, setDraggableIdle } =
     useDraggableState();
 
@@ -94,6 +99,7 @@ const DrawingList: React.FC = () => {
 
     return dropTargetForElements({
       element,
+      canDrop: () => !isOverItem,
       getData() {
         return { id: "root", type: "root", parentFolderId: null };
       },
@@ -126,7 +132,7 @@ const DrawingList: React.FC = () => {
         setDraggableIdle();
       },
     });
-  });
+  }, [isOverItem]);
 
   return (
     <ScrollArea

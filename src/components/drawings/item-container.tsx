@@ -12,6 +12,8 @@ import useDraggableState from "@/hooks/use-draggable-state";
 import { Portal } from "@radix-ui/themes";
 import RadixProvider from "../radix-provider";
 import type { DragData } from "./drag.utils";
+import { useAtom } from "jotai";
+import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
 
 type Props = React.PropsWithChildren<{
   depth: number;
@@ -22,6 +24,7 @@ type Props = React.PropsWithChildren<{
 
 const ItemContainer: React.FC<Props> = (props) => {
   const { depth, isActive, isOverlay, dragData, children } = props;
+  const [, setIsOver] = useAtom(isDraggingOverDrawingListItemAtom);
 
   const elementRef = useRef<HTMLDivElement>(null);
   const { draggableState, setDraggableState, setDraggableIdle } =
@@ -46,6 +49,7 @@ const ItemContainer: React.FC<Props> = (props) => {
         },
         onDragStart() {
           setDraggableState({ type: "is-dragging" });
+          setIsOver(true);
         },
         onDrop() {
           setDraggableIdle();
@@ -53,20 +57,13 @@ const ItemContainer: React.FC<Props> = (props) => {
       }),
       dropTargetForElements({
         element,
-        canDrop({ source }) {
-          // not allowing dropping on yourself
-          if (source.element === element) return false;
-          return true;
-        },
         getData() {
           return dragData;
-        },
-        getIsSticky() {
-          return true;
         },
         onDragEnter({ self }) {
           const closestEdge = extractClosestEdge(self.data);
           setDraggableState({ type: "is-dragging-over", closestEdge });
+          setIsOver(true);
         },
         onDrag({ self, source }) {
           const closestEdge = extractClosestEdge(self.data);
@@ -85,9 +82,11 @@ const ItemContainer: React.FC<Props> = (props) => {
         },
         onDragLeave() {
           setDraggableIdle();
+          setIsOver(false);
         },
         onDrop() {
           setDraggableIdle();
+          setIsOver(false);
         },
       }),
     );
