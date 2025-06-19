@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import DrawingItem from "./drawing-item";
 import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
@@ -10,6 +10,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { zDragData } from "./drag.utils";
 import useMutations from "@/hooks/use-mutations";
+import invariant from "tiny-invariant";
+import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
+import useDraggableState from "@/hooks/use-draggable-state";
+import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
+import { toast } from "sonner";
+import { cn } from "@/lib/client/utils";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -70,12 +76,66 @@ const DrawingList: React.FC = () => {
           if (sourceData.type === "folder") updateFolder.mutate(data);
           if (targetData.parentFolderId) openFolder(targetData.parentFolderId);
         }
+
+        if (targetData.type === "root") {
+          toast.success("dropping on root");
+        }
+      },
+    });
+  });
+
+  const elementRef = useRef<HTMLDivElement>(null);
+  const { draggableState, setDraggableState, setDraggableIdle } =
+    useDraggableState();
+
+  useEffect(() => {
+    const element = elementRef.current;
+    invariant(element);
+
+    return dropTargetForElements({
+      element,
+      getData() {
+        return { id: "root", type: "root", parentFolderId: null };
+      },
+      getIsSticky() {
+        return true;
+      },
+      onDragEnter({ self }) {
+        const closestEdge = extractClosestEdge(self.data);
+        setDraggableState({ type: "is-dragging-over", closestEdge });
+      },
+      onDrag({ self, source }) {
+        const closestEdge = extractClosestEdge(self.data);
+
+        // Only need to update react state if nothing has changed.
+        // Prevents re-rendering.
+        setDraggableState((current) => {
+          if (
+            current.type === "is-dragging-over" &&
+            current.closestEdge === closestEdge
+          ) {
+            return current;
+          }
+          return { type: "is-dragging-over", closestEdge };
+        });
+      },
+      onDragLeave() {
+        setDraggableIdle();
+      },
+      onDrop() {
+        setDraggableIdle();
       },
     });
   });
 
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea
+      ref={elementRef}
+      className={cn(
+        "flex-1",
+        draggableState.type === "is-dragging-over" && "bg-accent-1",
+      )}
+    >
       {treeNodes.map((node) => (
         <TreeNodeComponent key={node.id} node={node} />
       ))}
