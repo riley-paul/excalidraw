@@ -146,7 +146,7 @@ const DrawingMenu: React.FC<Props> = ({
           <span>Open in New Tab</span>
         </DropdownMenu.Item>
         <DropdownMenu.Separator />
-        <DropdownMenu.Item onClick={handleDeleteDrawing}>
+        <DropdownMenu.Item color="red" onClick={handleDeleteDrawing}>
           <DeleteIcon className="size-4 opacity-70" />
           <span>Delete</span>
         </DropdownMenu.Item>

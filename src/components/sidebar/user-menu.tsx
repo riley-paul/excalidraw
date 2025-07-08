@@ -12,7 +12,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
     .toUpperCase();
 
   return (
-    <DropdownMenu.Root>
+    <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger>
         <button className="hover:bg-gray-3 flex cursor-pointer items-center gap-3 p-3 transition-colors">
           <Avatar
@@ -51,7 +51,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
         </header>
         <DropdownMenu.Separator />
         <a href="/logout">
-          <DropdownMenu.Item>
+          <DropdownMenu.Item color="amber">
             <LogOutIcon className="size-4 opacity-70" />
             <span>Log out</span>
           </DropdownMenu.Item>

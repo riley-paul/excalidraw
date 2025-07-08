@@ -135,15 +135,16 @@ const DrawingList: React.FC = () => {
 
   return (
     <ScrollArea
-      ref={elementRef}
       className={cn(
-        "flex-1 pb-16",
+        "flex-1",
         draggableState.type === "is-dragging-over" && "bg-accent-1",
       )}
     >
-      {treeNodes.map((node) => (
-        <TreeNodeComponent key={node.id} node={node} />
-      ))}
+      <div ref={elementRef} className="pb-16">
+        {treeNodes.map((node) => (
+          <TreeNodeComponent key={node.id} node={node} />
+        ))}
+      </div>
     </ScrollArea>
   );
 };
