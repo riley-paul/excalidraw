@@ -136,7 +136,7 @@ const save: ActionHandler<typeof drawingInputs.save, DrawingSelect> = async (
 
   const [updated] = await db
     .update(Drawing)
-    .set({ updatedAt: new Date().toISOString(), fileSize: content.size })
+    .set({ savedAt: new Date().toISOString(), fileSize: content.size })
     .where(and(eq(Drawing.userId, userId), eq(Drawing.id, id)))
     .returning();
 

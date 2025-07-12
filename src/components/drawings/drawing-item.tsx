@@ -23,7 +23,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const { pathname } = useLocation();
   const isActive = pathname.startsWith(`/drawing/${id}`);
 
-  const relativeTime = useRelativeTime(drawing.updatedAt);
+  const relativeTime = useRelativeTime(drawing.savedAt || drawing.updatedAt);
   const formattedFileSize = formatFileSize(drawing.fileSize ?? 0);
 
   return (

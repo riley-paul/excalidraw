@@ -48,6 +48,7 @@ export const Drawing = sqliteTable("drawing", {
   name: text().notNull().default("Untitled"),
   parentFolderId: text().references(() => Folder.id, { onDelete: "set null" }),
   fileSize: integer().default(0),
+  savedAt: text(),
   ...timeStamps,
 });
 
