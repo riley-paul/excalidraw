@@ -8,6 +8,13 @@
     "dist"
   ],
   "compilerOptions": {
+    "lib": [
+      "DOM",
+      "WebWorker"
+    ],
+    "types": [
+      "vite/client"
+    ],
     "jsx": "react-jsx",
     "jsxImportSource": "react",
     "baseUrl": ".",

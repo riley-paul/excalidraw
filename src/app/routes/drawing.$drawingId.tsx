@@ -8,16 +8,21 @@ import {
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { useDocumentTitle, useEventListener } from "usehooks-ts";
-import { Button, Spinner } from "@radix-ui/themes";
+import { useDocumentTitle, useEventListener, useInterval } from "usehooks-ts";
+import { Button, Kbd, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
 import useFileTree from "@/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import AutoSaveWorker from "@/lib/client/autosaveWorker?worker";
+import type {
+  AutoSaveMessage,
+  AutoSaveResponse,
+} from "@/lib/client/autoSaveWorker.types";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
@@ -38,6 +43,13 @@ function RouteComponent() {
   const { saveDrawing } = useMutations();
   const { openFolder } = useFileTree();
 
+  // State
+  const workerRef = useRef<Worker>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [excalidrawAPI, setExcalidrawAPI] =
+    useState<ExcalidrawImperativeAPI | null>(null);
+
   // Effects
   useDocumentTitle(name);
   useEffect(() => {
@@ -45,14 +57,44 @@ function RouteComponent() {
     openFolder(parentFolderId);
   }, []);
 
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    const worker = new AutoSaveWorker();
+    workerRef.current = worker;
 
-  const [excalidrawAPI, setExcalidrawAPI] =
-    useState<ExcalidrawImperativeAPI | null>(null);
+    worker.onmessage = (e: MessageEvent<AutoSaveResponse>) => {
+      switch (e.data.type) {
+        case "check": {
+          console.log("Worker check response:", e.data.changed);
+          if (e.data.changed) setIsDirty(true);
+          return;
+        }
+        case "save": {
+          console.log("Worker updated successful:", e.data.updated);
+        }
+      }
+    };
+
+    return () => worker.terminate();
+  }, []);
+
+  // Check for changes every 30 seconds
+  useInterval(() => {
+    if (!excalidrawAPI) return;
+    const elements = excalidrawAPI.getSceneElements();
+    const appState = excalidrawAPI.getAppState();
+    const files = excalidrawAPI.getFiles();
+
+    const message: AutoSaveMessage = {
+      type: "check",
+      payload: { elements, appState, files },
+    };
+    workerRef.current?.postMessage(message);
+  }, 10_000);
 
   const handleSave = async () => {
     if (excalidrawAPI) {
       setIsLoading(true);
+
       const elements = excalidrawAPI.getSceneElements();
       const appState = excalidrawAPI.getAppState();
       const files = excalidrawAPI.getFiles();
@@ -62,16 +104,26 @@ function RouteComponent() {
         type: "application/json",
       });
 
-      const thumbnailBlob = (await exportToBlob({
+      const thumbnailBlobPromise = exportToBlob({
         elements,
         appState,
         files,
-      })) as Blob;
+      }) as Promise<Blob>;
+      const thumbnailBlob = await thumbnailBlobPromise;
       const thumbnail = new File([thumbnailBlob], `${drawingId}.png`, {
         type: "image/png",
       });
+
       await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
+
       setIsLoading(false);
+      setIsDirty(false);
+
+      const message: AutoSaveMessage = {
+        type: "save",
+        payload: { elements, appState, files },
+      };
+      workerRef.current?.postMessage(message);
     }
   };
 
@@ -87,6 +139,7 @@ function RouteComponent() {
       id: drawingId,
       withContent: true,
     });
+    setIsDirty(false);
     return restore(JSON.parse(content ?? "{}"), null, null);
   };
 
@@ -102,7 +155,7 @@ function RouteComponent() {
             <div className="ml-3">
               <Button
                 onClick={handleSave}
-                variant="soft"
+                variant={isDirty ? "solid" : "soft"}
                 className="h-[2.25rem]!"
                 disabled={isLoading}
               >
