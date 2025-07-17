@@ -42,7 +42,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     openFolder(parentFolderId);
   }, []);
 
-  const { isDirty, updateIsDirtyWorker } = useIsDirtyWorker({ excalidrawAPI });
+  // const { isDirty, updateIsDirtyWorker } = useIsDirtyWorker({ excalidrawAPI });
 
   const handleSave = async () => {
     if (!excalidrawAPI) return;
@@ -71,7 +71,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
 
     setIsLoading(false);
-    updateIsDirtyWorker();
+    // updateIsDirtyWorker();
   };
 
   const loadInitialData = async () => {
@@ -80,21 +80,21 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
       withContent: true,
     });
     const data = restore(JSON.parse(content ?? "{}"), null, null);
-    updateIsDirtyWorker();
+    // updateIsDirtyWorker();
     return data;
   };
 
-  useInterval(handleSave, isDirty ? null : 1_000 * 60 * 2);
+  // useInterval(handleSave, isDirty ? null : 1_000 * 60 * 2);
 
-  useBlocker({
-    shouldBlockFn: () => {
-      if (!isDirty) return false;
-      const confirmMessage =
-        "You have unsaved changes. Do you really want to leave?";
-      return !confirm(confirmMessage);
-    },
-    enableBeforeUnload: () => isDirty,
-  });
+  // useBlocker({
+  //   shouldBlockFn: () => {
+  //     if (!isDirty) return false;
+  //     const confirmMessage =
+  //       "You have unsaved changes. Do you really want to leave?";
+  //     return !confirm(confirmMessage);
+  //   },
+  //   enableBeforeUnload: () => isDirty,
+  // });
 
   useEventListener("keydown", (event) => {
     if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
@@ -114,7 +114,8 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
           <div className="ml-3">
             <Button
               onClick={handleSave}
-              variant={isDirty ? "solid" : "soft"}
+              // variant={isDirty ? "solid" : "soft"}
+              variant="soft"
               className="h-[2.25rem]!"
               disabled={isLoading}
             >
