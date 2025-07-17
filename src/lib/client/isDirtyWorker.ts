@@ -13,10 +13,16 @@ self.onmessage = (e: MessageEvent<IsDirtyMessage>) => {
 
   switch (type) {
     case "check": {
-      const changed = !equal(payload, lastData) && !isFirstCheck;
-      if (changed) lastData = payload;
-      isFirstCheck = false;
+      if (isFirstCheck) {
+        lastData = payload;
+        isFirstCheck = false;
+        const response: IsDirtyResponse = { type, changed: false };
+        self.postMessage(response);
+        return;
+      }
 
+      const changed = !equal(payload, lastData);
+      if (changed) lastData = payload;
       const response: IsDirtyResponse = { type, changed };
       self.postMessage(response);
       return;
