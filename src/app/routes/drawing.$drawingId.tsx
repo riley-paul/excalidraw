@@ -103,6 +103,7 @@ function RouteComponent() {
         "You have unsaved changes. Do you really want to leave?";
       return !confirm(confirmMessage);
     },
+    enableBeforeUnload: () => isDirty,
   });
 
   useEventListener("keydown", (event) => {
