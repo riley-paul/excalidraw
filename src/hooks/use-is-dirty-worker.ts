@@ -9,9 +9,13 @@ import { useInterval } from "usehooks-ts";
 
 type Props = {
   excalidrawAPI: ExcalidrawImperativeAPI | null;
+  checkInterval?: number;
 };
 
-export default function useIsDirtyWorker({ excalidrawAPI }: Props) {
+export default function useIsDirtyWorker({
+  excalidrawAPI,
+  checkInterval = 5_000,
+}: Props) {
   const workerRef = useRef<Worker>(null);
   const [isDirty, setIsDirty] = useState(false);
 
@@ -43,7 +47,7 @@ export default function useIsDirtyWorker({ excalidrawAPI }: Props) {
       payload: { elements, appState, files },
     };
     workerRef.current?.postMessage(message);
-  }, 5_000);
+  }, checkInterval);
 
   const isDirtyOnSave = () => {
     if (!excalidrawAPI) return;

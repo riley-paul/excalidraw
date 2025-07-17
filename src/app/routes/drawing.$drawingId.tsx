@@ -7,10 +7,10 @@ import {
   serializeAsJSON,
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect, useBlocker } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useDocumentTitle, useEventListener } from "usehooks-ts";
+import { useDocumentTitle, useEventListener, useInterval } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
@@ -85,13 +85,6 @@ function RouteComponent() {
     isDirtyOnSave();
   };
 
-  useEventListener("keydown", (event) => {
-    if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      handleSave();
-    }
-  });
-
   const loadInitialData = async () => {
     const { content } = await actions.drawings.get.orThrow({
       id: drawingId,
@@ -100,6 +93,24 @@ function RouteComponent() {
     setIsDirty(false);
     return restore(JSON.parse(content ?? "{}"), null, null);
   };
+
+  useInterval(handleSave, isDirty ? null : 1_000 * 60 * 2);
+
+  useBlocker({
+    shouldBlockFn: () => {
+      if (!isDirty) return false;
+      const confirmMessage =
+        "You have unsaved changes. Do you really want to leave?";
+      return !confirm(confirmMessage);
+    },
+  });
+
+  useEventListener("keydown", (event) => {
+    if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
+      event.preventDefault();
+      handleSave();
+    }
+  });
 
   return (
     <div className="h-screen w-full">
