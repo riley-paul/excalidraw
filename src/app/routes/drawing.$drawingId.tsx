@@ -8,21 +8,17 @@ import {
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useDocumentTitle, useEventListener, useInterval } from "usehooks-ts";
-import { Button, Kbd, Spinner } from "@radix-ui/themes";
+import { useDocumentTitle, useEventListener } from "usehooks-ts";
+import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/components/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
 import useFileTree from "@/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import AutoSaveWorker from "@/lib/client/autosaveWorker?worker";
-import type {
-  AutoSaveMessage,
-  AutoSaveResponse,
-} from "@/lib/client/autoSaveWorker.types";
+import useIsDirtyWorker from "@/hooks/use-is-dirty-worker";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
@@ -44,9 +40,7 @@ function RouteComponent() {
   const { openFolder } = useFileTree();
 
   // State
-  const workerRef = useRef<Worker>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
@@ -57,70 +51,38 @@ function RouteComponent() {
     openFolder(parentFolderId);
   }, []);
 
-  useEffect(() => {
-    const worker = new AutoSaveWorker();
-    workerRef.current = worker;
+  const { isDirty, setIsDirty, isDirtyOnSave } = useIsDirtyWorker({
+    excalidrawAPI,
+  });
 
-    worker.onmessage = (e: MessageEvent<AutoSaveResponse>) => {
-      switch (e.data.type) {
-        case "check": {
-          if (e.data.changed) setIsDirty(true);
-          return;
-        }
-      }
-    };
-
-    return () => worker.terminate();
-  }, []);
-
-  // Check for changes every 5 seconds
-  useInterval(() => {
+  const handleSave = async () => {
     if (!excalidrawAPI) return;
+
+    setIsLoading(true);
+
     const elements = excalidrawAPI.getSceneElements();
     const appState = excalidrawAPI.getAppState();
     const files = excalidrawAPI.getFiles();
 
-    const message: AutoSaveMessage = {
-      type: "check",
-      payload: { elements, appState, files },
-    };
-    workerRef.current?.postMessage(message);
-  }, 5_000);
+    const contentJson = serializeAsJSON(elements, appState, files, "local");
+    const content = new File([contentJson], `${drawingId}.json`, {
+      type: "application/json",
+    });
 
-  const handleSave = async () => {
-    if (excalidrawAPI) {
-      setIsLoading(true);
+    const thumbnailBlobPromise = exportToBlob({
+      elements,
+      appState,
+      files,
+    }) as Promise<Blob>;
+    const thumbnailBlob = await thumbnailBlobPromise;
+    const thumbnail = new File([thumbnailBlob], `${drawingId}.png`, {
+      type: "image/png",
+    });
 
-      const elements = excalidrawAPI.getSceneElements();
-      const appState = excalidrawAPI.getAppState();
-      const files = excalidrawAPI.getFiles();
+    await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
 
-      const contentJson = serializeAsJSON(elements, appState, files, "local");
-      const content = new File([contentJson], `${drawingId}.json`, {
-        type: "application/json",
-      });
-
-      const thumbnailBlobPromise = exportToBlob({
-        elements,
-        appState,
-        files,
-      }) as Promise<Blob>;
-      const thumbnailBlob = await thumbnailBlobPromise;
-      const thumbnail = new File([thumbnailBlob], `${drawingId}.png`, {
-        type: "image/png",
-      });
-
-      await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
-
-      setIsLoading(false);
-      setIsDirty(false);
-
-      const message: AutoSaveMessage = {
-        type: "save",
-        payload: { elements, appState, files },
-      };
-      workerRef.current?.postMessage(message);
-    }
+    setIsLoading(false);
+    isDirtyOnSave();
   };
 
   useEventListener("keydown", (event) => {

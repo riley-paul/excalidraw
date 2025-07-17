@@ -10,10 +10,10 @@ export type DrawingData = {
   files: BinaryFiles;
 };
 
-export type AutoSaveMessage =
+export type IsDirtyMessage =
   | { type: "check"; payload: DrawingData }
   | { type: "save"; payload: DrawingData };
 
-export type AutoSaveResponse =
+export type IsDirtyResponse =
   | { type: "check"; changed: boolean }
   | { type: "save"; updated: boolean };

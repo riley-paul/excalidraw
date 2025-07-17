@@ -1,14 +1,14 @@
 import equal from "fast-deep-equal";
 import type {
-  AutoSaveMessage,
-  AutoSaveResponse,
+  IsDirtyMessage,
+  IsDirtyResponse,
   DrawingData,
-} from "./autoSaveWorker.types";
+} from "./isDirtyWorker.types";
 
 let lastData: DrawingData | null = null;
 let isFirstCheck = true;
 
-self.onmessage = (e: MessageEvent<AutoSaveMessage>) => {
+self.onmessage = (e: MessageEvent<IsDirtyMessage>) => {
   const { type, payload } = e.data;
 
   switch (type) {
@@ -17,14 +17,14 @@ self.onmessage = (e: MessageEvent<AutoSaveMessage>) => {
       if (changed) lastData = payload;
       isFirstCheck = false;
 
-      const response: AutoSaveResponse = { type, changed };
+      const response: IsDirtyResponse = { type, changed };
       self.postMessage(response);
       return;
     }
     case "save": {
       lastData = payload;
 
-      const response: AutoSaveResponse = { type, updated: true };
+      const response: IsDirtyResponse = { type, updated: true };
       self.postMessage(response);
       return;
     }
