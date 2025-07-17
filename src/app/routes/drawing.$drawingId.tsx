@@ -64,12 +64,8 @@ function RouteComponent() {
     worker.onmessage = (e: MessageEvent<AutoSaveResponse>) => {
       switch (e.data.type) {
         case "check": {
-          console.log("Worker check response:", e.data.changed);
           if (e.data.changed) setIsDirty(true);
           return;
-        }
-        case "save": {
-          console.log("Worker updated successful:", e.data.updated);
         }
       }
     };
@@ -77,7 +73,7 @@ function RouteComponent() {
     return () => worker.terminate();
   }, []);
 
-  // Check for changes every 30 seconds
+  // Check for changes every 5 seconds
   useInterval(() => {
     if (!excalidrawAPI) return;
     const elements = excalidrawAPI.getSceneElements();
@@ -89,7 +85,7 @@ function RouteComponent() {
       payload: { elements, appState, files },
     };
     workerRef.current?.postMessage(message);
-  }, 10_000);
+  }, 5_000);
 
   const handleSave = async () => {
     if (excalidrawAPI) {
