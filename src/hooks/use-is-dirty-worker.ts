@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import IsDirtyWorker from "@/lib/client/isDirtyWorker?worker";
 import type {
   IsDirtyMessage,
@@ -19,6 +19,34 @@ export default function useIsDirtyWorker({
   const workerRef = useRef<Worker>(null);
   const [isDirty, setIsDirty] = useState(false);
 
+  const performCheck = () => {
+    if (!excalidrawAPI) return;
+    const elements = excalidrawAPI.getSceneElements();
+    const appState = excalidrawAPI.getAppState();
+    const files = excalidrawAPI.getFiles();
+
+    const message: IsDirtyMessage = {
+      type: "check",
+      payload: { elements, appState, files },
+    };
+    workerRef.current?.postMessage(message);
+  };
+
+  const updateIsDirtyWorker = () => {
+    if (!excalidrawAPI) return;
+    const elements = excalidrawAPI.getSceneElements();
+    const appState = excalidrawAPI.getAppState();
+    const files = excalidrawAPI.getFiles();
+
+    setIsDirty(false);
+
+    const message: IsDirtyMessage = {
+      type: "save",
+      payload: { elements, appState, files },
+    };
+    workerRef.current?.postMessage(message);
+  };
+
   useEffect(() => {
     const worker = new IsDirtyWorker();
     workerRef.current = worker;
@@ -35,34 +63,11 @@ export default function useIsDirtyWorker({
     return () => worker.terminate();
   }, []);
 
-  // Check for changes every 5 seconds
-  useInterval(() => {
-    if (!excalidrawAPI) return;
-    const elements = excalidrawAPI.getSceneElements();
-    const appState = excalidrawAPI.getAppState();
-    const files = excalidrawAPI.getFiles();
+  // immediately perform check once API and worker are ready
+  useEffect(performCheck, [excalidrawAPI, workerRef]);
 
-    const message: IsDirtyMessage = {
-      type: "check",
-      payload: { elements, appState, files },
-    };
-    workerRef.current?.postMessage(message);
-  }, checkInterval);
+  // set up interval to perform checks
+  useInterval(performCheck, checkInterval);
 
-  const isDirtyOnSave = () => {
-    if (!excalidrawAPI) return;
-    const elements = excalidrawAPI.getSceneElements();
-    const appState = excalidrawAPI.getAppState();
-    const files = excalidrawAPI.getFiles();
-
-    setIsDirty(false);
-
-    const message: IsDirtyMessage = {
-      type: "save",
-      payload: { elements, appState, files },
-    };
-    workerRef.current?.postMessage(message);
-  };
-
-  return { isDirty, setIsDirty, isDirtyOnSave };
+  return { isDirty, updateIsDirtyWorker };
 }

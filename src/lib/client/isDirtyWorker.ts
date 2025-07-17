@@ -13,6 +13,9 @@ self.onmessage = (e: MessageEvent<IsDirtyMessage>) => {
 
   switch (type) {
     case "check": {
+      console.log("Checking for changes in drawing data...");
+      console.log("Is first check:", isFirstCheck);
+
       if (isFirstCheck) {
         lastData = payload;
         isFirstCheck = false;
@@ -22,6 +25,8 @@ self.onmessage = (e: MessageEvent<IsDirtyMessage>) => {
       }
 
       const changed = !equal(payload, lastData);
+
+      console.log("Data changed:", changed);
       if (changed) lastData = payload;
       const response: IsDirtyResponse = { type, changed };
       self.postMessage(response);

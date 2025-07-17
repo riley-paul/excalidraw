@@ -13,12 +13,31 @@ type Props = {
   depth: number;
 };
 
+const DrawingThumbnail: React.FC<{ drawing: DrawingSelect }> = ({
+  drawing,
+}) => {
+  const [showFallback, setShowFallback] = React.useState(false);
+  const { id, savedAt } = drawing;
+
+  return (
+    <div className="rounded-2 flex size-12 items-center justify-center bg-white p-0.5">
+      {showFallback ? (
+        <ImageIcon className="text-gray-11 size-6" />
+      ) : (
+        <img
+          className="h-full w-full object-contain"
+          src={`/thumbnail/${id}.png?cache=${savedAt}`}
+          onError={() => setShowFallback(true)}
+        />
+      )}
+    </div>
+  );
+};
+
 const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
-  const { id, name } = drawing;
-  const [showThumbnailFallback, setShowThumbnailFallback] =
-    React.useState(false);
+  const { id, name, savedAt } = drawing;
 
   const { pathname } = useLocation();
   const isActive = pathname.startsWith(`/drawing/${id}`);
@@ -38,19 +57,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
         className="flex w-full items-center gap-3"
         draggable={false}
       >
-        <div className="rounded-2 flex size-12 items-center justify-center bg-white p-0.5">
-          {showThumbnailFallback ? (
-            <ImageIcon className="text-gray-11 size-6" />
-          ) : (
-            <img
-              className="h-full w-full object-contain"
-              src={`/thumbnail/${id}.png?cache=${drawing.savedAt}`}
-              onError={() => {
-                setShowThumbnailFallback(true);
-              }}
-            />
-          )}
-        </div>
+        <DrawingThumbnail key={savedAt} drawing={drawing} />
         <div className="grid flex-1">
           <Text weight={isActive ? "bold" : "medium"} size="2">
             {name}
