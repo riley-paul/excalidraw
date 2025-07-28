@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import IsDirtyWorker from "@/lib/client/isDirtyWorker?worker";
 import type {
   IsDirtyMessage,

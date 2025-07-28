@@ -3,7 +3,7 @@ import { useAtom } from "jotai/react";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { alertSystemAtom } from "../alert-system/alert-system.store";
 import { z } from "zod/v4";
-import useMutations from "@/hooks/use-mutations";
+import useMutations from "@/app/hooks/use-mutations";
 import { FolderPlusIcon, PenToolIcon, PlusIcon } from "lucide-react";
 
 const AddMenu: React.FC = () => {

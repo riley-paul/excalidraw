@@ -1,5 +1,5 @@
-import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
-import useMutations from "@/hooks/use-mutations";
+import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
+import useMutations from "@/app/hooks/use-mutations";
 import { Button, Heading } from "@radix-ui/themes";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom } from "jotai";

@@ -4,7 +4,7 @@ import { Text } from "@radix-ui/themes";
 import { Link, useLocation } from "@tanstack/react-router";
 import React from "react";
 import DrawingMenu from "./drawing-menu";
-import useRelativeTime from "@/hooks/use-relative-time";
+import useRelativeTime from "@/app/hooks/use-relative-time";
 import { ImageIcon } from "lucide-react";
 import ItemContainer from "./item-container";
 

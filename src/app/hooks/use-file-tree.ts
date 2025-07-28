@@ -1,4 +1,4 @@
-import { getParentFolderIds } from "@/components/drawings/tree.utils";
+import { getParentFolderIds } from "@/app/components/drawings/tree.utils";
 import { qFolders } from "@/lib/client/queries";
 import { useQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";

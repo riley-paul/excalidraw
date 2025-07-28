@@ -1,6 +1,6 @@
-import { alertSystemAtom } from "@/components/alert-system/alert-system.store";
-import useFileTree from "@/hooks/use-file-tree";
-import useMutations from "@/hooks/use-mutations";
+import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
+import useFileTree from "@/app/hooks/use-file-tree";
+import useMutations from "@/app/hooks/use-mutations";
 import { qFolders } from "@/lib/client/queries";
 import type { DrawingSelect, FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";

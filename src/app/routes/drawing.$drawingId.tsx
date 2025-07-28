@@ -1,7 +1,7 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { qDrawing } from "@/lib/client/queries";
-import Drawing from "@/components/drawing";
+import Drawing from "@/app/components/drawing";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,

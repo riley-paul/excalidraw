@@ -8,7 +8,7 @@ import {
 import { setCustomNativeDragPreview } from "@atlaskit/pragmatic-drag-and-drop/element/set-custom-native-drag-preview";
 import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import invariant from "tiny-invariant";
-import useDraggableState from "@/hooks/use-draggable-state";
+import useDraggableState from "@/app/hooks/use-draggable-state";
 import { Portal } from "@radix-ui/themes";
 import RadixProvider from "../radix-provider";
 import type { DragData } from "./drag.utils";

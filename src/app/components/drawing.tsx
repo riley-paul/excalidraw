@@ -1,4 +1,4 @@
-import useMutations from "@/hooks/use-mutations";
+import useMutations from "@/app/hooks/use-mutations";
 import {
   Excalidraw,
   exportToBlob,
@@ -7,17 +7,15 @@ import {
   serializeAsJSON,
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
-import { useBlocker } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useDocumentTitle, useEventListener, useInterval } from "usehooks-ts";
+import { useDocumentTitle, useEventListener } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
-import RadixProvider from "@/components/radix-provider";
+import RadixProvider from "@/app/components/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
-import useFileTree from "@/hooks/use-file-tree";
+import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import useIsDirtyWorker from "@/hooks/use-is-dirty-worker";
 
 type Props = {
   drawingId: string;

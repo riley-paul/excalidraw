@@ -1,4 +1,4 @@
-import AppSidebar from "@/components/sidebar/app-sidebar";
+import AppSidebar from "@/app/components/sidebar/app-sidebar";
 import { qDrawings, qFolders } from "@/lib/client/queries";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
