@@ -1,22 +1,17 @@
 import { ACCENT_COLOR } from "@/lib/client/constants";
-import { Theme } from "@radix-ui/themes";
+import { Theme, type ThemeProps } from "@radix-ui/themes";
 import React from "react";
 
-type Props = React.PropsWithChildren<{
-  overrideAppearance?: "light" | "dark" | "inherit";
-}>;
-
-const RadixProvider: React.FC<Props> = ({ children, overrideAppearance }) => {
+const RadixProvider: React.FC<ThemeProps> = (props) => {
   return (
     <Theme
-      appearance={overrideAppearance ?? "light"}
+      appearance="light"
       accentColor={ACCENT_COLOR}
       grayColor="gray"
       radius="large"
       hasBackground={false}
-    >
-      {children}
-    </Theme>
+      {...props}
+    />
   );
 };
 

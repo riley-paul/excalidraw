@@ -17,7 +17,7 @@ const AppSidebar: React.FC = () => {
   if (!user) return null;
 
   return (
-    <RadixProvider overrideAppearance="dark">
+    <RadixProvider appearance="dark">
       <Sidebar>
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/">

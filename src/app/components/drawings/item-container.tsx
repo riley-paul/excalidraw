@@ -114,7 +114,7 @@ const ItemContainer: React.FC<Props> = (props) => {
       </div>
       {draggableState.type === "preview" ? (
         <Portal container={draggableState.container}>
-          <RadixProvider overrideAppearance="dark">
+          <RadixProvider appearance="dark">
             <ItemContainer {...props} isOverlay />
           </RadixProvider>
         </Portal>

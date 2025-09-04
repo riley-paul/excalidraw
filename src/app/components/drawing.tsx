@@ -108,7 +108,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
       excalidrawAPI={setExcalidrawAPI}
     >
       <Footer>
-        <RadixProvider overrideAppearance="light">
+        <RadixProvider appearance="light">
           <div className="ml-3">
             <Button
               onClick={handleSave}
