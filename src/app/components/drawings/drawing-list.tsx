@@ -117,9 +117,6 @@ const DrawingList: React.FC<Props> = ({ search }) => {
       getData() {
         return { id: "root", type: "root", parentFolderId: null };
       },
-      getIsSticky() {
-        return true;
-      },
       onDragEnter({ self }) {
         const closestEdge = extractClosestEdge(self.data);
         setDraggableState({ type: "is-dragging-over", closestEdge });
