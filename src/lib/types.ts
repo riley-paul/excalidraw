@@ -1,6 +1,6 @@
 import { Drawing, Folder, User } from "@/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "zod/v4";
+import { z } from "astro:schema";
 
 export const zUserSelect = createSelectSchema(User);
 export const zUserInsert = createInsertSchema(User);
@@ -26,8 +26,15 @@ export const zFolderInsert = createInsertSchema(Folder);
 export type FolderSelect = z.infer<typeof zFolderSelect>;
 export type FolderInsert = z.infer<typeof zFolderInsert>;
 
-export type DrawingSortField = "name" | "updatedAt" | "createdAt" | "fileSize";
-export type DrawingSortOption = {
-  field: DrawingSortField;
-  direction: "asc" | "desc";
-};
+export const zDrawingSortField = z.enum([
+  "name",
+  "updatedAt",
+  "createdAt",
+  "fileSize",
+]);
+export const zDrawingSortOption = z.object({
+  field: zDrawingSortField,
+  direction: z.enum(["asc", "desc"]),
+});
+export type DrawingSortField = z.infer<typeof zDrawingSortField>;
+export type DrawingSortOption = z.infer<typeof zDrawingSortOption>;
