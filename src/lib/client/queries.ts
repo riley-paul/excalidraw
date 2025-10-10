@@ -1,15 +1,18 @@
 import { queryOptions } from "@tanstack/react-query";
 import { actions } from "astro:actions";
+import type { DrawingsQueryParams } from "../types";
+import { drawingsQueriesKey } from "./constants";
 
 export const qCurrentUser = queryOptions({
   queryKey: ["currentUser"],
   queryFn: actions.users.getMe.orThrow,
 });
 
-export const qDrawings = queryOptions({
-  queryKey: ["drawings"],
-  queryFn: actions.drawings.list.orThrow,
-});
+export const qDrawings = ({ search, sort }: DrawingsQueryParams) =>
+  queryOptions({
+    queryKey: [...drawingsQueriesKey, search, sort],
+    queryFn: () => actions.drawings.list.orThrow({ search, sort }),
+  });
 
 export const qFolders = queryOptions({
   queryKey: ["folders"],

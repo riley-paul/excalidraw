@@ -16,7 +16,11 @@ import useDraggableState from "@/app/hooks/use-draggable-state";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
-import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
+import {
+  drawingDragDisabledAtom,
+  drawingsSortOptionAtom,
+  isDraggingOverDrawingListItemAtom,
+} from "./drawing-list.store";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -44,16 +48,27 @@ const TreeNodeComponent: React.FC<{
   return <DrawingItem drawing={node} depth={node.depth} />;
 };
 
-const DrawingList: React.FC = () => {
-  const { data: drawings } = useSuspenseQuery(qDrawings);
+type Props = {
+  search: string | undefined;
+};
+
+const DrawingList: React.FC<Props> = ({ search }) => {
+  const [sort] = useAtom(drawingsSortOptionAtom);
+  const [dragDisabled, setDragDisabled] = useAtom(drawingDragDisabledAtom);
+  const isSearching = Boolean(search && search.length > 0);
+
+  useEffect(() => setDragDisabled(isSearching), [isSearching]);
+
+  const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));
   const { data: folders } = useSuspenseQuery(qFolders);
-  const treeNodes = buildTree(folders, drawings);
+  const treeNodes = buildTree(isSearching ? [] : folders, drawings);
 
   const { updateDrawing, updateFolder } = useMutations();
   const { openFolder } = useFileTree();
 
   useEffect(() => {
     return monitorForElements({
+      canMonitor: () => !dragDisabled,
       onDrop({ source, location }) {
         const target = location.current.dropTargets[0];
         if (!target) return;
@@ -98,7 +113,7 @@ const DrawingList: React.FC = () => {
 
     return dropTargetForElements({
       element,
-      canDrop: () => !isOverItem,
+      canDrop: () => !isOverItem && !dragDisabled,
       getData() {
         return { id: "root", type: "root", parentFolderId: null };
       },
