@@ -7,6 +7,7 @@ import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import {
+  CopyIcon,
   DeleteIcon,
   EllipsisIcon,
   ExternalLinkIcon,
@@ -30,7 +31,7 @@ const DrawingMenu: React.FC<Props> = ({
   isOpen,
   setIsOpen,
 }) => {
-  const { removeDrawing, updateDrawing } = useMutations();
+  const { removeDrawing, updateDrawing, duplicateDrawing } = useMutations();
   const { data: folders } = useSuspenseQuery(qFolders);
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
@@ -51,12 +52,12 @@ const DrawingMenu: React.FC<Props> = ({
     });
   };
 
-  const handleEditDrawing = () => {
+  const handleRenameDrawing = () => {
     dispatchAlert({
       type: "open",
       data: {
         type: "input",
-        title: "Edit Drawing",
+        title: "Rename Drawing",
         message: "Update the name of your drawing",
         value: name,
         placeholder: "Enter new drawing name",
@@ -92,6 +93,10 @@ const DrawingMenu: React.FC<Props> = ({
     openFolder(folder.id);
   };
 
+  const handleDuplicateDrawing = () => {
+    duplicateDrawing.mutate({ id });
+  };
+
   const { openFolder } = useFileTree();
 
   return (
@@ -108,9 +113,14 @@ const DrawingMenu: React.FC<Props> = ({
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        <DropdownMenu.Item onClick={handleEditDrawing}>
+        <DropdownMenu.Item onClick={handleRenameDrawing}>
           <PencilIcon className="size-4 opacity-70" />
-          <span>Edit</span>
+          <span>Rename</span>
+        </DropdownMenu.Item>
+     
+        <DropdownMenu.Item onClick={handleDuplicateDrawing}>
+          <CopyIcon className="size-4 opacity-70" />
+          <span>Duplicate</span>
         </DropdownMenu.Item>
 
         <DropdownMenu.Sub>

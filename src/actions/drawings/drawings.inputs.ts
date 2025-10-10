@@ -20,6 +20,8 @@ export const update = z.object({
 
 export const remove = z.object({ id: z.string().uuid() });
 
+export const duplicate = z.object({ id: z.string().uuid() });
+
 export const save = z.object({
   id: z.string().uuid(),
   content: z.instanceof(File),

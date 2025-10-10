@@ -32,3 +32,8 @@ export const remove = defineAction({
   input: drawingInputs.remove,
   handler: drawingHandlers.remove,
 });
+
+export const duplicate = defineAction({
+  input: drawingInputs.duplicate,
+  handler: drawingHandlers.duplicate,
+});

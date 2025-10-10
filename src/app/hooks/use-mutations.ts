@@ -17,6 +17,14 @@ export default function useMutations() {
     },
   });
 
+  const duplicateDrawing = useMutation({
+    mutationFn: actions.drawings.duplicate.orThrow,
+    onSuccess: ({ id }) => {
+      navigate({ to: "/drawing/$drawingId", params: { drawingId: id } });
+      queryClient.invalidateQueries({ queryKey: qDrawings.queryKey });
+    },
+  });
+
   const removeDrawing = useMutation({
     mutationFn: actions.drawings.remove.orThrow,
     onSuccess: (_, { id }) => {
@@ -87,6 +95,7 @@ export default function useMutations() {
   return {
     createDrawing,
     removeDrawing,
+    duplicateDrawing,
     updateDrawing,
     saveDrawing,
     createFolder,

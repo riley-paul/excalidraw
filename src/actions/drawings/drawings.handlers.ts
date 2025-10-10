@@ -142,3 +142,57 @@ export const save: ActionHandler<
 
   return updated;
 };
+
+export const duplicate: ActionHandler<
+  typeof drawingInputs.duplicate,
+  DrawingSelect
+> = async ({ id }, c) => {
+  const db = createDb(c.locals.runtime.env);
+  const userId = isAuthorized(c).id;
+
+  const [drawing] = await db
+    .select()
+    .from(Drawing)
+    .where(and(eq(Drawing.userId, userId), eq(Drawing.id, id)));
+
+  if (!drawing) {
+    throw new ActionError({
+      code: "NOT_FOUND",
+      message: `Drawing with id ${id} not found.`,
+    });
+  }
+
+  const content = await c.locals.runtime.env.R2_BUCKET.get(id);
+  if (!content) {
+    throw new ActionError({
+      code: "NOT_FOUND",
+      message: `Content for drawing with id ${id} not found.`,
+    });
+  }
+
+  const thumbnail = await c.locals.runtime.env.R2_BUCKET.get(`${id}-thumbnail`);
+
+  const [newDrawing] = await db
+    .insert(Drawing)
+    .values({
+      name: `${drawing.name} (copy)`,
+      userId,
+      parentFolderId: drawing.parentFolderId,
+      fileSize: drawing.fileSize,
+    })
+    .returning();
+
+  await Promise.all([
+    c.locals.runtime.env.R2_BUCKET.put(
+      newDrawing.id,
+      await content.arrayBuffer(),
+    ),
+    thumbnail &&
+      c.locals.runtime.env.R2_BUCKET.put(
+        `${newDrawing.id}-thumbnail`,
+        await thumbnail.arrayBuffer(),
+      ),
+  ]);
+
+  return newDrawing;
+};
