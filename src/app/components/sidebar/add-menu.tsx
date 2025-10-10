@@ -50,7 +50,7 @@ const AddMenu: React.FC = () => {
   return (
     <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger>
-        <IconButton size="3" variant="soft" radius="full">
+        <IconButton size="3" variant="surface" radius="full">
           <PlusIcon className="size-5" />
         </IconButton>
       </DropdownMenu.Trigger>

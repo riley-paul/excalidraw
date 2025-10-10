@@ -25,3 +25,9 @@ export const zFolderSelect = createSelectSchema(Folder);
 export const zFolderInsert = createInsertSchema(Folder);
 export type FolderSelect = z.infer<typeof zFolderSelect>;
 export type FolderInsert = z.infer<typeof zFolderInsert>;
+
+export type DrawingSortField = "name" | "updatedAt" | "createdAt" | "fileSize";
+export type DrawingSortOption = {
+  field: DrawingSortField;
+  direction: "asc" | "desc";
+};
