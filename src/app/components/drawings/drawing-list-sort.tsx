@@ -55,7 +55,13 @@ const DrawingListSort: React.FC<Props> = ({ sortOption, setSortOption }) => {
           };
 
           return (
-            <DropdownMenu.Item key={field} onSelect={handleSelect}>
+            <DropdownMenu.Item
+              key={field}
+              onSelect={(e) => {
+                e.preventDefault();
+                handleSelect();
+              }}
+            >
               <Arrow isSelected={isSelected} direction={sortOption.direction} />
               <span>{label}</span>
             </DropdownMenu.Item>

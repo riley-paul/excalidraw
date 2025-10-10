@@ -20,6 +20,7 @@ import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
 import { SearchIcon, SortDescIcon } from "lucide-react";
 import DrawingListSort from "./drawing-list-sort";
 import type { DrawingSortOption } from "@/lib/types";
+import DrawingListSearch from "./drawing-list-search";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -52,6 +53,8 @@ const DrawingList: React.FC = () => {
     field: "name",
     direction: "asc",
   });
+
+  const [search, setSearch] = useState("");
 
   const { data: drawings } = useSuspenseQuery(qDrawings);
   const { data: folders } = useSuspenseQuery(qFolders);
@@ -144,15 +147,7 @@ const DrawingList: React.FC = () => {
   return (
     <>
       <div className="flex items-center gap-2 px-3 py-2">
-        <TextField.Root
-          placeholder="Search..."
-          variant="soft"
-          className="flex-1"
-        >
-          <TextField.Slot side="left">
-            <SearchIcon className="size-4" />
-          </TextField.Slot>
-        </TextField.Root>
+        <DrawingListSearch search={search} setSearch={setSearch} />
         <DrawingListSort
           sortOption={sortOption}
           setSortOption={setSortOption}
