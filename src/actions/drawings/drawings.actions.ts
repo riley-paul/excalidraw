@@ -1,6 +1,6 @@
 import { defineAction } from "astro:actions";
-import drawingInputs from "./drawings.inputs";
-import drawingHandlers from "./drawings.handlers";
+import * as drawingInputs from "./drawings.inputs";
+import * as drawingHandlers from "./drawings.handlers";
 
 export const get = defineAction({
   input: drawingInputs.get,

@@ -1,12 +1,12 @@
 import { ActionError, type ActionHandler } from "astro:actions";
-import type drawingInputs from "./drawings.inputs";
+import * as drawingInputs from "./drawings.inputs";
 import type { DrawingSelect, DrawingSelectWithContent } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Drawing } from "@/db/schema";
 import { and, desc, eq } from "drizzle-orm";
 
-const get: ActionHandler<
+export const get: ActionHandler<
   typeof drawingInputs.get,
   DrawingSelectWithContent
 > = async ({ id, withContent }, c) => {
@@ -33,10 +33,10 @@ const get: ActionHandler<
   return { ...drawing, content: content ? await content.text() : null };
 };
 
-const list: ActionHandler<typeof drawingInputs.list, DrawingSelect[]> = async (
-  _,
-  c,
-) => {
+export const list: ActionHandler<
+  typeof drawingInputs.list,
+  DrawingSelect[]
+> = async (_, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
@@ -49,7 +49,7 @@ const list: ActionHandler<typeof drawingInputs.list, DrawingSelect[]> = async (
   return drawings;
 };
 
-const create: ActionHandler<
+export const create: ActionHandler<
   typeof drawingInputs.create,
   DrawingSelect
 > = async (data, c) => {
@@ -63,7 +63,7 @@ const create: ActionHandler<
   return newDrawing;
 };
 
-const update: ActionHandler<
+export const update: ActionHandler<
   typeof drawingInputs.update,
   DrawingSelect
 > = async ({ id, ...updateData }, c) => {
@@ -86,10 +86,10 @@ const update: ActionHandler<
   return updatedDrawing;
 };
 
-const remove: ActionHandler<typeof drawingInputs.remove, boolean> = async (
-  { id },
-  c,
-) => {
+export const remove: ActionHandler<
+  typeof drawingInputs.remove,
+  boolean
+> = async ({ id }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
@@ -110,10 +110,10 @@ const remove: ActionHandler<typeof drawingInputs.remove, boolean> = async (
   return true;
 };
 
-const save: ActionHandler<typeof drawingInputs.save, DrawingSelect> = async (
-  { id, content, thumbnail },
-  c,
-) => {
+export const save: ActionHandler<
+  typeof drawingInputs.save,
+  DrawingSelect
+> = async ({ id, content, thumbnail }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
@@ -142,13 +142,3 @@ const save: ActionHandler<typeof drawingInputs.save, DrawingSelect> = async (
 
   return updated;
 };
-
-const drawingHandlers = {
-  get,
-  list,
-  create,
-  update,
-  remove,
-  save,
-};
-export default drawingHandlers;
