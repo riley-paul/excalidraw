@@ -1,19 +1,18 @@
 import { z } from "zod";
 
-const folderInputs = {
-  list: z.any(),
-  create: z.object({
-    name: z.string().min(1).max(100),
-    parentFolderId: z.string().uuid().nullish(),
-  }),
-  update: z.object({
-    id: z.string().uuid(),
-    name: z.string().min(1).max(100).optional(),
-    parentFolderId: z.string().uuid().nullish(),
-  }),
-  remove: z.object({
-    id: z.string().uuid(),
-  }),
-};
+export const list = z.any();
 
-export default folderInputs;
+export const create = z.object({
+  name: z.string().min(1).max(100),
+  parentFolderId: z.string().uuid().nullish(),
+});
+
+export const update = z.object({
+  id: z.string().uuid(),
+  name: z.string().min(1).max(100).optional(),
+  parentFolderId: z.string().uuid().nullish(),
+});
+
+export const remove = z.object({
+  id: z.string().uuid(),
+});

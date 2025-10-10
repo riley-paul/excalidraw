@@ -1,6 +1,6 @@
 import { defineAction } from "astro:actions";
-import folderInputs from "./folders.inputs";
-import folderHandlers from "./folders.handlers";
+import * as folderInputs from "./folders.inputs";
+import * as folderHandlers from "./folders.handlers";
 
 export const list = defineAction({
   input: folderInputs.list,

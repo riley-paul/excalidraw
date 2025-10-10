@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-const userInputs = {
-  getMe: z.any(),
-  remove: z.any(),
-};
-export default userInputs;
+export const getMe = z.any();
+
+export const remove = z.any();

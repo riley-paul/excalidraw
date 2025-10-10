@@ -1,15 +1,15 @@
 import type { ActionHandler } from "astro:actions";
-import type folderInputs from "./folders.inputs";
+import * as folderInputs from "./folders.inputs";
 import type { FolderSelect } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Folder } from "@/db/schema";
 import { and, asc, eq } from "drizzle-orm";
 
-const list: ActionHandler<typeof folderInputs.list, FolderSelect[]> = async (
-  _,
-  c,
-) => {
+export const list: ActionHandler<
+  typeof folderInputs.list,
+  FolderSelect[]
+> = async (_, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
   const folders = await db
@@ -20,10 +20,10 @@ const list: ActionHandler<typeof folderInputs.list, FolderSelect[]> = async (
   return folders;
 };
 
-const create: ActionHandler<typeof folderInputs.create, FolderSelect> = async (
-  { name, parentFolderId },
-  c,
-) => {
+export const create: ActionHandler<
+  typeof folderInputs.create,
+  FolderSelect
+> = async ({ name, parentFolderId }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
@@ -39,10 +39,10 @@ const create: ActionHandler<typeof folderInputs.create, FolderSelect> = async (
   return newFolder;
 };
 
-const update: ActionHandler<typeof folderInputs.update, FolderSelect> = async (
-  { id, name, parentFolderId },
-  c,
-) => {
+export const update: ActionHandler<
+  typeof folderInputs.update,
+  FolderSelect
+> = async ({ id, name, parentFolderId }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
@@ -63,10 +63,10 @@ const update: ActionHandler<typeof folderInputs.update, FolderSelect> = async (
   return updatedFolder;
 };
 
-const remove: ActionHandler<typeof folderInputs.remove, boolean> = async (
-  { id },
-  c,
-) => {
+export const remove: ActionHandler<
+  typeof folderInputs.remove,
+  boolean
+> = async ({ id }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
   const result = await db
@@ -80,6 +80,3 @@ const remove: ActionHandler<typeof folderInputs.remove, boolean> = async (
   }
   return true;
 };
-
-const folderHandlers = { list, create, update, remove };
-export default folderHandlers;
