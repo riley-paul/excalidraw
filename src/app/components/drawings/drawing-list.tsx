@@ -16,7 +16,10 @@ import useDraggableState from "@/app/hooks/use-draggable-state";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
-import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
+import {
+  drawingsSortOptionAtom,
+  isDraggingOverDrawingListItemAtom,
+} from "./drawing-list.store";
 import type { DrawingSortOption } from "@/lib/types";
 
 const TreeNodeComponent: React.FC<{
@@ -47,10 +50,10 @@ const TreeNodeComponent: React.FC<{
 
 type Props = {
   search: string | undefined;
-  sort: DrawingSortOption | undefined;
 };
 
-const DrawingList: React.FC<Props> = ({ search, sort }) => {
+const DrawingList: React.FC<Props> = ({ search }) => {
+  const [sort] = useAtom(drawingsSortOptionAtom);
   const isSearching = Boolean(search && search.length > 0);
 
   const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));

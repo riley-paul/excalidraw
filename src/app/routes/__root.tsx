@@ -1,9 +1,5 @@
 import { qDrawings, qFolders } from "@/lib/client/queries";
-import {
-  defaultDrawingSort,
-  zDrawingSortSearch,
-  type DrawingSortOption,
-} from "@/lib/types";
+import { zDrawingSortSearch } from "@/lib/types";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
@@ -12,12 +8,13 @@ import { qCurrentUser } from "@/lib/client/queries";
 import DrawingList from "@/app/components/drawings/drawing-list";
 import RadixProvider from "@/app/components/radix-provider";
 import Sidebar from "@/app/components/sidebar/sidebar";
-import { Heading, Separator } from "@radix-ui/themes";
+import { Heading, Separator, Spinner } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "@/app/components/add-menu";
 import { PenToolIcon } from "lucide-react";
 import DrawingListSearch from "../components/drawings/drawing-list-search";
 import DrawingListSort from "../components/drawings/drawing-list-sort";
+import React from "react";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -39,13 +36,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 function Component() {
   const navigate = Route.useNavigate();
   const { user } = Route.useLoaderData();
-  const { search, sort } = Route.useSearch();
+  const { search } = Route.useSearch();
 
   const setSearch = (search: string | undefined) =>
     navigate({ search: (prev) => ({ ...prev, search }) });
-
-  const setSortOption = (sortOption: DrawingSortOption | undefined) =>
-    navigate({ search: (prev) => ({ ...prev, sort: sortOption }) });
 
   return (
     <main className="flex">
@@ -61,13 +55,18 @@ function Component() {
           <Separator size="4" orientation="horizontal" />
           <div className="flex items-center gap-2 px-3 py-2">
             <DrawingListSearch search={search} setSearch={setSearch} />
-            <DrawingListSort
-              sortOption={sort ?? defaultDrawingSort}
-              setSortOption={setSortOption}
-            />
+            <DrawingListSort />
           </div>
           <Separator size="4" />
-          <DrawingList search={search} sort={sort} />
+          <React.Suspense
+            fallback={
+              <div className="flex flex-1 items-center justify-center">
+                <Spinner />
+              </div>
+            }
+          >
+            <DrawingList search={search} />
+          </React.Suspense>
           <Separator size="4" orientation="horizontal" />
           <UserMenu user={user} />
         </Sidebar>

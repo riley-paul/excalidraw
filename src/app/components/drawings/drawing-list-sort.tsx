@@ -1,12 +1,9 @@
 import type { DrawingSortField, DrawingSortOption } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
+import { useAtom } from "jotai";
 import { ArrowDown, ArrowUp, SortDescIcon } from "lucide-react";
 import React from "react";
-
-type Props = {
-  sortOption: DrawingSortOption;
-  setSortOption: (sortOption: DrawingSortOption) => void;
-};
+import { drawingsSortOptionAtom } from "./drawing-list.store";
 
 const drawingSortFieldLabels: Record<DrawingSortField, string> = {
   name: "Name",
@@ -27,7 +24,8 @@ const Arrow: React.FC<{
   );
 };
 
-const DrawingListSort: React.FC<Props> = ({ sortOption, setSortOption }) => {
+const DrawingListSort: React.FC = () => {
+  const [sortOption, setSortOption] = useAtom(drawingsSortOptionAtom);
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
@@ -44,10 +42,10 @@ const DrawingListSort: React.FC<Props> = ({ sortOption, setSortOption }) => {
           const handleSelect = () => {
             if (isSelected) {
               // Toggle direction
-              setSortOption({
+              setSortOption((prev) => ({
                 field,
-                direction: sortOption.direction === "asc" ? "desc" : "asc",
-              });
+                direction: prev.direction === "asc" ? "desc" : "asc",
+              }));
             } else {
               // Set new field with default direction
               setSortOption({ field, direction: "asc" });
