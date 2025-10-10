@@ -38,10 +38,13 @@ export default function useMutations() {
   const updateDrawing = useMutation({
     mutationFn: actions.drawings.update.orThrow,
     onSuccess: (data) => {
-      queryClient.setQueryData<DrawingSelect[]>(["drawings"], (prev) => {
-        if (!prev) return prev;
-        return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
-      });
+      queryClient.setQueriesData<DrawingSelect[]>(
+        { queryKey: ["drawings"] },
+        (prev) => {
+          if (!prev) return prev;
+          return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
+        },
+      );
       queryClient.setQueryData(qDrawing(data.id).queryKey, (prev) => {
         if (!prev) return prev;
         return { ...prev, ...data };
@@ -58,10 +61,13 @@ export default function useMutations() {
       return actions.drawings.save.orThrow(formData);
     },
     onSuccess: (data) => {
-      queryClient.setQueryData<DrawingSelect[]>(["drawings"], (prev) => {
-        if (!prev) return prev;
-        return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
-      });
+      queryClient.setQueriesData<DrawingSelect[]>(
+        { queryKey: ["drawings"] },
+        (prev) => {
+          if (!prev) return prev;
+          return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
+        },
+      );
       toast.success("Drawing saved successfully!");
     },
   });
