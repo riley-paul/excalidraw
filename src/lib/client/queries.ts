@@ -1,15 +1,17 @@
 import { queryOptions } from "@tanstack/react-query";
 import { actions } from "astro:actions";
+import type { DrawingSortSearch } from "../types";
 
 export const qCurrentUser = queryOptions({
   queryKey: ["currentUser"],
   queryFn: actions.users.getMe.orThrow,
 });
 
-export const qDrawings = queryOptions({
-  queryKey: ["drawings"],
-  queryFn: actions.drawings.list.orThrow,
-});
+export const qDrawings = ({ search, sort }: DrawingSortSearch) =>
+  queryOptions({
+    queryKey: ["drawings", search, sort],
+    queryFn: () => actions.drawings.list.orThrow({ search, sort }),
+  });
 
 export const qFolders = queryOptions({
   queryKey: ["folders"],

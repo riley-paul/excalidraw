@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import DrawingItem from "./drawing-item";
 import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
-import { IconButton, ScrollArea, Separator, TextField } from "@radix-ui/themes";
+import { ScrollArea, Separator } from "@radix-ui/themes";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawings, qFolders } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -17,7 +17,6 @@ import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
 import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
-import { SearchIcon, SortDescIcon } from "lucide-react";
 import DrawingListSort from "./drawing-list-sort";
 import type { DrawingSortOption } from "@/lib/types";
 import DrawingListSearch from "./drawing-list-search";
@@ -54,9 +53,7 @@ const DrawingList: React.FC = () => {
     direction: "asc",
   });
 
-  const [search, setSearch] = useState("");
-
-  const { data: drawings } = useSuspenseQuery(qDrawings);
+  const { data: drawings } = useSuspenseQuery(qDrawings({}));
   const { data: folders } = useSuspenseQuery(qFolders);
   const treeNodes = buildTree(folders, drawings);
 

@@ -36,5 +36,10 @@ export const zDrawingSortOption = z.object({
   field: zDrawingSortField,
   direction: z.enum(["asc", "desc"]),
 });
+export const zDrawingSortSearch = z.object({
+  search: z.string().max(100).optional(),
+  sort: zDrawingSortOption.optional(),
+});
+export type DrawingSortSearch = z.infer<typeof zDrawingSortSearch>;
 export type DrawingSortField = z.infer<typeof zDrawingSortField>;
 export type DrawingSortOption = z.infer<typeof zDrawingSortOption>;
