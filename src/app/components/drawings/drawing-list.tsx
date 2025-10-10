@@ -17,6 +17,7 @@ import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
 import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
+import type { DrawingSortOption } from "@/lib/types";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -44,16 +45,24 @@ const TreeNodeComponent: React.FC<{
   return <DrawingItem drawing={node} depth={node.depth} />;
 };
 
-const DrawingList: React.FC = () => {
-  const { data: drawings } = useSuspenseQuery(qDrawings({}));
+type Props = {
+  search: string | undefined;
+  sort: DrawingSortOption | undefined;
+};
+
+const DrawingList: React.FC<Props> = ({ search, sort }) => {
+  const isSearching = Boolean(search && search.length > 0);
+
+  const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));
   const { data: folders } = useSuspenseQuery(qFolders);
-  const treeNodes = buildTree(folders, drawings);
+  const treeNodes = buildTree(isSearching ? [] : folders, drawings);
 
   const { updateDrawing, updateFolder } = useMutations();
   const { openFolder } = useFileTree();
 
   useEffect(() => {
     return monitorForElements({
+      canMonitor: () => !isSearching,
       onDrop({ source, location }) {
         const target = location.current.dropTargets[0];
         if (!target) return;
@@ -98,7 +107,7 @@ const DrawingList: React.FC = () => {
 
     return dropTargetForElements({
       element,
-      canDrop: () => !isOverItem,
+      canDrop: () => !isOverItem && !isSearching,
       getData() {
         return { id: "root", type: "root", parentFolderId: null };
       },

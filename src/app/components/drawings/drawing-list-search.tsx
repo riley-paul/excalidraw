@@ -22,8 +22,9 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
       className="flex-1"
       value={value}
       onChange={(e) => {
+        const { value } = e.target;
         setValue(e.target.value);
-        setSearchDebounced(e.target.value);
+        setSearchDebounced(value.length > 0 ? value : undefined);
       }}
     >
       <TextField.Slot side="left">
@@ -38,7 +39,7 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
             color="red"
             onClick={() => {
               setValue("");
-              setSearch("");
+              setSearch(undefined);
             }}
           >
             <span className="sr-only">Clear search</span>

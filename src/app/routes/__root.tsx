@@ -23,10 +23,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     component: Component,
     validateSearch: zDrawingSortSearch,
-    loader: async ({ context }) => {
+    loaderDeps: ({ search: { search, sort } }) => ({ search, sort }),
+    loader: async ({ context, deps: { search, sort } }) => {
       const [folders, drawings, user] = await Promise.all([
         context.queryClient.ensureQueryData(qFolders),
-        context.queryClient.ensureQueryData(qDrawings({})),
+        context.queryClient.ensureQueryData(qDrawings({ search, sort })),
         context.queryClient.ensureQueryData(qCurrentUser),
       ]);
       if (!user) throw new Error("No user");
@@ -66,7 +67,7 @@ function Component() {
             />
           </div>
           <Separator size="4" />
-          <DrawingList />
+          <DrawingList search={search} sort={sort} />
           <Separator size="4" orientation="horizontal" />
           <UserMenu user={user} />
         </Sidebar>
