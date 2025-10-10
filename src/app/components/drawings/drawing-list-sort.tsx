@@ -7,7 +7,7 @@ import { drawingsSortOptionAtom } from "./drawing-list.store";
 
 const drawingSortFieldLabels: Record<DrawingsSortField, string> = {
   name: "Name",
-  updatedAt: "Last modified",
+  updatedAt: "Last saved",
   createdAt: "Date created",
   fileSize: "File size",
 };

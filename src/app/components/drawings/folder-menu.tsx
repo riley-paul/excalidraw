@@ -55,7 +55,7 @@ const FolderMenu: React.FC<Props> = ({
       type: "open",
       data: {
         type: "input",
-        title: "Edit Folder",
+        title: "Rename Folder",
         message: "Update the name of your folder",
         value: name,
         placeholder: "Enter new folder name",
@@ -134,7 +134,7 @@ const FolderMenu: React.FC<Props> = ({
       <DropdownMenu.Content>
         <DropdownMenu.Item onClick={handleEditDrawing}>
           <PencilIcon className="size-4 opacity-70" />
-          <span>Edit</span>
+          <span>Rename</span>
         </DropdownMenu.Item>
 
         <DropdownMenu.Sub>
