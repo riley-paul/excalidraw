@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { actions } from "astro:actions";
 import type { DrawingsQueryParams } from "../types";
+import { drawingsQueriesKey } from "./constants";
 
 export const qCurrentUser = queryOptions({
   queryKey: ["currentUser"],
@@ -9,7 +10,7 @@ export const qCurrentUser = queryOptions({
 
 export const qDrawings = ({ search, sort }: DrawingsQueryParams) =>
   queryOptions({
-    queryKey: ["drawings", search, sort],
+    queryKey: [...drawingsQueriesKey, search, sort],
     queryFn: () => actions.drawings.list.orThrow({ search, sort }),
   });
 

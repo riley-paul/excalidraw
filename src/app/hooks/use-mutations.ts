@@ -1,3 +1,4 @@
+import { drawingsQueriesKey } from "@/lib/client/constants";
 import { qDrawing, qFolders } from "@/lib/client/queries";
 import type { DrawingSelect } from "@/lib/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -14,7 +15,7 @@ export default function useMutations() {
     mutationFn: actions.drawings.create.orThrow,
     onSuccess: ({ id }) => {
       navigate({ to: "/drawing/$drawingId", params: { drawingId: id } });
-      queryClient.invalidateQueries({ queryKey: ["drawings"] });
+      queryClient.invalidateQueries({ queryKey: drawingsQueriesKey });
     },
   });
 
@@ -22,7 +23,7 @@ export default function useMutations() {
     mutationFn: actions.drawings.duplicate.orThrow,
     onSuccess: ({ id }) => {
       navigate({ to: "/drawing/$drawingId", params: { drawingId: id } });
-      queryClient.invalidateQueries({ queryKey: ["drawings"] });
+      queryClient.invalidateQueries({ queryKey: drawingsQueriesKey });
     },
   });
 
@@ -30,7 +31,7 @@ export default function useMutations() {
     mutationFn: actions.drawings.remove.orThrow,
     onSuccess: (_, { id }) => {
       if (drawingId === id) navigate({ to: "/" });
-      queryClient.invalidateQueries({ queryKey: ["drawings"] });
+      queryClient.invalidateQueries({ queryKey: drawingsQueriesKey });
       toast.success("Drawing deleted successfully!");
     },
   });
@@ -39,7 +40,7 @@ export default function useMutations() {
     mutationFn: actions.drawings.update.orThrow,
     onSuccess: (data) => {
       queryClient.setQueriesData<DrawingSelect[]>(
-        { queryKey: ["drawings"] },
+        { queryKey: drawingsQueriesKey },
         (prev) => {
           if (!prev) return prev;
           return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
@@ -62,7 +63,7 @@ export default function useMutations() {
     },
     onSuccess: (data) => {
       queryClient.setQueriesData<DrawingSelect[]>(
-        { queryKey: ["drawings"] },
+        { queryKey: drawingsQueriesKey },
         (prev) => {
           if (!prev) return prev;
           return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
@@ -94,7 +95,7 @@ export default function useMutations() {
     mutationFn: actions.folders.remove.orThrow,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: qFolders.queryKey });
-      queryClient.invalidateQueries({ queryKey: ["drawings"] });
+      queryClient.invalidateQueries({ queryKey: drawingsQueriesKey });
       toast.success("Folder deleted successfully!");
     },
   });
