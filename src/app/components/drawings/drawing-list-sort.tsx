@@ -5,7 +5,7 @@ import React from "react";
 
 type Props = {
   sortOption: DrawingSortOption;
-  setSortOption: React.Dispatch<React.SetStateAction<DrawingSortOption>>;
+  setSortOption: (sortOption: DrawingSortOption) => void;
 };
 
 const drawingSortFieldLabels: Record<DrawingSortField, string> = {
@@ -44,10 +44,10 @@ const DrawingListSort: React.FC<Props> = ({ sortOption, setSortOption }) => {
           const handleSelect = () => {
             if (isSelected) {
               // Toggle direction
-              setSortOption((prev) => ({
+              setSortOption({
                 field,
-                direction: prev.direction === "asc" ? "desc" : "asc",
-              }));
+                direction: sortOption.direction === "asc" ? "desc" : "asc",
+              });
             } else {
               // Set new field with default direction
               setSortOption({ field, direction: "asc" });

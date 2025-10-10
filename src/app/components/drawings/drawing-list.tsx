@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import DrawingItem from "./drawing-item";
 import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder-item";
-import { ScrollArea, Separator } from "@radix-ui/themes";
+import { ScrollArea } from "@radix-ui/themes";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawings, qFolders } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -17,9 +17,6 @@ import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
 import { isDraggingOverDrawingListItemAtom } from "./drawing-list.store";
-import DrawingListSort from "./drawing-list-sort";
-import type { DrawingSortOption } from "@/lib/types";
-import DrawingListSearch from "./drawing-list-search";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -48,11 +45,6 @@ const TreeNodeComponent: React.FC<{
 };
 
 const DrawingList: React.FC = () => {
-  const [sortOption, setSortOption] = useState<DrawingSortOption>({
-    field: "name",
-    direction: "asc",
-  });
-
   const { data: drawings } = useSuspenseQuery(qDrawings({}));
   const { data: folders } = useSuspenseQuery(qFolders);
   const treeNodes = buildTree(folders, drawings);
@@ -142,28 +134,18 @@ const DrawingList: React.FC = () => {
   }, [isOverItem]);
 
   return (
-    <>
-      <div className="flex items-center gap-2 px-3 py-2">
-        <DrawingListSearch search={search} setSearch={setSearch} />
-        <DrawingListSort
-          sortOption={sortOption}
-          setSortOption={setSortOption}
-        />
+    <ScrollArea
+      className={cn(
+        "flex-1",
+        draggableState.type === "is-dragging-over" && "bg-accent-1",
+      )}
+    >
+      <div ref={elementRef} className="pb-16">
+        {treeNodes.map((node) => (
+          <TreeNodeComponent key={node.id} node={node} />
+        ))}
       </div>
-      <Separator size="4" />
-      <ScrollArea
-        className={cn(
-          "flex-1",
-          draggableState.type === "is-dragging-over" && "bg-accent-1",
-        )}
-      >
-        <div ref={elementRef} className="pb-16">
-          {treeNodes.map((node) => (
-            <TreeNodeComponent key={node.id} node={node} />
-          ))}
-        </div>
-      </ScrollArea>
-    </>
+    </ScrollArea>
   );
 };
 

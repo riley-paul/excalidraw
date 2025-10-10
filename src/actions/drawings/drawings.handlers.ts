@@ -1,10 +1,11 @@
 import { ActionError, type ActionHandler } from "astro:actions";
 import * as drawingInputs from "./drawings.inputs";
-import type {
-  DrawingSelect,
-  DrawingSelectWithContent,
-  DrawingSortField,
-  DrawingSortOption,
+import {
+  defaultDrawingSort,
+  type DrawingSelect,
+  type DrawingSelectWithContent,
+  type DrawingSortField,
+  type DrawingSortOption,
 } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
@@ -45,9 +46,8 @@ const LIST_SORT_MAPPING: Record<DrawingSortField, any> = {
   fileSize: Drawing.fileSize,
 };
 
-const getOrderBy = (sort: DrawingSortOption | undefined) => {
-  if (!sort) return desc(Drawing.createdAt);
-  const sortField = LIST_SORT_MAPPING[sort.field] || Drawing.createdAt;
+const getOrderBy = (sort: DrawingSortOption = defaultDrawingSort) => {
+  const sortField = LIST_SORT_MAPPING[sort.field];
   return sort.direction === "asc" ? asc(sortField) : desc(sortField);
 };
 

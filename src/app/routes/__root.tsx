@@ -1,5 +1,9 @@
 import { qDrawings, qFolders } from "@/lib/client/queries";
-import { zDrawingSortSearch } from "@/lib/types";
+import {
+  defaultDrawingSort,
+  zDrawingSortSearch,
+  type DrawingSortOption,
+} from "@/lib/types";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
@@ -12,6 +16,8 @@ import { Heading, Separator } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "@/app/components/add-menu";
 import { PenToolIcon } from "lucide-react";
+import DrawingListSearch from "../components/drawings/drawing-list-search";
+import DrawingListSort from "../components/drawings/drawing-list-sort";
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
@@ -30,7 +36,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 );
 
 function Component() {
+  const navigate = Route.useNavigate();
   const { user } = Route.useLoaderData();
+  const { search, sort } = Route.useSearch();
+
+  const setSearch = (search: string | undefined) =>
+    navigate({ search: (prev) => ({ ...prev, search }) });
+
+  const setSortOption = (sortOption: DrawingSortOption | undefined) =>
+    navigate({ search: (prev) => ({ ...prev, sort: sortOption }) });
+
   return (
     <main className="flex">
       <RadixProvider appearance="dark">
@@ -43,6 +58,14 @@ function Component() {
             <AddMenu />
           </header>
           <Separator size="4" orientation="horizontal" />
+          <div className="flex items-center gap-2 px-3 py-2">
+            <DrawingListSearch search={search} setSearch={setSearch} />
+            <DrawingListSort
+              sortOption={sort ?? defaultDrawingSort}
+              setSortOption={setSortOption}
+            />
+          </div>
+          <Separator size="4" />
           <DrawingList />
           <Separator size="4" orientation="horizontal" />
           <UserMenu user={user} />

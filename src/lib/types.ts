@@ -26,13 +26,13 @@ export const zFolderInsert = createInsertSchema(Folder);
 export type FolderSelect = z.infer<typeof zFolderSelect>;
 export type FolderInsert = z.infer<typeof zFolderInsert>;
 
-export const zDrawingSortField = z.enum([
+const zDrawingSortField = z.enum([
   "name",
   "updatedAt",
   "createdAt",
   "fileSize",
 ]);
-export const zDrawingSortOption = z.object({
+const zDrawingSortOption = z.object({
   field: zDrawingSortField,
   direction: z.enum(["asc", "desc"]),
 });
@@ -43,3 +43,8 @@ export const zDrawingSortSearch = z.object({
 export type DrawingSortSearch = z.infer<typeof zDrawingSortSearch>;
 export type DrawingSortField = z.infer<typeof zDrawingSortField>;
 export type DrawingSortOption = z.infer<typeof zDrawingSortOption>;
+
+export const defaultDrawingSort: DrawingSortOption = {
+  field: "updatedAt",
+  direction: "desc",
+};

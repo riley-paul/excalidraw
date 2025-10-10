@@ -3,12 +3,15 @@ import { SearchIcon, XIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 
-type Props = { search: string; setSearch: (search: string) => void };
+type Props = {
+  search: string | undefined;
+  setSearch: (search: string | undefined) => void;
+};
 
 const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
-  const [value, setValue] = useState(search);
+  const [value, setValue] = useState(search ?? "");
 
-  useEffect(() => setValue(search), [search]);
+  useEffect(() => setValue(search ?? ""), [search]);
 
   const setSearchDebounced = useDebounceCallback(setSearch, 500);
 
