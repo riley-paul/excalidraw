@@ -1,10 +1,15 @@
 import { ActionError, type ActionHandler } from "astro:actions";
 import * as drawingInputs from "./drawings.inputs";
-import type { DrawingSelect, DrawingSelectWithContent } from "@/lib/types";
+import type {
+  DrawingSelect,
+  DrawingSelectWithContent,
+  DrawingSortField,
+  DrawingSortOption,
+} from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Drawing } from "@/db/schema";
-import { and, desc, eq } from "drizzle-orm";
+import { and, asc, desc, eq, like, or } from "drizzle-orm";
 
 export const get: ActionHandler<
   typeof drawingInputs.get,
@@ -33,18 +38,37 @@ export const get: ActionHandler<
   return { ...drawing, content: content ? await content.text() : null };
 };
 
+const LIST_SORT_MAPPING: Record<DrawingSortField, any> = {
+  name: Drawing.name,
+  updatedAt: Drawing.savedAt,
+  createdAt: Drawing.createdAt,
+  fileSize: Drawing.fileSize,
+};
+
+const getOrderBy = (sort: DrawingSortOption | undefined) => {
+  if (!sort) return desc(Drawing.createdAt);
+  const sortField = LIST_SORT_MAPPING[sort.field] || Drawing.createdAt;
+  return sort.direction === "asc" ? asc(sortField) : desc(sortField);
+};
+
+const getSearch = (search: string | undefined) => {
+  if (!search) return undefined;
+  const searchTerm = `%${search}%`;
+  return or(like(Drawing.name, searchTerm));
+};
+
 export const list: ActionHandler<
   typeof drawingInputs.list,
   DrawingSelect[]
-> = async (_, c) => {
+> = async ({ sort, search }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
 
   const drawings = await db
     .select()
     .from(Drawing)
-    .where(eq(Drawing.userId, userId))
-    .orderBy(desc(Drawing.createdAt));
+    .where(and(eq(Drawing.userId, userId), getSearch(search)))
+    .orderBy(getOrderBy(sort));
 
   return drawings;
 };

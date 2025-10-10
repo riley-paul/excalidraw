@@ -1,7 +1,7 @@
 import React from "react";
 import { useAtom } from "jotai/react";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
-import { alertSystemAtom } from "../alert-system/alert-system.store";
+import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import { z } from "zod/v4";
 import useMutations from "@/app/hooks/use-mutations";
 import { FolderPlusIcon, PenToolIcon, PlusIcon } from "lucide-react";
