@@ -1,4 +1,4 @@
-import { zDrawingSortSearch } from "@/lib/types";
+import { zDrawingsQueryParams } from "@/lib/types";
 import { z } from "astro:schema";
 
 export const get = z.object({
@@ -6,7 +6,7 @@ export const get = z.object({
   withContent: z.boolean().default(false),
 });
 
-export const list = zDrawingSortSearch;
+export const list = zDrawingsQueryParams;
 
 export const create = z.object({
   name: z.string().min(1).max(100),

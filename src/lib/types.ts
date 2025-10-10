@@ -26,25 +26,29 @@ export const zFolderInsert = createInsertSchema(Folder);
 export type FolderSelect = z.infer<typeof zFolderSelect>;
 export type FolderInsert = z.infer<typeof zFolderInsert>;
 
-const zDrawingSortField = z.enum([
+export const zDrawingsSearch = z.string().max(100);
+export type DrawingsSearch = z.infer<typeof zDrawingsSearch>;
+
+const zDrawingsSortField = z.enum([
   "name",
   "updatedAt",
   "createdAt",
   "fileSize",
 ]);
-const zDrawingSortOption = z.object({
-  field: zDrawingSortField,
+const zDrawingsSort = z.object({
+  field: zDrawingsSortField,
   direction: z.enum(["asc", "desc"]),
 });
-export const zDrawingSortSearch = z.object({
-  search: z.string().max(100).optional(),
-  sort: zDrawingSortOption.optional(),
-});
-export type DrawingSortSearch = z.infer<typeof zDrawingSortSearch>;
-export type DrawingSortField = z.infer<typeof zDrawingSortField>;
-export type DrawingSortOption = z.infer<typeof zDrawingSortOption>;
+export type DrawingsSortField = z.infer<typeof zDrawingsSortField>;
+export type DrawingsSort = z.infer<typeof zDrawingsSort>;
 
-export const defaultDrawingSort: DrawingSortOption = {
+export const zDrawingsQueryParams = z.object({
+  search: zDrawingsSearch.optional(),
+  sort: zDrawingsSort.optional(),
+});
+export type DrawingsQueryParams = z.infer<typeof zDrawingsQueryParams>;
+
+export const defaultDrawingSort: DrawingsSort = {
   field: "updatedAt",
   direction: "desc",
 };

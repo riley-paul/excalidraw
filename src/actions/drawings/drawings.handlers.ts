@@ -4,8 +4,8 @@ import {
   defaultDrawingSort,
   type DrawingSelect,
   type DrawingSelectWithContent,
-  type DrawingSortField,
-  type DrawingSortOption,
+  type DrawingsSortField,
+  type DrawingsSort,
 } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
@@ -39,14 +39,14 @@ export const get: ActionHandler<
   return { ...drawing, content: content ? await content.text() : null };
 };
 
-const LIST_SORT_MAPPING: Record<DrawingSortField, any> = {
+const LIST_SORT_MAPPING: Record<DrawingsSortField, any> = {
   name: Drawing.name,
   updatedAt: Drawing.savedAt,
   createdAt: Drawing.createdAt,
   fileSize: Drawing.fileSize,
 };
 
-const getOrderBy = (sort: DrawingSortOption = defaultDrawingSort) => {
+const getOrderBy = (sort: DrawingsSort = defaultDrawingSort) => {
   const sortField = LIST_SORT_MAPPING[sort.field];
   return sort.direction === "asc" ? asc(sortField) : desc(sortField);
 };

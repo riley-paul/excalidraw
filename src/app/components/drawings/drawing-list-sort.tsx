@@ -1,11 +1,11 @@
-import type { DrawingSortField, DrawingSortOption } from "@/lib/types";
+import type { DrawingsSortField } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import { ArrowDown, ArrowUp, SortDescIcon } from "lucide-react";
 import React from "react";
 import { drawingsSortOptionAtom } from "./drawing-list.store";
 
-const drawingSortFieldLabels: Record<DrawingSortField, string> = {
+const drawingSortFieldLabels: Record<DrawingsSortField, string> = {
   name: "Name",
   updatedAt: "Last modified",
   createdAt: "Date created",
@@ -36,7 +36,7 @@ const DrawingListSort: React.FC = () => {
       <DropdownMenu.Content onCloseAutoFocus={(e) => e.preventDefault()}>
         <DropdownMenu.Label>Sort by</DropdownMenu.Label>
         {Object.entries(drawingSortFieldLabels).map(([key, label]) => {
-          const field = key as DrawingSortField;
+          const field = key as DrawingsSortField;
           const isSelected = sortOption.field === field;
 
           const handleSelect = () => {

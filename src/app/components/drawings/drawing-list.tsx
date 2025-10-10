@@ -20,7 +20,6 @@ import {
   drawingsSortOptionAtom,
   isDraggingOverDrawingListItemAtom,
 } from "./drawing-list.store";
-import type { DrawingSortOption } from "@/lib/types";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;

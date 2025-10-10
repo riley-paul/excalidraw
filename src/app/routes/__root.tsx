@@ -1,5 +1,5 @@
 import { qDrawings, qFolders } from "@/lib/client/queries";
-import { zDrawingSortSearch } from "@/lib/types";
+import { zDrawingsSearch } from "@/lib/types";
 import type { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
@@ -15,12 +15,20 @@ import { PenToolIcon } from "lucide-react";
 import DrawingListSearch from "../components/drawings/drawing-list-search";
 import DrawingListSort from "../components/drawings/drawing-list-sort";
 import React from "react";
+import { createStore } from "jotai";
+import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
+import { z } from "astro:schema";
+
+const store = createStore();
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     component: Component,
-    validateSearch: zDrawingSortSearch,
-    loaderDeps: ({ search: { search, sort } }) => ({ search, sort }),
+    validateSearch: z.object({ search: zDrawingsSearch.optional() }),
+    loaderDeps: ({ search: { search } }) => {
+      const sort = store.get(drawingsSortOptionAtom);
+      return { search, sort };
+    },
     loader: async ({ context, deps: { search, sort } }) => {
       const [folders, drawings, user] = await Promise.all([
         context.queryClient.ensureQueryData(qFolders),
