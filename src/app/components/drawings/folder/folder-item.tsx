@@ -4,7 +4,7 @@ import { Text } from "@radix-ui/themes";
 import React from "react";
 import FolderMenu from "./folder-menu";
 import { FolderIcon, FolderOpenIcon } from "lucide-react";
-import ItemContainer from "./item-container";
+import ItemContainer from "../item-container";
 
 type Props = {
   folder: FolderSelect;

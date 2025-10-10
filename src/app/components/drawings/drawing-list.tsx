@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import DrawingItem from "./drawing-item";
+import DrawingItem from "./drawing/drawing-item";
 import { buildTree, type TreeNode } from "./tree.utils";
-import FolderItem from "./folder-item";
+import FolderItem from "./folder/folder-item";
 import { ScrollArea } from "@radix-ui/themes";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawings, qFolders } from "@/lib/client/queries";

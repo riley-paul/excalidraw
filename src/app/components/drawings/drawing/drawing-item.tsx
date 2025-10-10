@@ -6,7 +6,7 @@ import React from "react";
 import DrawingMenu from "./drawing-menu";
 import useRelativeTime from "@/app/hooks/use-relative-time";
 import { ImageIcon } from "lucide-react";
-import ItemContainer from "./item-container";
+import ItemContainer from "../item-container";
 
 type Props = {
   drawing: DrawingSelect;
