@@ -18,9 +18,9 @@ const Arrow: React.FC<{
 }> = ({ isSelected, direction }) => {
   if (!isSelected) return <div className="size-4" />;
   return direction === "asc" ? (
-    <ArrowUp className="size-4" />
+    <ArrowUp className="size-4 opacity-70" />
   ) : (
-    <ArrowDown className="size-4" />
+    <ArrowDown className="size-4 opacity-70" />
   );
 };
 

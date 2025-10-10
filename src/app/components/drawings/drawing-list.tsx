@@ -17,6 +17,7 @@ import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/clo
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
 import {
+  drawingDragDisabledAtom,
   drawingsSortOptionAtom,
   isDraggingOverDrawingListItemAtom,
 } from "./drawing-list.store";
@@ -53,7 +54,10 @@ type Props = {
 
 const DrawingList: React.FC<Props> = ({ search }) => {
   const [sort] = useAtom(drawingsSortOptionAtom);
+  const [dragDisabled, setDragDisabled] = useAtom(drawingDragDisabledAtom);
   const isSearching = Boolean(search && search.length > 0);
+
+  useEffect(() => setDragDisabled(isSearching), [isSearching]);
 
   const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));
   const { data: folders } = useSuspenseQuery(qFolders);
@@ -64,7 +68,7 @@ const DrawingList: React.FC<Props> = ({ search }) => {
 
   useEffect(() => {
     return monitorForElements({
-      canMonitor: () => !isSearching,
+      canMonitor: () => !dragDisabled,
       onDrop({ source, location }) {
         const target = location.current.dropTargets[0];
         if (!target) return;
@@ -109,7 +113,7 @@ const DrawingList: React.FC<Props> = ({ search }) => {
 
     return dropTargetForElements({
       element,
-      canDrop: () => !isOverItem && !isSearching,
+      canDrop: () => !isOverItem && !dragDisabled,
       getData() {
         return { id: "root", type: "root", parentFolderId: null };
       },

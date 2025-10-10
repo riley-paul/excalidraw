@@ -9,3 +9,5 @@ export const drawingsSortOptionAtom = atomWithStorage<DrawingsSort>(
   undefined,
   { getOnInit: true },
 );
+
+export const drawingDragDisabledAtom = atom<boolean>(false);
