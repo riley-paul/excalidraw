@@ -13,7 +13,7 @@ import { Link } from "@tanstack/react-router";
 import AddMenu from "@/app/components/add-menu";
 import { PenToolIcon } from "lucide-react";
 import DrawingListSearch from "../components/drawings/drawing-list-search";
-import DrawingListSort from "../components/drawings/drawing-list-sort";
+import SortMenu from "../components/drawings/sort-menu";
 import React from "react";
 import { createStore } from "jotai";
 import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
@@ -63,7 +63,7 @@ function Component() {
           <Separator size="4" orientation="horizontal" />
           <div className="flex items-center gap-2 px-3 py-2">
             <DrawingListSearch search={search} setSearch={setSearch} />
-            <DrawingListSort />
+            <SortMenu />
           </div>
           <Separator size="4" />
           <React.Suspense
