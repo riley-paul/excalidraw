@@ -7,6 +7,7 @@ import DrawingMenu from "./drawing-menu";
 import useRelativeTime from "@/app/hooks/use-relative-time";
 import { ImageIcon } from "lucide-react";
 import ItemContainer from "../item-container";
+import { getItemPadding } from "../tree.utils";
 
 type Props = {
   drawing: DrawingSelect;
@@ -47,7 +48,6 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
 
   return (
     <ItemContainer
-      depth={depth}
       isActive={isActive}
       dragData={{ id, type: "drawing", parentFolderId: drawing.parentFolderId }}
     >
@@ -56,6 +56,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
         params={{ drawingId: id }}
         className="flex w-full items-center gap-3"
         draggable={false}
+        style={getItemPadding(depth)}
       >
         <DrawingThumbnail key={savedAt} drawing={drawing} />
         <div className="grid flex-1">

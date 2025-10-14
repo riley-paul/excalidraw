@@ -19,14 +19,13 @@ import {
 } from "./drawing-list.store";
 
 type Props = React.PropsWithChildren<{
-  depth: number;
   isActive?: boolean;
   isOverlay?: boolean;
   dragData: DragData;
 }>;
 
 const ItemContainer: React.FC<Props> = (props) => {
-  const { depth, isActive, isOverlay, dragData, children } = props;
+  const { isActive, isOverlay, dragData, children } = props;
   const [, setIsOver] = useAtom(isDraggingOverDrawingListItemAtom);
   const [dragDisabled] = useAtom(drawingDragDisabledAtom);
 
@@ -108,13 +107,12 @@ const ItemContainer: React.FC<Props> = (props) => {
       <div
         ref={elementRef}
         className={cn(
-          "hover:bg-accent-3 group flex items-center gap-3 py-2 pr-4 pl-3 transition-colors ease-out",
+          "hover:bg-accent-3 group flex items-center gap-3 pr-4 pl-3 transition-colors ease-out",
           isActive && "bg-accent-6 hover:bg-accent-6",
           isOverlay && "rounded-2 bg-accent-3 w-[320px] border",
           draggableState.type === "is-dragging-over" && "bg-accent-4",
           draggableState.type === "is-dragging" && "opacity-50",
         )}
-        style={{ paddingLeft: `${0.75 + depth}rem` }}
       >
         {children}
       </div>

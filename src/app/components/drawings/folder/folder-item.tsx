@@ -5,6 +5,7 @@ import React from "react";
 import FolderMenu from "./folder-menu";
 import { FolderIcon, FolderOpenIcon } from "lucide-react";
 import ItemContainer from "../item-container";
+import { getItemPadding } from "../tree.utils";
 
 type Props = {
   folder: FolderSelect;
@@ -22,7 +23,6 @@ const FolderItem: React.FC<Props> = ({
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   return (
     <ItemContainer
-      depth={depth}
       dragData={{
         id: folder.id,
         type: "folder",
@@ -32,6 +32,7 @@ const FolderItem: React.FC<Props> = ({
       <button
         onClick={onClick}
         className="flex flex-1 cursor-pointer items-center gap-2"
+        style={getItemPadding(depth)}
       >
         {isExpanded ? (
           <FolderOpenIcon className="size-4 opacity-70" />
