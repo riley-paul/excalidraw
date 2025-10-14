@@ -16,11 +16,8 @@ import useDraggableState from "@/app/hooks/use-draggable-state";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
-import {
-  drawingDragDisabledAtom,
-  drawingsSortOptionAtom,
-  isDraggingOverDrawingListItemAtom,
-} from "./drawing-list.store";
+import { useDrawingListContext } from "./drawing-list.provider";
+import { drawingsSortOptionAtom } from "./drawing-list.store";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -54,10 +51,8 @@ type Props = {
 
 const DrawingList: React.FC<Props> = ({ search }) => {
   const [sort] = useAtom(drawingsSortOptionAtom);
-  const [dragDisabled, setDragDisabled] = useAtom(drawingDragDisabledAtom);
   const isSearching = Boolean(search && search.length > 0);
-
-  useEffect(() => setDragDisabled(isSearching), [isSearching]);
+  const { isDragDisabled, isOverListItem } = useDrawingListContext();
 
   const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));
   const { data: folders } = useSuspenseQuery(qFolders);
@@ -68,7 +63,7 @@ const DrawingList: React.FC<Props> = ({ search }) => {
 
   useEffect(() => {
     return monitorForElements({
-      canMonitor: () => !dragDisabled,
+      canMonitor: () => !isDragDisabled,
       onDrop({ source, location }) {
         const target = location.current.dropTargets[0];
         if (!target) return;
@@ -103,7 +98,6 @@ const DrawingList: React.FC<Props> = ({ search }) => {
   });
 
   const elementRef = useRef<HTMLDivElement>(null);
-  const [isOverItem] = useAtom(isDraggingOverDrawingListItemAtom);
   const { draggableState, setDraggableState, setDraggableIdle } =
     useDraggableState();
 
@@ -113,7 +107,7 @@ const DrawingList: React.FC<Props> = ({ search }) => {
 
     return dropTargetForElements({
       element,
-      canDrop: () => !isOverItem && !dragDisabled,
+      canDrop: () => !isOverListItem && !isDragDisabled,
       getData() {
         return { id: "root", type: "root", parentFolderId: null };
       },
@@ -143,7 +137,7 @@ const DrawingList: React.FC<Props> = ({ search }) => {
         setDraggableIdle();
       },
     });
-  }, [isOverItem]);
+  }, [isOverListItem]);
 
   return (
     <ScrollArea

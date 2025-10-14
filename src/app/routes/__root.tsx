@@ -12,12 +12,13 @@ import { Heading, Separator, Spinner } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "@/app/components/add-menu";
 import { PenToolIcon } from "lucide-react";
-import DrawingListSearch from "../components/drawings/drawing-list-search";
-import SortMenu from "../components/drawings/sort-menu";
+import DrawingListSearch from "@/app/components/drawings/drawing-list-search";
+import SortMenu from "@/app/components/drawings/sort-menu";
 import React from "react";
 import { createStore } from "jotai";
-import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
 import { z } from "astro:schema";
+import { DrawingListProvider } from "@/app/components/drawings/drawing-list.provider";
+import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
 
 const store = createStore();
 
@@ -73,7 +74,9 @@ function Component() {
               </div>
             }
           >
-            <DrawingList search={search} />
+            <DrawingListProvider isDragDisabled={Boolean(search)}>
+              <DrawingList search={search} />
+            </DrawingListProvider>
           </React.Suspense>
           <Separator size="4" orientation="horizontal" />
           <UserMenu user={user} />
