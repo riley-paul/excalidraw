@@ -18,7 +18,7 @@ import {
 import React from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
-import { z } from "zod/v4";
+import { z } from "astro/zod";
 
 type Props = {
   drawing: DrawingSelect;
@@ -117,7 +117,7 @@ const DrawingMenu: React.FC<Props> = ({
           <PencilIcon className="size-4 opacity-70" />
           <span>Rename</span>
         </DropdownMenu.Item>
-     
+
         <DropdownMenu.Item onClick={handleDuplicateDrawing}>
           <CopyIcon className="size-4 opacity-70" />
           <span>Duplicate</span>

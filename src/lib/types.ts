@@ -29,6 +29,8 @@ export type FolderInsert = z.infer<typeof zFolderInsert>;
 export const zDrawingsSearch = z.string().max(100);
 export type DrawingsSearch = z.infer<typeof zDrawingsSearch>;
 
+export const zDrawingName = z.string().trim().min(1).max(100);
+
 const zDrawingsSortField = z.enum([
   "name",
   "updatedAt",

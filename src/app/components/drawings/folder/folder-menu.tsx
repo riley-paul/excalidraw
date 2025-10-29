@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 import React from "react";
 import { toast } from "sonner";
-import { z } from "zod/v4";
+import { z } from "astro/zod";
 
 type Props = {
   folder: FolderSelect;

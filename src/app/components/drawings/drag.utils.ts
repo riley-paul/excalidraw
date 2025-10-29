@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "astro/zod";
 
 export const zDragData = z.object({
   id: z.string(),

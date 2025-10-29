@@ -1,10 +1,10 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import useMutations from "@/app/hooks/use-mutations";
+import { zDrawingName } from "@/lib/types";
 import { Button, Heading } from "@radix-ui/themes";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom } from "jotai";
 import { HomeIcon, PlusIcon } from "lucide-react";
-import z from "zod/v4";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -23,7 +23,7 @@ function RouteComponent() {
         message: "Drawing will be created in the root directory",
         value: "",
         placeholder: "Enter drawing name",
-        schema: z.string().min(1).max(100),
+        schema: zDrawingName,
         handleSubmit: (value: string) => {
           createDrawing.mutate({ name: value });
           dispatchAlert({ type: "close" });
