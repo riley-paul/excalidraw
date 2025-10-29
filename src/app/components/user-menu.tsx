@@ -1,10 +1,32 @@
 import type { UserSelect } from "@/lib/types";
 import { Avatar, DropdownMenu, Text } from "@radix-ui/themes";
-import { ChevronsUpDownIcon, LogOutIcon } from "lucide-react";
+import { useAtom } from "jotai";
+import { ChevronsUpDownIcon, LogOutIcon, Trash2Icon } from "lucide-react";
+import { alertSystemAtom } from "./alert-system/alert-system.store";
+import useMutations from "../hooks/use-mutations";
 
 type Props = { user: UserSelect };
 
 export const UserMenu: React.FC<Props> = ({ user }) => {
+  const [, dispatchAlert] = useAtom(alertSystemAtom);
+  const { deleteAccount } = useMutations();
+
+  const handleDeleteAccount = () => {
+    dispatchAlert({
+      type: "open",
+      data: {
+        type: "delete",
+        title: "Delete Account",
+        message:
+          "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
+        handleDelete: () => {
+          deleteAccount.mutate({});
+          dispatchAlert({ type: "close" });
+        },
+      },
+    });
+  };
+
   const fallback = user.name
     .split(" ")
     .map((n) => n[0])
@@ -56,6 +78,10 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
             <span>Log out</span>
           </DropdownMenu.Item>
         </a>
+        <DropdownMenu.Item color="red" onClick={handleDeleteAccount}>
+          <Trash2Icon className="size-4 opacity-70" />
+          <span>Delete account</span>
+        </DropdownMenu.Item>
       </DropdownMenu.Content>
     </DropdownMenu.Root>
   );

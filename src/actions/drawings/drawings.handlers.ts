@@ -18,6 +18,7 @@ export const get: ActionHandler<
 > = async ({ id, withContent }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
+  const bucket = c.locals.runtime.env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -35,7 +36,7 @@ export const get: ActionHandler<
     return { ...drawing, content: null };
   }
 
-  const content = await c.locals.runtime.env.R2_BUCKET.get(id);
+  const content = await bucket.get(id);
   return { ...drawing, content: content ? await content.text() : null };
 };
 
@@ -116,6 +117,7 @@ export const remove: ActionHandler<
 > = async ({ id }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
+  const bucket = c.locals.runtime.env.R2_BUCKET;
 
   const result = await db
     .delete(Drawing)
@@ -128,8 +130,8 @@ export const remove: ActionHandler<
     });
   }
 
-  await c.locals.runtime.env.R2_BUCKET.delete(id);
-  await c.locals.runtime.env.R2_BUCKET.delete(`${id}-thumbnail`);
+  await bucket.delete(id);
+  await bucket.delete(`${id}-thumbnail`);
 
   return true;
 };
@@ -140,6 +142,7 @@ export const save: ActionHandler<
 > = async ({ id, content, thumbnail }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
+  const bucket = c.locals.runtime.env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -154,8 +157,8 @@ export const save: ActionHandler<
   }
 
   await Promise.all([
-    c.locals.runtime.env.R2_BUCKET.put(id, content),
-    c.locals.runtime.env.R2_BUCKET.put(`${id}-thumbnail`, thumbnail),
+    bucket.put(id, content),
+    bucket.put(`${id}-thumbnail`, thumbnail),
   ]);
 
   const [updated] = await db
@@ -173,6 +176,7 @@ export const duplicate: ActionHandler<
 > = async ({ id }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
+  const bucket = c.locals.runtime.env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -186,7 +190,7 @@ export const duplicate: ActionHandler<
     });
   }
 
-  const content = await c.locals.runtime.env.R2_BUCKET.get(id);
+  const content = await bucket.get(id);
   if (!content) {
     throw new ActionError({
       code: "NOT_FOUND",
@@ -194,7 +198,7 @@ export const duplicate: ActionHandler<
     });
   }
 
-  const thumbnail = await c.locals.runtime.env.R2_BUCKET.get(`${id}-thumbnail`);
+  const thumbnail = await bucket.get(`${id}-thumbnail`);
 
   const [newDrawing] = await db
     .insert(Drawing)
@@ -207,15 +211,9 @@ export const duplicate: ActionHandler<
     .returning();
 
   await Promise.all([
-    c.locals.runtime.env.R2_BUCKET.put(
-      newDrawing.id,
-      await content.arrayBuffer(),
-    ),
+    bucket.put(newDrawing.id, await content.arrayBuffer()),
     thumbnail &&
-      c.locals.runtime.env.R2_BUCKET.put(
-        `${newDrawing.id}-thumbnail`,
-        await thumbnail.arrayBuffer(),
-      ),
+      bucket.put(`${newDrawing.id}-thumbnail`, await thumbnail.arrayBuffer()),
   ]);
 
   return newDrawing;

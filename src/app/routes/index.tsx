@@ -1,10 +1,11 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import useMutations from "@/app/hooks/use-mutations";
 import { zDrawingName } from "@/lib/types";
-import { Button, Heading } from "@radix-ui/themes";
+import { Button } from "@radix-ui/themes";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom } from "jotai";
 import { HomeIcon, PlusIcon } from "lucide-react";
+import Empty from "../components/ui/empty";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -34,16 +35,23 @@ function RouteComponent() {
 
   return (
     <article className="flex h-screen w-full items-center justify-center">
-      <section className="flex flex-col items-center gap-5">
-        <Heading as="h2" size="4" className="flex flex-col items-center gap-1">
-          <HomeIcon className="text-accent-9 size-12" />
-          <span>Welcome to Excalidraw</span>
-        </Heading>
-        <Button variant="soft" onClick={handleAddDrawing}>
-          <PlusIcon className="size-4" />
-          <span>Create New Drawing</span>
-        </Button>
-      </section>
+      <Empty.Root>
+        <Empty.Header>
+          <Empty.Media variant="icon">
+            <HomeIcon />
+          </Empty.Media>
+          <Empty.Title>Welcome to Excalidraw</Empty.Title>
+          <Empty.Description>
+            Select a drawing from the sidebar or create a new one to get started
+          </Empty.Description>
+        </Empty.Header>
+        <Empty.Content>
+          <Button variant="soft" onClick={handleAddDrawing}>
+            <PlusIcon className="size-4" />
+            <span>Create New Drawing</span>
+          </Button>
+        </Empty.Content>
+      </Empty.Root>
     </article>
   );
 }

@@ -11,6 +11,13 @@ export default function useMutations() {
   const navigate = useNavigate();
   const { drawingId } = useParams({ strict: false });
 
+  const deleteAccount = useMutation({
+    mutationFn: actions.users.remove.orThrow,
+    onSuccess: () => {
+      window.location.reload();
+    },
+  });
+
   const createDrawing = useMutation({
     mutationFn: actions.drawings.create.orThrow,
     onSuccess: ({ id }) => {
@@ -101,6 +108,7 @@ export default function useMutations() {
   });
 
   return {
+    deleteAccount,
     createDrawing,
     removeDrawing,
     duplicateDrawing,

@@ -1,6 +1,6 @@
 import { type ActionHandler } from "astro:actions";
 import { createDb } from "@/db";
-import { User } from "@/db/schema";
+import { Drawing, User } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { isAuthorized } from "@/actions/helpers";
 import * as userInputs from "./users.inputs";
@@ -29,6 +29,20 @@ export const remove: ActionHandler<typeof userInputs.remove, null> = async (
 ) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
+  const bucket = c.locals.runtime.env.R2_BUCKET;
+
+  const userDrawings = await db
+    .select()
+    .from(Drawing)
+    .where(eq(Drawing.userId, userId));
+
+  await Promise.all(
+    userDrawings.map(async ({ id }) => {
+      await bucket.delete(id);
+      await bucket.delete(`${id}-thumbnail`);
+    }),
+  );
+
   await db.delete(User).where(eq(User.id, userId));
   return null;
 };
