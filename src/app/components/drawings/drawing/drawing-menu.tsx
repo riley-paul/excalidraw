@@ -103,7 +103,7 @@ const DrawingMenu: React.FC<Props> = ({
     <DropdownMenu.Root modal={false} open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenu.Trigger>
         <IconButton
-          className="size-4!"
+          className="size-4"
           size="1"
           radius="full"
           variant="ghost"
