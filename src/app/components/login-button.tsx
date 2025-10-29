@@ -38,7 +38,7 @@ const providers: Record<string, ProviderDetails> = {
       </svg>
     ), // Replace with actual icon
     url: "/login/google",
-    className: "bg-white text-gray-950 border border-gray-300",
+    className: "bg-white! text-gray-950! border! border-gray-300!",
   },
   github: {
     name: "GitHub",
@@ -56,7 +56,7 @@ const providers: Record<string, ProviderDetails> = {
       </svg>
     ), // Replace with actual icon
     url: "/login/github",
-    className: "border border-gray-800 bg-gray-950 text-white",
+    className: "border! border-gray-800! bg-gray-950! text-white!",
   },
 };
 
