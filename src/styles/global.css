@@ -16,6 +16,10 @@
   @apply border-gray-6;
 }
 
+body {
+  overflow: hidden;
+}
+
 .radix-themes {
   --default-font-family: "Assistant Variable", sans-serif;
   --cursor-button: pointer;

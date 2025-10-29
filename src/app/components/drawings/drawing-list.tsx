@@ -18,6 +18,8 @@ import { cn } from "@/lib/client/utils";
 import { useAtom } from "jotai";
 import { useDrawingListContext } from "./drawing-list.provider";
 import { drawingsSortOptionAtom } from "./drawing-list.store";
+import NoSearchResultsScreen from "../screens/no-search-results";
+import NoDrawingsScreen from "../screens/no-drawings";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -147,6 +149,8 @@ const DrawingList: React.FC<Props> = ({ search }) => {
       )}
     >
       <div ref={elementRef} className="pb-16">
+        {treeNodes.length === 0 && !isSearching && <NoDrawingsScreen />}
+        {treeNodes.length === 0 && isSearching && <NoSearchResultsScreen />}
         {treeNodes.map((node) => (
           <TreeNodeComponent key={node.id} node={node} />
         ))}

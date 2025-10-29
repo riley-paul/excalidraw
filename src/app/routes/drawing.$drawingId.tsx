@@ -1,23 +1,20 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { qDrawing } from "@/lib/client/queries";
 import Drawing from "@/app/components/drawing";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
   loader: async ({ params: { drawingId }, context: { queryClient } }) => {
-    return queryClient.ensureQueryData(qDrawing(drawingId));
-  },
-  onError: () => {
-    toast.error("Failed to load drawing. Please try again.");
-    throw redirect({ to: "/" });
+    const drawing = await queryClient.fetchQuery(qDrawing(drawingId));
+    if (!drawing) throw notFound();
+    return drawing;
   },
 });
 
 function RouteComponent() {
   const { drawingId } = Route.useParams();
   return (
-    <div className="h-screen w-full">
+    <div className="h-screen w-full flex-1">
       <Drawing drawingId={drawingId} />
     </div>
   );

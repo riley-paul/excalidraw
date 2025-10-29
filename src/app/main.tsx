@@ -12,6 +12,9 @@ import { toast } from "sonner";
 import AlertSystem from "@/app/components/alert-system/alert-system";
 import RadixProvider from "@/app/components/ui/radix-provider";
 import CustomToaster from "@/app/components/ui/custom-toaster";
+import LoadingScreen from "./components/screens/loading";
+import NotFoundScreen from "./components/screens/not-found";
+import ErrorScreen from "./components/screens/error";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
@@ -31,6 +34,9 @@ const router = createRouter({
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
+  defaultPendingComponent: LoadingScreen,
+  defaultNotFoundComponent: NotFoundScreen,
+  defaultErrorComponent: ErrorScreen,
 });
 
 declare module "@tanstack/react-router" {

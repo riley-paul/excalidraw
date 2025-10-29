@@ -14,7 +14,7 @@ import { and, asc, desc, eq, like, or } from "drizzle-orm";
 
 export const get: ActionHandler<
   typeof drawingInputs.get,
-  DrawingSelectWithContent
+  DrawingSelectWithContent | null
 > = async ({ id, withContent }, c) => {
   const db = createDb(c.locals.runtime.env);
   const userId = isAuthorized(c).id;
@@ -26,10 +26,7 @@ export const get: ActionHandler<
     .where(and(eq(Drawing.userId, userId), eq(Drawing.id, id)));
 
   if (!drawing) {
-    throw new ActionError({
-      code: "NOT_FOUND",
-      message: `Drawing with id ${id} not found.`,
-    });
+    return null;
   }
 
   if (!withContent) {

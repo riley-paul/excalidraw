@@ -22,9 +22,11 @@ type Props = {
 };
 
 const Drawing: React.FC<Props> = ({ drawingId }) => {
-  const {
-    data: { name, parentFolderId },
-  } = useSuspenseQuery(qDrawing(drawingId));
+  const { data: drawing } = useSuspenseQuery(qDrawing(drawingId));
+  if (!drawing) throw new Error("Drawing not found");
+
+  const { name, parentFolderId } = drawing;
+
   const { saveDrawing } = useMutations();
   const { openFolder } = useFileTree();
 
@@ -73,11 +75,12 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
   };
 
   const loadInitialData = async () => {
-    const { content } = await actions.drawings.get.orThrow({
+    const drawing = await actions.drawings.get.orThrow({
       id: drawingId,
       withContent: true,
     });
-    const data = restore(JSON.parse(content ?? "{}"), null, null);
+    if (!drawing) throw new Error("Drawing content not found");
+    const data = restore(JSON.parse(drawing.content ?? "{}"), null, null);
     // updateIsDirtyWorker();
     return data;
   };
