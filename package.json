@@ -41,7 +41,7 @@
     "drizzle-orm": "^0.44.2",
     "drizzle-zod": "^0.7.1",
     "jotai": "^2.12.5",
-    "lucide-react": "^0.515.0",
+    "lucide-react": "^0.548.0",
     "luxon": "^3.6.1",
     "prettier-plugin-tailwindcss": "^0.6.12",
     "radix-themes-tw": "^1.1.0",
