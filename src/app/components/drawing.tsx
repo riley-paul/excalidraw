@@ -10,7 +10,7 @@ import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useState } from "react";
 import { useDocumentTitle, useEventListener } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
-import RadixProvider from "@/app/components/radix-provider";
+import RadixProvider from "@/app/components/ui/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
 import useFileTree from "@/app/hooks/use-file-tree";

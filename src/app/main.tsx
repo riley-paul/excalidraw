@@ -10,8 +10,8 @@ import {
 } from "@tanstack/react-query";
 import { toast } from "sonner";
 import AlertSystem from "@/app/components/alert-system/alert-system";
-import RadixProvider from "@/app/components/radix-provider";
-import CustomToaster from "@/app/components/custom-toaster";
+import RadixProvider from "@/app/components/ui/radix-provider";
+import CustomToaster from "@/app/components/ui/custom-toaster";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },

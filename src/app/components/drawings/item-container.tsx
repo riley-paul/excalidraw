@@ -10,7 +10,7 @@ import { combine } from "@atlaskit/pragmatic-drag-and-drop/combine";
 import invariant from "tiny-invariant";
 import useDraggableState from "@/app/hooks/use-draggable-state";
 import { Portal } from "@radix-ui/themes";
-import RadixProvider from "../radix-provider";
+import RadixProvider from "../ui/radix-provider";
 import type { DragData } from "./drag.utils";
 import { useDrawingListContext } from "./drawing-list.provider";
 

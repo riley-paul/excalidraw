@@ -6,7 +6,7 @@ import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import UserMenu from "@/app/components/user-menu";
 import { qCurrentUser } from "@/lib/client/queries";
 import DrawingList from "@/app/components/drawings/drawing-list";
-import RadixProvider from "@/app/components/radix-provider";
+import RadixProvider from "@/app/components/ui/radix-provider";
 import Sidebar from "@/app/components/sidebar/sidebar";
 import { Heading, Separator, Spinner } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
