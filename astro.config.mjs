@@ -26,7 +26,7 @@ export default defineConfig({
           description:
             "A backend wrapper around the excellent open-source Excalidraw canvas",
           background_color: "#24252880",
-          theme_color: "#4f78d8",
+          theme_color: "#24252880",
           display: "standalone",
         },
       }),
