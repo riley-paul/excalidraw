@@ -40,7 +40,7 @@ function RouteComponent() {
           <Empty.Media variant="icon">
             <HomeIcon />
           </Empty.Media>
-          <Empty.Title>Welcome to Excalidraw</Empty.Title>
+          <Empty.Title>Welcome to Excalidraw Lite</Empty.Title>
           <Empty.Description>
             Select a drawing from the sidebar or create a new one to get started
           </Empty.Description>

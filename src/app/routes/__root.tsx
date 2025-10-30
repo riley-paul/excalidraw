@@ -10,7 +10,7 @@ import Sidebar from "@/app/components/sidebar/sidebar";
 import { Heading, Separator, Spinner } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "@/app/components/add-menu";
-import { PenToolIcon } from "lucide-react";
+import { DraftingCompassIcon } from "lucide-react";
 import DrawingListSearch from "@/app/components/drawings/drawing-list-search";
 import SortMenu from "@/app/components/drawings/sort-menu";
 import React from "react";
@@ -54,8 +54,8 @@ function Component() {
       <Sidebar>
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/" className="flex items-center gap-2">
-            <PenToolIcon className="text-accent-9 size-6" />
-            <Heading size="4">Excalidraw</Heading>
+            <DraftingCompassIcon className="text-accent-9 size-6" />
+            <Heading size="4">Excalidraw Lite</Heading>
           </Link>
           <AddMenu />
         </header>
