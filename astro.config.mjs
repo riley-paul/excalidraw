@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from "astro/config";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 import react from "@astrojs/react";
 import tailwindcss from "@tailwindcss/vite";
@@ -14,6 +15,21 @@ export default defineConfig({
   vite: {
     plugins: [
       tailwindcss(),
+      VitePWA({
+        registerType: "autoUpdate",
+        injectRegister: "auto",
+        devOptions: { enabled: true },
+        includeAssets: ["/favicon.svg", "/icons/apple-touch-icon.png"],
+        manifest: {
+          name: "Excalidraw Lite",
+          short_name: "Excalidraw Lite",
+          description:
+            "A backend wrapper around the excellent open-source Excalidraw canvas",
+          background_color: "#24252880",
+          theme_color: "#4f78d8",
+          display: "standalone",
+        },
+      }),
       tanstackRouter({
         target: "react",
         autoCodeSplitting: true,
