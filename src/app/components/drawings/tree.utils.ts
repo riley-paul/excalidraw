@@ -89,5 +89,5 @@ export function getParentFolderIds(
 export const getItemPadding = (depth: number): React.CSSProperties => ({
   paddingTop: "0.5rem",
   paddingBottom: "0.5rem",
-  paddingLeft: `${0.75 + depth}rem`,
+  paddingLeft: `${depth}rem`,
 });
