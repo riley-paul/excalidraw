@@ -19,7 +19,11 @@ export default defineConfig({
         registerType: "autoUpdate",
         injectRegister: "auto",
         devOptions: { enabled: true },
-        includeAssets: ["/favicon.svg", "/icons/apple-touch-icon.png"],
+        includeAssets: [
+          "/favicon.svg",
+          "/icons/apple-touch-icon.png",
+          "/fonts/**/*.woff2",
+        ],
         manifest: {
           name: "Excalidraw Lite",
           short_name: "Excalidraw Lite",
