@@ -117,7 +117,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
               onClick={handleSave}
               // variant={isDirty ? "solid" : "soft"}
               variant="soft"
-              className="h-[2.25rem]"
+              className="h-[2.25rem]!"
               disabled={isLoading}
             >
               <Spinner loading={isLoading}>
