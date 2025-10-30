@@ -54,7 +54,7 @@ function Component() {
       <Sidebar>
         <header className="flex items-center justify-between gap-3 p-3">
           <Link to="/" className="flex items-center gap-2">
-            <DraftingCompassIcon className="text-accent-9 size-6" />
+            <DraftingCompassIcon className="text-accent-10 size-6" />
             <Heading size="4">Excalidraw Lite</Heading>
           </Link>
           <AddMenu />
