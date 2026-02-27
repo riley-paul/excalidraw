@@ -18,6 +18,13 @@
       "bucket_name": "excalidraw",
     },
   ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "excalidraw",
+      "database_id": "7e3b155d-ca44-4c74-af78-c1c215fdb305",
+    },
+  ],
   /**
    * Smart Placement
    * Docs: https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement
