@@ -15,7 +15,7 @@ import DrawingListSearch from "@/app/components/drawings/drawing-list-search";
 import SortMenu from "@/app/components/drawings/sort-menu";
 import React from "react";
 import { createStore } from "jotai";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 import { DrawingListProvider } from "@/app/components/drawings/drawing-list.provider";
 import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
 

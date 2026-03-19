@@ -1,6 +1,6 @@
 import { Drawing, Folder, User } from "@/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 
 export const zUserSelect = createSelectSchema(User);
 export const zUserInsert = createInsertSchema(User);

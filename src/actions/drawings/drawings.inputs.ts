@@ -1,5 +1,5 @@
 import { zDrawingsQueryParams } from "@/lib/types";
-import { z } from "astro:schema";
+import { z } from "astro/zod";
 
 export const get = z.object({
   id: z.string().uuid(),
