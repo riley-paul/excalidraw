@@ -1,16 +1,17 @@
-import type { ActionHandler } from "astro:actions";
 import * as folderInputs from "./folders.inputs";
 import type { FolderSelect } from "@/lib/types";
 import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Folder } from "@/db/schema";
 import { and, asc, eq } from "drizzle-orm";
+import type { ActionHandler } from "node_modules/astro/dist/actions/runtime/types";
+import { env } from "cloudflare:workers";
 
 export const list: ActionHandler<
   typeof folderInputs.list,
   FolderSelect[]
 > = async (_, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
   const folders = await db
     .select()
@@ -24,7 +25,7 @@ export const create: ActionHandler<
   typeof folderInputs.create,
   FolderSelect
 > = async ({ name, parentFolderId }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
 
   const [newFolder] = await db
@@ -43,7 +44,7 @@ export const update: ActionHandler<
   typeof folderInputs.update,
   FolderSelect
 > = async ({ id, name, parentFolderId }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
 
   const [updatedFolder] = await db
@@ -67,7 +68,7 @@ export const remove: ActionHandler<
   typeof folderInputs.remove,
   boolean
 > = async ({ id }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
   const result = await db
     .delete(Folder)

@@ -2,7 +2,7 @@ import { zDrawingsQueryParams } from "@/lib/types";
 import { z } from "astro/zod";
 
 export const get = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   withContent: z.boolean().default(false),
 });
 
@@ -10,21 +10,21 @@ export const list = zDrawingsQueryParams;
 
 export const create = z.object({
   name: z.string().min(1).max(100),
-  parentFolderId: z.string().uuid().nullish(),
+  parentFolderId: z.uuid().nullish(),
 });
 
 export const update = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   name: z.string().min(1).max(100).optional(),
-  parentFolderId: z.string().uuid().nullish(),
+  parentFolderId: z.uuid().nullish(),
 });
 
-export const remove = z.object({ id: z.string().uuid() });
+export const remove = z.object({ id: z.uuid() });
 
-export const duplicate = z.object({ id: z.string().uuid() });
+export const duplicate = z.object({ id: z.uuid() });
 
 export const save = z.object({
-  id: z.string().uuid(),
+  id: z.uuid(),
   content: z.instanceof(File),
   thumbnail: z.instanceof(File),
 });

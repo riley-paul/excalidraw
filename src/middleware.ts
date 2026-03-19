@@ -5,6 +5,7 @@ import {
   setSessionTokenCookie,
   validateSessionToken,
 } from "./lib/server/lucia";
+import { env } from "cloudflare:workers";
 
 const userValidation = defineMiddleware(async (context, next) => {
   const token = context.cookies.get(SESSION_COOKIE_NAME)?.value ?? null;
@@ -14,12 +15,12 @@ const userValidation = defineMiddleware(async (context, next) => {
     return next();
   }
 
-  const { user, session } = await validateSessionToken(context, token);
+  const { user, session } = await validateSessionToken(env, token);
 
   if (session) {
-    setSessionTokenCookie(context, token, session.expiresAt);
+    setSessionTokenCookie(env, context, token, session.expiresAt);
   } else {
-    deleteSessionTokenCookie(context);
+    deleteSessionTokenCookie(env, context);
   }
 
   context.locals.session = session;
@@ -30,7 +31,7 @@ const userValidation = defineMiddleware(async (context, next) => {
 const WHITE_LIST = ["/welcome", "/login"];
 const routeGuarding = defineMiddleware(async (context, next) => {
   const isWhiteListed = WHITE_LIST.some((path) =>
-    context.url.pathname.startsWith(path)
+    context.url.pathname.startsWith(path),
   );
   if (!isWhiteListed && !context.locals.user) {
     return context.redirect("/welcome");

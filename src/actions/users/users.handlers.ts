@@ -1,10 +1,11 @@
-import { type ActionHandler } from "astro:actions";
 import { createDb } from "@/db";
 import { Drawing, User } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { isAuthorized } from "@/actions/helpers";
 import * as userInputs from "./users.inputs";
 import type { UserSelect } from "@/lib/types";
+import type { ActionHandler } from "node_modules/astro/dist/actions/runtime/types";
+import { env } from "cloudflare:workers";
 
 export const getMe: ActionHandler<
   typeof userInputs.getMe,
@@ -13,7 +14,7 @@ export const getMe: ActionHandler<
   const user = c.locals.user;
   if (!user) return null;
 
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const [currentUser] = await db
     .select()
     .from(User)
@@ -27,9 +28,9 @@ export const remove: ActionHandler<typeof userInputs.remove, null> = async (
   _,
   c,
 ) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
-  const bucket = c.locals.runtime.env.R2_BUCKET;
+  const bucket = env.R2_BUCKET;
 
   const userDrawings = await db
     .select()

@@ -2,7 +2,6 @@ import React from "react";
 import type { InputAlertProps } from "./alert-system.types";
 import { Dialog, Button, Text, TextField } from "@radix-ui/themes";
 import { Controller, useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "astro/zod";
 
 type Schema = { value: string };
@@ -17,7 +16,6 @@ const AlertSystemContentInput: React.FC<InputAlertProps> = ({
 }) => {
   const form = useForm<Schema>({
     defaultValues: { value },
-    resolver: zodResolver(z.object({ value: schema })),
   });
 
   const onSubmit = form.handleSubmit(({ value }) => handleSubmit(value));

@@ -1,4 +1,4 @@
-import { ActionError, type ActionHandler } from "astro:actions";
+import { ActionError } from "astro:actions";
 import * as drawingInputs from "./drawings.inputs";
 import {
   defaultDrawingSort,
@@ -11,14 +11,16 @@ import { createDb } from "@/db";
 import { isAuthorized } from "../helpers";
 import { Drawing } from "@/db/schema";
 import { and, asc, desc, eq, like, or } from "drizzle-orm";
+import type { ActionHandler } from "node_modules/astro/dist/actions/runtime/types";
+import { env } from "cloudflare:workers";
 
 export const get: ActionHandler<
   typeof drawingInputs.get,
   DrawingSelectWithContent | null
 > = async ({ id, withContent }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
-  const bucket = c.locals.runtime.env.R2_BUCKET;
+  const bucket = env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -59,7 +61,7 @@ export const list: ActionHandler<
   typeof drawingInputs.list,
   DrawingSelect[]
 > = async ({ sort, search }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
 
   const drawings = await db
@@ -75,7 +77,7 @@ export const create: ActionHandler<
   typeof drawingInputs.create,
   DrawingSelect
 > = async (data, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
 
   const [newDrawing] = await db
@@ -89,7 +91,7 @@ export const update: ActionHandler<
   typeof drawingInputs.update,
   DrawingSelect
 > = async ({ id, ...updateData }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
 
   const [updatedDrawing] = await db
@@ -112,9 +114,9 @@ export const remove: ActionHandler<
   typeof drawingInputs.remove,
   boolean
 > = async ({ id }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
-  const bucket = c.locals.runtime.env.R2_BUCKET;
+  const bucket = env.R2_BUCKET;
 
   const result = await db
     .delete(Drawing)
@@ -137,9 +139,9 @@ export const save: ActionHandler<
   typeof drawingInputs.save,
   DrawingSelect
 > = async ({ id, content, thumbnail }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
-  const bucket = c.locals.runtime.env.R2_BUCKET;
+  const bucket = env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -171,9 +173,9 @@ export const duplicate: ActionHandler<
   typeof drawingInputs.duplicate,
   DrawingSelect
 > = async ({ id }, c) => {
-  const db = createDb(c.locals.runtime.env);
+  const db = createDb(env);
   const userId = isAuthorized(c).id;
-  const bucket = c.locals.runtime.env.R2_BUCKET;
+  const bucket = env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
