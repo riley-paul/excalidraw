@@ -2,10 +2,11 @@ import { generateState } from "arctic";
 
 import type { APIContext } from "astro";
 import { createGithub } from "@/lib/server/oauth";
+import { env } from "cloudflare:workers";
 
 export async function GET(context: APIContext): Promise<Response> {
-  const secure = context.locals.runtime.env.NODE_ENV === "production";
-  const github = createGithub(context);
+  const secure = env.NODE_ENV === "production";
+  const github = createGithub(env);
 
   const state = generateState();
   const url = github.createAuthorizationURL(state, ["user:email"]);
