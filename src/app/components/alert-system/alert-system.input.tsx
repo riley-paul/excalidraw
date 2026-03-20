@@ -30,24 +30,29 @@ const AlertSystemContentInput: React.FC<InputAlertProps> = ({
         <Dialog.Description>{message}</Dialog.Description>
         <form.Field
           name="value"
-          children={(field) => (
-            <div className="mt-6">
-              <TextField.Root
-                id={field.name}
-                name={field.name}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) => field.handleChange(e.target.value)}
-                size="3"
-                placeholder={placeholder}
-              />
-              {/*{error && (
-                <Text color="red" size="1" className="mt-1">
-                  {error.message}
-                </Text>
-              )}*/}
-            </div>
-          )}
+          children={(field) => {
+            const isInvalid =
+              field.state.meta.isTouched && !field.state.meta.isValid;
+            return (
+              <div className="mt-6">
+                <TextField.Root
+                  id={field.name}
+                  name={field.name}
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  size="3"
+                  placeholder={placeholder}
+                />
+                {isInvalid &&
+                  field.state.meta.errors.map((e) => (
+                    <Text color="red" size="1" className="mt-1">
+                      {e?.message}
+                    </Text>
+                  ))}
+              </div>
+            );
+          }}
         />
         <footer className="mt-4 flex justify-end gap-3">
           <Dialog.Close>
