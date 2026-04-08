@@ -11,7 +11,10 @@ import cloudflare from "@astrojs/cloudflare";
 export default defineConfig({
   integrations: [react()],
   prefetch: true,
-  security: { checkOrigin: true },
+  security: {
+    checkOrigin: true,
+    actionBodySizeLimit: 10 * 1024 * 1024, // 10MB
+  },
   vite: {
     plugins: [
       tailwindcss(),
