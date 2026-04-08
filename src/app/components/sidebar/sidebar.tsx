@@ -4,8 +4,8 @@ import { useAtom } from "jotai";
 import { desktopSidebarOpenAtom, mobileSidebarOpenAtom } from "./sidebar.store";
 import { cn, getIsTyping } from "@/lib/client/utils";
 import { useIsMobile } from "@/app/hooks/use-mobile";
-import { useEventListener } from "usehooks-ts";
 import RadixProvider from "../ui/radix-provider";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
   const isMobile = useIsMobile();
@@ -13,12 +13,14 @@ const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
     isMobile ? mobileSidebarOpenAtom : desktopSidebarOpenAtom,
   );
 
-  useEventListener("keydown", (e) => {
+  useHotkey("B", () => {
     if (getIsTyping()) return;
-    if (e.code === "KeyB") {
-      setIsOpen((prev) => !prev);
-    }
-    if (isMobile && e.code === "Escape") {
+    setIsOpen((prev) => !prev);
+  });
+
+  useHotkey("Escape", () => {
+    if (getIsTyping()) return;
+    if (isMobile) {
       setIsOpen(false);
     }
   });
@@ -62,7 +64,7 @@ const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
             >
               <div
                 className={cn(
-                  "bg-gray-7 group-hover:bg-gray-8 m-0 h-full w-[4px] rounded-full p-0 transition ease-out group-hover:w-[6px]",
+                  "bg-gray-7 group-hover:bg-gray-8 m-0 h-full w-1 rounded-full p-0 transition ease-out group-hover:w-1.5",
                   !isOpen && "bg-gray-12 group-hover:bg-gray-11",
                 )}
               />

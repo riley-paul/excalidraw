@@ -8,7 +8,7 @@ import {
 } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useState } from "react";
-import { useDocumentTitle, useEventListener } from "usehooks-ts";
+import { useDocumentTitle } from "usehooks-ts";
 import { Button, Spinner } from "@radix-ui/themes";
 import RadixProvider from "@/app/components/ui/radix-provider";
 import { actions } from "astro:actions";
@@ -17,10 +17,9 @@ import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
-type Props = {
-  drawingId: string;
-};
+type Props = { drawingId: string };
 
 const Drawing: React.FC<Props> = ({ drawingId }) => {
   const { data: drawing } = useSuspenseQuery(qDrawing(drawingId));
@@ -106,12 +105,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
   //   enableBeforeUnload: () => isDirty,
   // });
 
-  useEventListener("keydown", (event) => {
-    if (event.key === "s" && (event.ctrlKey || event.metaKey)) {
-      event.preventDefault();
-      handleSave();
-    }
-  });
+  useHotkey("Mod+S", handleSave);
 
   return (
     <Excalidraw
@@ -126,7 +120,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
               onClick={handleSave}
               // variant={isDirty ? "solid" : "soft"}
               variant="soft"
-              className="h-[2.25rem]!"
+              className="h-9!"
               disabled={isLoading}
             >
               <Spinner loading={isLoading}>
