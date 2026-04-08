@@ -13,7 +13,7 @@ export default defineConfig({
   prefetch: true,
   security: {
     checkOrigin: true,
-    actionBodySizeLimit: 10 * 1024 * 1024, // 10MB
+    actionBodySizeLimit: 100 * 1024 * 1024, // 100 MB
   },
   vite: {
     plugins: [
