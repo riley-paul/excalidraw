@@ -14,9 +14,7 @@ export default defineConfig({
   security: { checkOrigin: true },
   vite: {
     plugins: [
-      // @ts-expect-error
       tailwindcss(),
-      // @ts-expect-error
       VitePWA({
         registerType: "autoUpdate",
         injectRegister: "auto",
@@ -36,7 +34,6 @@ export default defineConfig({
           display: "standalone",
         },
       }),
-      // @ts-expect-error
       tanstackRouter({
         target: "react",
         autoCodeSplitting: true,

@@ -16,6 +16,7 @@ import { SaveIcon } from "lucide-react";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 type Props = {
   drawingId: string;
@@ -49,28 +50,36 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
 
     setIsLoading(true);
 
-    const elements = excalidrawAPI.getSceneElements();
-    const appState = excalidrawAPI.getAppState();
-    const files = excalidrawAPI.getFiles();
+    try {
+      const elements = excalidrawAPI.getSceneElements();
+      const appState = excalidrawAPI.getAppState();
+      const files = excalidrawAPI.getFiles();
 
-    const contentJson = serializeAsJSON(elements, appState, files, "local");
-    const content = new File([contentJson], `${drawingId}.json`, {
-      type: "application/json",
-    });
+      const contentJson = serializeAsJSON(elements, appState, files, "local");
+      const content = new File([contentJson], `${drawingId}.json`, {
+        type: "application/json",
+      });
 
-    const thumbnailBlobPromise = exportToBlob({
-      elements,
-      appState,
-      files,
-    }) as Promise<Blob>;
-    const thumbnailBlob = await thumbnailBlobPromise;
-    const thumbnail = new File([thumbnailBlob], `${drawingId}.png`, {
-      type: "image/png",
-    });
+      const thumbnailBlobPromise = exportToBlob({
+        elements,
+        appState,
+        files,
+      }) as Promise<Blob>;
+      const thumbnailBlob = await thumbnailBlobPromise;
+      const thumbnail = new File([thumbnailBlob], `${drawingId}.png`, {
+        type: "image/png",
+      });
 
-    await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
-
-    setIsLoading(false);
+      await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
+    } catch (e) {
+      const error = e as Error;
+      console.error("Error saving drawing:", e);
+      toast.error("Failed to save drawing. Please try again.", {
+        description: error.message,
+      });
+    } finally {
+      setIsLoading(false);
+    }
     // updateIsDirtyWorker();
   };
 
