@@ -21,7 +21,9 @@ const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error) => {
       console.error(error);
-      toast.error(error.message ?? "Server Error");
+      toast.error("Something went wrong", {
+        description: error.message ?? "Server Error",
+      });
     },
   }),
 });

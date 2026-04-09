@@ -1,6 +1,6 @@
 import { createDb } from "@/db";
 import { Drawing, User } from "@/db/schema";
-import { eq, sum } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { getStorageUsed, isAuthorized } from "@/actions/helpers";
 import * as userInputs from "./users.inputs";
 import type { UserSelect } from "@/lib/types";

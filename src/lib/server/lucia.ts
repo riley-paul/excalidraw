@@ -113,5 +113,5 @@ export function deleteSessionTokenCookie(env: Env, context: APIContext): void {
 }
 
 export type SessionValidationResult =
-  | { session: UserSessionInfo; user: UserSelect }
+  | { session: UserSessionInfo; user: Pick<UserSelect, "id"> }
   | { session: null; user: null };

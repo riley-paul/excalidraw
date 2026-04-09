@@ -8,7 +8,7 @@ import {
   type DrawingsSort,
 } from "@/lib/types";
 import { createDb } from "@/db";
-import { isAuthorized } from "../helpers";
+import { exceedsStorageLimit, isAuthorized } from "../helpers";
 import { Drawing } from "@/db/schema";
 import { and, asc, desc, eq, like, or } from "drizzle-orm";
 import type { ActionHandler } from "node_modules/astro/dist/actions/runtime/types";
@@ -155,6 +155,18 @@ export const save: ActionHandler<
     });
   }
 
+  const storageExceeded = await exceedsStorageLimit(userId, {
+    id,
+    fileSize: content.size,
+  });
+
+  if (storageExceeded) {
+    throw new ActionError({
+      code: "CONTENT_TOO_LARGE",
+      message: "Saving this drawing would exceed your storage limit.",
+    });
+  }
+
   await Promise.all([
     bucket.put(id, content),
     bucket.put(`${id}-thumbnail`, thumbnail),
@@ -197,22 +209,36 @@ export const duplicate: ActionHandler<
     });
   }
 
+  const newDrawingId = crypto.randomUUID();
+
+  const storageExceeded = await exceedsStorageLimit(userId, {
+    id: newDrawingId,
+    fileSize: content.size,
+  });
+
+  if (storageExceeded) {
+    throw new ActionError({
+      code: "CONTENT_TOO_LARGE",
+      message: "Duplicating this drawing would exceed your storage limit.",
+    });
+  }
+
   const thumbnail = await bucket.get(`${id}-thumbnail`);
 
-  const [newDrawing] = await db
-    .insert(Drawing)
-    .values({
-      name: `${drawing.name} (copy)`,
-      userId,
-      parentFolderId: drawing.parentFolderId,
-      fileSize: drawing.fileSize,
-    })
-    .returning();
-
-  await Promise.all([
-    bucket.put(newDrawing.id, await content.arrayBuffer()),
+  const [[newDrawing]] = await Promise.all([
+    db
+      .insert(Drawing)
+      .values({
+        id: newDrawingId,
+        name: `${drawing.name} (copy)`,
+        userId,
+        parentFolderId: drawing.parentFolderId,
+        fileSize: drawing.fileSize,
+      })
+      .returning(),
+    bucket.put(newDrawingId, await content.arrayBuffer()),
     thumbnail &&
-      bucket.put(`${newDrawing.id}-thumbnail`, await thumbnail.arrayBuffer()),
+      bucket.put(`${newDrawingId}-thumbnail`, await thumbnail.arrayBuffer()),
   ]);
 
   return newDrawing;

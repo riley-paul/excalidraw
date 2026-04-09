@@ -16,7 +16,6 @@ import { SaveIcon } from "lucide-react";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { useHotkey } from "@tanstack/react-hotkeys";
 
 type Props = { drawingId: string };
@@ -71,11 +70,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
 
       await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
     } catch (e) {
-      const error = e as Error;
       console.error("Error saving drawing:", e);
-      toast.error("Failed to save drawing. Please try again.", {
-        description: error.message,
-      });
     } finally {
       setIsLoading(false);
     }

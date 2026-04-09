@@ -82,7 +82,7 @@ function Component() {
         </React.Suspense>
         <Separator size="4" />
         <div className="flex items-baseline gap-2 p-3">
-          <Progress value={user.storageUsed / user.storageLimit} />
+          <Progress value={(user.storageUsed / user.storageLimit) * 100} />
           <Text size="1" color="gray">
             {`${formatFileSize(user.storageUsed)} / ${formatFileSize(user.storageLimit)} used`}
           </Text>

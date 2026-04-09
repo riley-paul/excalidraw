@@ -31,6 +31,7 @@ export default function useMutations() {
     onSuccess: ({ id }) => {
       navigate({ to: "/drawing/$drawingId", params: { drawingId: id } });
       queryClient.invalidateQueries({ queryKey: drawingsQueriesKey });
+      queryClient.invalidateQueries({ queryKey: qCurrentUser.queryKey });
     },
   });
 
@@ -39,6 +40,7 @@ export default function useMutations() {
     onSuccess: (_, { id }) => {
       if (drawingId === id) navigate({ to: "/" });
       queryClient.invalidateQueries({ queryKey: drawingsQueriesKey });
+      queryClient.invalidateQueries({ queryKey: qCurrentUser.queryKey });
       toast.success("Drawing deleted successfully!");
     },
   });
