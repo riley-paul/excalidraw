@@ -64,7 +64,7 @@ function Component() {
           <AddMenu />
         </header>
         <Separator size="4" />
-        <div className="flex items-center gap-2 px-3 py-2">
+        <div className="flex items-center gap-2 p-3">
           <DrawingListSearch search={search} setSearch={setSearch} />
           <SortMenu />
         </div>
