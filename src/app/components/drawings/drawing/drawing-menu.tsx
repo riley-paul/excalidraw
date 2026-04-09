@@ -1,17 +1,14 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import useFileTree from "@/app/hooks/use-file-tree";
 import useMutations from "@/app/hooks/use-mutations";
-import { qFolders } from "@/lib/client/queries";
 import type { DrawingSelect, FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import {
   CopyIcon,
   DeleteIcon,
   EllipsisIcon,
   ExternalLinkIcon,
-  FolderInputIcon,
   Link2Icon,
   PencilIcon,
 } from "lucide-react";
@@ -19,6 +16,7 @@ import React from "react";
 import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
 import { z } from "astro/zod";
+import MoveSubMenu from "../move-sub-menu";
 
 type Props = {
   drawing: DrawingSelect;
@@ -32,7 +30,6 @@ const DrawingMenu: React.FC<Props> = ({
   setIsOpen,
 }) => {
   const { removeDrawing, updateDrawing, duplicateDrawing } = useMutations();
-  const { data: folders } = useSuspenseQuery(qFolders);
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
   const [, copyToClipboard] = useCopyToClipboard();
@@ -122,30 +119,11 @@ const DrawingMenu: React.FC<Props> = ({
           <CopyIcon className="size-4 opacity-70" />
           <span>Duplicate</span>
         </DropdownMenu.Item>
-
-        <DropdownMenu.Sub>
-          <DropdownMenu.SubTrigger>
-            <FolderInputIcon className="size-4 opacity-70" />
-            <span>Move</span>
-          </DropdownMenu.SubTrigger>
-          <DropdownMenu.SubContent>
-            <DropdownMenu.Item
-              disabled={parentFolderId === null}
-              onClick={() => handleMoveDrawing(null)}
-            >
-              <span className="italic">Root</span>
-            </DropdownMenu.Item>
-            {folders.map((folder) => (
-              <DropdownMenu.Item
-                key={folder.id}
-                disabled={folder.id === parentFolderId}
-                onClick={() => handleMoveDrawing(folder)}
-              >
-                <span>{folder.name}</span>
-              </DropdownMenu.Item>
-            ))}
-          </DropdownMenu.SubContent>
-        </DropdownMenu.Sub>
+        <MoveSubMenu
+          id={id}
+          parentFolderId={parentFolderId}
+          handleMove={handleMoveDrawing}
+        />
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleCopyLink}>
           <Link2Icon className="size-4 opacity-70" />

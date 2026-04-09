@@ -6,6 +6,7 @@ import { Folder } from "@/db/schema";
 import { and, asc, eq } from "drizzle-orm";
 import type { ActionHandler } from "node_modules/astro/dist/actions/runtime/types";
 import { env } from "cloudflare:workers";
+import { ActionError } from "astro:actions";
 
 export const list: ActionHandler<
   typeof folderInputs.list,
@@ -46,6 +47,13 @@ export const update: ActionHandler<
 > = async ({ id, name, parentFolderId }, c) => {
   const db = createDb(env);
   const userId = isAuthorized(c).id;
+
+  if (parentFolderId === id) {
+    throw new ActionError({
+      code: "NOT_ACCEPTABLE",
+      message: "A folder cannot be its own parent.",
+    });
+  }
 
   const [updatedFolder] = await db
     .update(Folder)

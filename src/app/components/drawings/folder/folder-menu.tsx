@@ -1,15 +1,12 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import useFileTree from "@/app/hooks/use-file-tree";
 import useMutations from "@/app/hooks/use-mutations";
-import { qFolders } from "@/lib/client/queries";
 import type { FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useAtom } from "jotai";
 import {
   DeleteIcon,
   EllipsisIcon,
-  FolderInputIcon,
   FolderPlusIcon,
   PencilIcon,
   PenToolIcon,
@@ -17,6 +14,7 @@ import {
 import React from "react";
 import { toast } from "sonner";
 import { z } from "astro/zod";
+import MoveSubMenu from "../move-sub-menu";
 
 type Props = {
   folder: FolderSelect;
@@ -31,7 +29,6 @@ const FolderMenu: React.FC<Props> = ({
 }) => {
   const { removeFolder, updateFolder, createDrawing, createFolder } =
     useMutations();
-  const { data: folders } = useSuspenseQuery(qFolders);
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
 
@@ -136,30 +133,11 @@ const FolderMenu: React.FC<Props> = ({
           <PencilIcon className="size-4 opacity-70" />
           <span>Rename</span>
         </DropdownMenu.Item>
-
-        <DropdownMenu.Sub>
-          <DropdownMenu.SubTrigger>
-            <FolderInputIcon className="size-4 opacity-70" />
-            <span>Move</span>
-          </DropdownMenu.SubTrigger>
-          <DropdownMenu.SubContent>
-            <DropdownMenu.Item
-              disabled={parentFolderId === null}
-              onClick={() => handleMoveFolder(null)}
-            >
-              <span className="italic">Root</span>
-            </DropdownMenu.Item>
-            {folders.map((folder) => (
-              <DropdownMenu.Item
-                key={folder.id}
-                disabled={folder.id === id}
-                onClick={() => handleMoveFolder(folder)}
-              >
-                <span>{folder.name}</span>
-              </DropdownMenu.Item>
-            ))}
-          </DropdownMenu.SubContent>
-        </DropdownMenu.Sub>
+        <MoveSubMenu
+          id={id}
+          parentFolderId={parentFolderId}
+          handleMove={handleMoveFolder}
+        />
         <DropdownMenu.Separator />
         <DropdownMenu.Item onClick={handleAddDrawing}>
           <PenToolIcon className="size-4 opacity-70" />
