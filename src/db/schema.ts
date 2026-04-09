@@ -32,6 +32,11 @@ export const User = sqliteTable("user", {
   googleId: text().unique(),
   githubId: integer().unique(),
   githubUsername: text().unique(),
+
+  storageLimit: integer()
+    .notNull()
+    .default(1024 * 1024 * 50), // 50 MB
+
   ...timeStamps,
 });
 

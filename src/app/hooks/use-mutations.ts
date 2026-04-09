@@ -1,5 +1,5 @@
 import { drawingsQueriesKey } from "@/lib/client/constants";
-import { qDrawing, qFolders } from "@/lib/client/queries";
+import { qCurrentUser, qDrawing, qFolders } from "@/lib/client/queries";
 import type { DrawingSelect } from "@/lib/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
@@ -76,6 +76,7 @@ export default function useMutations() {
           return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
         },
       );
+      queryClient.invalidateQueries({ queryKey: qCurrentUser.queryKey });
       toast.success("Drawing saved successfully!");
     },
   });

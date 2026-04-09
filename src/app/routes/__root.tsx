@@ -1,13 +1,13 @@
 import { qDrawings, qFolders } from "@/lib/client/queries";
 import { zDrawingsSearch } from "@/lib/types";
-import type { QueryClient } from "@tanstack/react-query";
+import { useSuspenseQuery, type QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 
 import UserMenu from "@/app/components/user-menu";
 import { qCurrentUser } from "@/lib/client/queries";
 import DrawingList from "@/app/components/drawings/drawing-list";
 import Sidebar from "@/app/components/sidebar/sidebar";
-import { Heading, Separator, Spinner } from "@radix-ui/themes";
+import { Heading, Progress, Separator, Spinner, Text } from "@radix-ui/themes";
 import { Link } from "@tanstack/react-router";
 import AddMenu from "@/app/components/add-menu";
 import { DraftingCompassIcon } from "lucide-react";
@@ -18,6 +18,7 @@ import { createStore } from "jotai";
 import { z } from "astro/zod";
 import { DrawingListProvider } from "@/app/components/drawings/drawing-list.provider";
 import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
+import { formatFileSize } from "@/lib/client/utils";
 
 const store = createStore();
 
@@ -43,8 +44,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function Component() {
   const navigate = Route.useNavigate();
-  const { user } = Route.useLoaderData();
   const { search } = Route.useSearch();
+
+  const { data: user } = useSuspenseQuery(qCurrentUser);
+
+  if (!user) throw new Error("No user");
 
   const setSearch = (search: string | undefined) =>
     navigate({ search: (prev) => ({ ...prev, search }) });
@@ -59,7 +63,7 @@ function Component() {
           </Link>
           <AddMenu />
         </header>
-        <Separator size="4" orientation="horizontal" />
+        <Separator size="4" />
         <div className="flex items-center gap-2 px-3 py-2">
           <DrawingListSearch search={search} setSearch={setSearch} />
           <SortMenu />
@@ -76,7 +80,14 @@ function Component() {
             <DrawingList search={search} />
           </DrawingListProvider>
         </React.Suspense>
-        <Separator size="4" orientation="horizontal" />
+        <Separator size="4" />
+        <div className="flex items-baseline gap-2 p-3">
+          <Progress value={user.storageUsed / user.storageLimit} />
+          <Text size="1" color="gray">
+            {`${formatFileSize(user.storageUsed)} / ${formatFileSize(user.storageLimit)} used`}
+          </Text>
+        </div>
+        <Separator size="4" />
         <UserMenu user={user} />
       </Sidebar>
       <Outlet />

@@ -119,7 +119,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
             <Button
               onClick={handleSave}
               // variant={isDirty ? "solid" : "soft"}
-              variant="soft"
+              variant="surface"
               className="h-9!"
               disabled={isLoading}
             >

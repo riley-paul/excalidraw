@@ -1,7 +1,7 @@
 import { createDb } from "@/db";
 import { Drawing, User } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { isAuthorized } from "@/actions/helpers";
+import { eq, sum } from "drizzle-orm";
+import { getStorageUsed, isAuthorized } from "@/actions/helpers";
 import * as userInputs from "./users.inputs";
 import type { UserSelect } from "@/lib/types";
 import type { ActionHandler } from "node_modules/astro/dist/actions/runtime/types";
@@ -21,7 +21,10 @@ export const getMe: ActionHandler<
     .where(eq(User.id, user.id));
 
   if (!currentUser) return null;
-  return currentUser;
+
+  const storageUsed = await getStorageUsed(user.id);
+
+  return { ...currentUser, storageUsed };
 };
 
 export const remove: ActionHandler<typeof userInputs.remove, null> = async (

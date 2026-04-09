@@ -2,7 +2,9 @@ import { Drawing, Folder, User } from "@/db/schema";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { z } from "astro/zod";
 
-export const zUserSelect = createSelectSchema(User);
+export const zUserSelect = createSelectSchema(User).extend({
+  storageUsed: z.number().default(0),
+});
 export const zUserInsert = createInsertSchema(User);
 export type UserSelect = z.infer<typeof zUserSelect>;
 export type UserInsert = z.infer<typeof zUserInsert>;
