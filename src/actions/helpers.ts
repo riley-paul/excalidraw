@@ -2,7 +2,6 @@ import { createDb } from "@/db";
 import { Drawing, User } from "@/db/schema";
 import type { DrawingSelect } from "@/lib/types";
 import { ActionError, type ActionAPIContext } from "astro:actions";
-import { env } from "cloudflare:workers";
 import { eq, sum } from "drizzle-orm";
 
 export const isAuthorized = (context: ActionAPIContext) => {
@@ -16,8 +15,9 @@ export const isAuthorized = (context: ActionAPIContext) => {
   return user;
 };
 
-export const getStorageUsed = async (userId: string) => {
-  const db = createDb(env);
+export const getStorageUsed = async (c: ActionAPIContext) => {
+  const userId = isAuthorized(c).id;
+  const db = createDb(c.locals.env);
   const [{ storageUsed }] = await db
     .select({ storageUsed: sum(Drawing.fileSize) })
     .from(Drawing)
@@ -26,10 +26,11 @@ export const getStorageUsed = async (userId: string) => {
 };
 
 export const exceedsStorageLimit = async (
-  userId: string,
+  c: ActionAPIContext,
   newDrawing: Pick<DrawingSelect, "id" | "fileSize">,
 ) => {
-  const db = createDb(env);
+  const userId = isAuthorized(c).id;
+  const db = createDb(c.locals.env);
   const drawingSizes = await db
     .select({ id: Drawing.id, fileSize: Drawing.fileSize })
     .from(Drawing)

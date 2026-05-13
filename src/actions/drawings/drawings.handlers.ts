@@ -12,15 +12,14 @@ import { exceedsStorageLimit, isAuthorized } from "../helpers";
 import { Drawing } from "@/db/schema";
 import { and, asc, desc, eq, like, or } from "drizzle-orm";
 import type { ActionHandler } from "node_modules/astro/dist/actions/runtime/types";
-import { env } from "cloudflare:workers";
 
 export const get: ActionHandler<
   typeof drawingInputs.get,
   DrawingSelectWithContent | null
 > = async ({ id, withContent }, c) => {
-  const db = createDb(env);
+  const db = createDb(c.locals.env);
   const userId = isAuthorized(c).id;
-  const bucket = env.R2_BUCKET;
+  const bucket = c.locals.env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -61,7 +60,7 @@ export const list: ActionHandler<
   typeof drawingInputs.list,
   DrawingSelect[]
 > = async ({ sort, search }, c) => {
-  const db = createDb(env);
+  const db = createDb(c.locals.env);
   const userId = isAuthorized(c).id;
 
   const drawings = await db
@@ -77,7 +76,7 @@ export const create: ActionHandler<
   typeof drawingInputs.create,
   DrawingSelect
 > = async (data, c) => {
-  const db = createDb(env);
+  const db = createDb(c.locals.env);
   const userId = isAuthorized(c).id;
 
   const [newDrawing] = await db
@@ -91,7 +90,7 @@ export const update: ActionHandler<
   typeof drawingInputs.update,
   DrawingSelect
 > = async ({ id, ...updateData }, c) => {
-  const db = createDb(env);
+  const db = createDb(c.locals.env);
   const userId = isAuthorized(c).id;
 
   const [updatedDrawing] = await db
@@ -114,9 +113,9 @@ export const remove: ActionHandler<
   typeof drawingInputs.remove,
   boolean
 > = async ({ id }, c) => {
-  const db = createDb(env);
+  const db = createDb(c.locals.env);
   const userId = isAuthorized(c).id;
-  const bucket = env.R2_BUCKET;
+  const bucket = c.locals.env.R2_BUCKET;
 
   const result = await db
     .delete(Drawing)
@@ -139,9 +138,9 @@ export const save: ActionHandler<
   typeof drawingInputs.save,
   DrawingSelect
 > = async ({ id, content, thumbnail }, c) => {
-  const db = createDb(env);
+  const db = createDb(c.locals.env);
   const userId = isAuthorized(c).id;
-  const bucket = env.R2_BUCKET;
+  const bucket = c.locals.env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -155,7 +154,7 @@ export const save: ActionHandler<
     });
   }
 
-  const storageExceeded = await exceedsStorageLimit(userId, {
+  const storageExceeded = await exceedsStorageLimit(c, {
     id,
     fileSize: content.size,
   });
@@ -185,9 +184,9 @@ export const duplicate: ActionHandler<
   typeof drawingInputs.duplicate,
   DrawingSelect
 > = async ({ id }, c) => {
-  const db = createDb(env);
+  const db = createDb(c.locals.env);
   const userId = isAuthorized(c).id;
-  const bucket = env.R2_BUCKET;
+  const bucket = c.locals.env.R2_BUCKET;
 
   const [drawing] = await db
     .select()
@@ -211,7 +210,7 @@ export const duplicate: ActionHandler<
 
   const newDrawingId = crypto.randomUUID();
 
-  const storageExceeded = await exceedsStorageLimit(userId, {
+  const storageExceeded = await exceedsStorageLimit(c, {
     id: newDrawingId,
     fileSize: content.size,
   });

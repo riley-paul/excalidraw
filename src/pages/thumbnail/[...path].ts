@@ -1,5 +1,4 @@
 import type { APIRoute } from "astro";
-import { env } from "cloudflare:workers";
 
 export const GET: APIRoute = async (ctx) => {
   if (!ctx.locals.user) return new Response("Unauthorized", { status: 401 });
@@ -7,7 +6,7 @@ export const GET: APIRoute = async (ctx) => {
   const path = new URL(ctx.request.url).pathname
     .replace("/thumbnail/", "")
     .replace(".png", "");
-  const file = await env.R2_BUCKET.get(`${path}-thumbnail`);
+  const file = await ctx.locals.env.R2_BUCKET.get(`${path}-thumbnail`);
 
   if (!file) return new Response("Could not find file", { status: 404 });
 
