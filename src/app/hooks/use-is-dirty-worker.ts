@@ -22,12 +22,11 @@ export default function useIsDirtyWorker({
   const performCheck = () => {
     if (!excalidrawAPI) return;
     const elements = excalidrawAPI.getSceneElements();
-    const appState = excalidrawAPI.getAppState();
     const files = excalidrawAPI.getFiles();
 
     const message: IsDirtyMessage = {
       type: "check",
-      payload: { elements, appState, files },
+      payload: { elements, files },
     };
     workerRef.current?.postMessage(message);
   };
@@ -35,14 +34,13 @@ export default function useIsDirtyWorker({
   const updateIsDirtyWorker = () => {
     if (!excalidrawAPI) return;
     const elements = excalidrawAPI.getSceneElements();
-    const appState = excalidrawAPI.getAppState();
     const files = excalidrawAPI.getFiles();
 
     setIsDirty(false);
 
     const message: IsDirtyMessage = {
       type: "save",
-      payload: { elements, appState, files },
+      payload: { elements, files },
     };
     workerRef.current?.postMessage(message);
   };
