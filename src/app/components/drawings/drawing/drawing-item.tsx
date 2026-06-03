@@ -1,13 +1,15 @@
 import type { DrawingSelect } from "@/lib/types";
 import { cn, formatFileSize } from "@/lib/client/utils";
 import { Text } from "@radix-ui/themes";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, useParams, useSearch } from "@tanstack/react-router";
 import React from "react";
 import DrawingMenu from "./drawing-menu";
 import useRelativeTime from "@/app/hooks/use-relative-time";
 import { ImageIcon } from "lucide-react";
 import ItemContainer from "../item-container";
 import { getItemPadding } from "../tree.utils";
+import { useAtom } from "jotai";
+import { searchSelectionIdAtom } from "@/lib/client/store";
 
 type Props = {
   drawing: DrawingSelect;
@@ -40,8 +42,14 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
 
   const { id, name, savedAt } = drawing;
 
-  const { pathname } = useLocation();
-  const isActive = pathname.startsWith(`/drawing/${id}`);
+  const { drawingId: activeDrawingId } = useParams({ strict: false });
+  const isSearchingMode = useSearch({
+    strict: false,
+    select: (s) => !!s.search,
+  });
+  const [searchSelectionId] = useAtom(searchSelectionIdAtom);
+  const isActive = drawing.id === activeDrawingId;
+  const isSelected = isSearchingMode && drawing.id === searchSelectionId;
 
   const relativeTime = useRelativeTime(drawing.savedAt || drawing.updatedAt);
   const formattedFileSize = formatFileSize(drawing.fileSize ?? 0);
@@ -49,6 +57,7 @@ const DrawingItem: React.FC<Props> = ({ drawing, depth }) => {
   return (
     <ItemContainer
       isActive={isActive}
+      isSelected={isSelected}
       dragData={{ id, type: "drawing", parentFolderId: drawing.parentFolderId }}
     >
       <Link

@@ -1,8 +1,14 @@
 import { IconButton, Kbd, TextField } from "@radix-ui/themes";
 import { formatForDisplay, useHotkeys } from "@tanstack/react-hotkeys";
+import { useAtom } from "jotai";
 import { SearchIcon, XIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
+import { drawingsSortOptionAtom } from "./drawing-list.store";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { qDrawings } from "@/lib/client/queries";
+import { searchSelectionIdAtom } from "@/lib/client/store";
+import { useNavigate } from "@tanstack/react-router";
 
 type Props = {
   search: string | undefined;
@@ -11,15 +17,26 @@ type Props = {
 
 const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
   const [value, setValue] = useState(search ?? "");
+  const [searchSelectionId, setSearchSelectionId] = useAtom(
+    searchSelectionIdAtom,
+  );
 
   const clearSearch = () => {
     setValue("");
     setSearch(undefined);
     inputRef.current?.blur();
+    setSearchSelectionId(undefined);
   };
 
   useEffect(() => setValue(search ?? ""), [search]);
+
+  const setSearchDebounced = useDebounceCallback(setSearch, 500);
+
+  const [sort] = useAtom(drawingsSortOptionAtom);
+  const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));
 
   useHotkeys([
     {
@@ -29,14 +46,48 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
     },
     {
       hotkey: "Mod+K",
-      callback: () => {
-        inputRef.current?.focus();
-      },
+      callback: () => inputRef.current?.focus(),
       options: { preventDefault: true },
     },
+    {
+      hotkey: "ArrowDown",
+      callback: () => {
+        const currentIdx = drawings.findIndex(
+          (d) => d.id === searchSelectionId,
+        );
+        const nextIdx =
+          currentIdx === -1 ? 0 : (currentIdx + 1) % drawings.length;
+        setSearchSelectionId(drawings[nextIdx]?.id);
+      },
+      options: { target: inputRef, preventDefault: true },
+    },
+    {
+      hotkey: "ArrowUp",
+      callback: () => {
+        const currentIdx = drawings.findIndex(
+          (d) => d.id === searchSelectionId,
+        );
+        const nextIdx =
+          currentIdx === -1
+            ? drawings.length - 1
+            : (currentIdx - 1 + drawings.length) % drawings.length;
+        setSearchSelectionId(drawings[nextIdx]?.id);
+      },
+      options: { target: inputRef, preventDefault: true },
+    },
+    {
+      hotkey: "Enter",
+      callback: () => {
+        if (searchSelectionId)
+          navigate({
+            to: "/drawing/$drawingId",
+            params: { drawingId: searchSelectionId },
+            search: true,
+          });
+      },
+      options: { target: inputRef, preventDefault: true },
+    },
   ]);
-
-  const setSearchDebounced = useDebounceCallback(setSearch, 500);
 
   return (
     <TextField.Root
@@ -49,6 +100,7 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
         const { value } = e.target;
         setValue(e.target.value);
         setSearchDebounced(value.length > 0 ? value : undefined);
+        if (value.length === 0) clearSearch();
       }}
     >
       <TextField.Slot side="left">

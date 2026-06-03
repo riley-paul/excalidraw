@@ -17,11 +17,12 @@ import { useDrawingListContext } from "./drawing-list.provider";
 type Props = React.PropsWithChildren<{
   isActive?: boolean;
   isOverlay?: boolean;
+  isSelected?: boolean;
   dragData: DragData;
 }>;
 
 const ItemContainer: React.FC<Props> = (props) => {
-  const { isActive, isOverlay, dragData, children } = props;
+  const { isActive, isOverlay, isSelected, dragData, children } = props;
   const { setIsOverListItem, isDragDisabled } = useDrawingListContext();
 
   const elementRef = useRef<HTMLDivElement>(null);
@@ -103,6 +104,7 @@ const ItemContainer: React.FC<Props> = (props) => {
         ref={elementRef}
         className={cn(
           "hover:bg-accent-3 group flex items-center gap-3 pr-4 pl-3 transition-colors ease-out",
+          isSelected && "bg-accent-4",
           isActive && "bg-accent-6 hover:bg-accent-6",
           isOverlay && "rounded-2 bg-accent-3 w-[320px] border",
           draggableState.type === "is-dragging-over" && "bg-accent-4",

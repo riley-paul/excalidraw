@@ -2,10 +2,10 @@ import React from "react";
 
 import { useAtom } from "jotai";
 import { desktopSidebarOpenAtom, mobileSidebarOpenAtom } from "./sidebar.store";
-import { cn, getIsTyping } from "@/lib/client/utils";
+import { cn } from "@/lib/client/utils";
 import { useIsMobile } from "@/app/hooks/use-mobile";
 import RadixProvider from "../ui/radix-provider";
-import { useHotkey } from "@tanstack/react-hotkeys";
+import { useHotkeys } from "@tanstack/react-hotkeys";
 
 const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
   const isMobile = useIsMobile();
@@ -13,17 +13,22 @@ const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
     isMobile ? mobileSidebarOpenAtom : desktopSidebarOpenAtom,
   );
 
-  useHotkey("B", () => {
-    if (getIsTyping()) return;
-    setIsOpen((prev) => !prev);
-  });
-
-  useHotkey("Escape", () => {
-    if (getIsTyping()) return;
-    if (isMobile) {
-      setIsOpen(false);
-    }
-  });
+  useHotkeys([
+    {
+      hotkey: "B",
+      callback: () => setIsOpen((prev) => !prev),
+      options: { ignoreInputs: true },
+    },
+    {
+      hotkey: "Escape",
+      callback: () => {
+        if (isMobile) {
+          setIsOpen(false);
+        }
+      },
+      options: { ignoreInputs: true },
+    },
+  ]);
 
   return (
     <>
