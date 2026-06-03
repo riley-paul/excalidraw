@@ -1,7 +1,11 @@
 import { qDrawings, qFolders } from "@/lib/client/queries";
 import { zDrawingsSearch } from "@/lib/types";
 import { useSuspenseQuery, type QueryClient } from "@tanstack/react-query";
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+import {
+  createRootRouteWithContext,
+  Outlet,
+  useNavigate,
+} from "@tanstack/react-router";
 
 import UserMenu from "@/app/components/user-menu";
 import { qCurrentUser } from "@/lib/client/queries";
@@ -43,7 +47,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 );
 
 function Component() {
-  const navigate = Route.useNavigate();
+  const navigate = useNavigate();
   const { search } = Route.useSearch();
 
   const { data: user } = useSuspenseQuery(qCurrentUser);
@@ -51,7 +55,7 @@ function Component() {
   if (!user) throw new Error("No user");
 
   const setSearch = (search: string | undefined) =>
-    navigate({ search: (prev) => ({ ...prev, search }) });
+    navigate({ to: ".", search: (prev) => ({ ...prev, search }) });
 
   return (
     <main className="flex max-w-screen">
