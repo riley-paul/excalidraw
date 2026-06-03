@@ -9,7 +9,7 @@ import {
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useState } from "react";
 import { useDocumentTitle } from "usehooks-ts";
-import { Button, Spinner } from "@radix-ui/themes";
+import { Button, Spinner, Text } from "@radix-ui/themes";
 import RadixProvider from "@/app/components/ui/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
@@ -17,6 +17,8 @@ import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useHotkey } from "@tanstack/react-hotkeys";
+import useIsDirtyWorker from "../hooks/use-is-dirty-worker";
+import { cn } from "@/lib/client/utils";
 
 type Props = { drawingId: string };
 
@@ -41,7 +43,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     openFolder(parentFolderId);
   }, []);
 
-  // const { isDirty, updateIsDirtyWorker } = useIsDirtyWorker({ excalidrawAPI });
+  const { isDirty, updateIsDirtyWorker } = useIsDirtyWorker({ excalidrawAPI });
 
   const handleSave = async () => {
     if (!excalidrawAPI) return;
@@ -74,7 +76,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     } finally {
       setIsLoading(false);
     }
-    // updateIsDirtyWorker();
+    updateIsDirtyWorker();
   };
 
   const loadInitialData = async () => {
@@ -84,7 +86,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     });
     if (!drawing) throw new Error("Drawing content not found");
     const data = restore(JSON.parse(drawing.content ?? "{}"), null, null);
-    // updateIsDirtyWorker();
+    updateIsDirtyWorker();
     return data;
   };
 
@@ -110,11 +112,10 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     >
       <Footer>
         <RadixProvider appearance="light">
-          <div className="ml-3">
+          <div className="ml-3 flex items-center gap-3">
             <Button
               onClick={handleSave}
-              // variant={isDirty ? "solid" : "soft"}
-              variant="surface"
+              variant={isDirty ? "solid" : "surface"}
               className="h-9!"
               disabled={isLoading}
             >
@@ -123,6 +124,17 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
               </Spinner>
               Save
             </Button>
+            <span className="flex items-center gap-1.5">
+              <div
+                className={cn(
+                  "size-2 rounded-full",
+                  isDirty ? "bg-amber-9" : "bg-green-9",
+                )}
+              />
+              <Text size="2" color="gray">
+                {isDirty ? "Unsaved changes" : "All changes saved"}
+              </Text>
+            </span>
           </div>
         </RadixProvider>
       </Footer>
