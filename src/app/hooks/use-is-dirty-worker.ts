@@ -31,7 +31,7 @@ export default function useIsDirtyWorker({
     workerRef.current?.postMessage(message);
   };
 
-  const updateIsDirtyWorker = () => {
+  const markAsClean = () => {
     if (!excalidrawAPI) return;
     const elements = excalidrawAPI.getSceneElements();
     const files = excalidrawAPI.getFiles();
@@ -64,12 +64,12 @@ export default function useIsDirtyWorker({
   // set initial clean baseline after Excalidraw has finished initializing
   useEffect(() => {
     if (!excalidrawAPI) return;
-    const id = setTimeout(updateIsDirtyWorker, 1_000);
+    const id = setTimeout(markAsClean, 1_000);
     return () => clearTimeout(id);
   }, [excalidrawAPI]);
 
   // set up interval to perform checks
   useInterval(performCheck, checkInterval);
 
-  return { isDirty, updateIsDirtyWorker };
+  return { isDirty, markAsClean };
 }

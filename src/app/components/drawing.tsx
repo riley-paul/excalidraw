@@ -20,6 +20,7 @@ import { useHotkey } from "@tanstack/react-hotkeys";
 import useIsDirtyWorker from "../hooks/use-is-dirty-worker";
 import { cn } from "@/lib/client/utils";
 import { useBlocker } from "@tanstack/react-router";
+import { ignoreDirtyAtom, jotaiStore } from "@/lib/client/store";
 
 type Props = { drawingId: string };
 
@@ -44,7 +45,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     openFolder(parentFolderId);
   }, []);
 
-  const { isDirty, updateIsDirtyWorker } = useIsDirtyWorker({ excalidrawAPI });
+  const { isDirty, markAsClean } = useIsDirtyWorker({ excalidrawAPI });
 
   const handleSave = async () => {
     if (!excalidrawAPI) return;
@@ -77,7 +78,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     } finally {
       setIsLoading(false);
     }
-    updateIsDirtyWorker();
+    markAsClean();
   };
 
   const loadInitialData = async () => {
@@ -87,7 +88,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     });
     if (!drawing) throw new Error("Drawing content not found");
     const data = restore(JSON.parse(drawing.content ?? "{}"), null, null);
-    updateIsDirtyWorker();
+    markAsClean();
     return data;
   };
 
@@ -95,10 +96,11 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
 
   useBlocker({
     shouldBlockFn: () => {
-      if (!isDirty) return false;
+      const shouldBlock = isDirty && !jotaiStore.get(ignoreDirtyAtom);
+      if (!shouldBlock) return false;
       return !confirm("You have unsaved changes. Do you really want to leave?");
     },
-    enableBeforeUnload: () => isDirty,
+    enableBeforeUnload: () => isDirty && !jotaiStore.get(ignoreDirtyAtom),
   });
 
   useHotkey("Mod+S", handleSave);

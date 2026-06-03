@@ -1,5 +1,6 @@
 import { drawingsQueriesKey } from "@/lib/client/constants";
 import { qCurrentUser, qDrawing, qFolders } from "@/lib/client/queries";
+import { ignoreDirtyAtom, jotaiStore } from "@/lib/client/store";
 import type { DrawingSelect } from "@/lib/types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "@tanstack/react-router";
@@ -37,8 +38,12 @@ export default function useMutations() {
 
   const removeDrawing = useMutation({
     mutationFn: actions.drawings.remove.orThrow,
-    onSuccess: (_, { id }) => {
-      if (drawingId === id) navigate({ to: "/" });
+    onSuccess: async (_, { id }) => {
+      if (drawingId === id) {
+        jotaiStore.set(ignoreDirtyAtom, true);
+        await navigate({ to: "/" });
+        jotaiStore.set(ignoreDirtyAtom, false);
+      }
       queryClient.invalidateQueries({ queryKey: drawingsQueriesKey });
       queryClient.invalidateQueries({ queryKey: qCurrentUser.queryKey });
       toast.success("Drawing deleted successfully!");

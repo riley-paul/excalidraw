@@ -15,6 +15,8 @@ import CustomToaster from "@/app/components/ui/custom-toaster";
 import LoadingScreen from "./components/screens/loading";
 import NotFoundScreen from "./components/screens/not-found";
 import ErrorScreen from "./components/screens/error";
+import { Provider } from "jotai";
+import { jotaiStore } from "@/lib/client/store";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
@@ -30,9 +32,7 @@ const queryClient = new QueryClient({
 
 const router = createRouter({
   routeTree,
-  context: {
-    queryClient,
-  },
+  context: { queryClient },
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
@@ -49,13 +49,15 @@ declare module "@tanstack/react-router" {
 
 const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RadixProvider>
-        <RouterProvider router={router} />
-        <CustomToaster />
-        <AlertSystem />
-      </RadixProvider>
-    </QueryClientProvider>
+    <Provider store={jotaiStore}>
+      <QueryClientProvider client={queryClient}>
+        <RadixProvider>
+          <RouterProvider router={router} />
+          <CustomToaster />
+          <AlertSystem />
+        </RadixProvider>
+      </QueryClientProvider>
+    </Provider>
   );
 };
 
