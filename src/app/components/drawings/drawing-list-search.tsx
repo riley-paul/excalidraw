@@ -31,7 +31,10 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
     setSearchSelectionId(undefined);
   };
 
-  useEffect(() => setValue(search ?? ""), [search]);
+  useEffect(() => {
+    setValue(search ?? "");
+    if (!search) setSearchSelectionId(undefined);
+  }, [search]);
 
   const setSearchDebounced = useDebounceCallback(setSearch, 500);
 
@@ -100,7 +103,6 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
         const { value } = e.target;
         setValue(e.target.value);
         setSearchDebounced(value.length > 0 ? value : undefined);
-        if (value.length === 0) clearSearch();
       }}
     >
       <TextField.Slot side="left">

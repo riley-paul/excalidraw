@@ -5,6 +5,7 @@ import { alertSystemAtom } from "@/app/components/alert-system/alert-system.stor
 import { z } from "astro/zod";
 import useMutations from "@/app/hooks/use-mutations";
 import { FolderPlusIcon, PenToolIcon, PlusIcon } from "lucide-react";
+import { formatForDisplay, useHotkeys } from "@tanstack/react-hotkeys";
 
 const AddMenu: React.FC = () => {
   const [, dispatchAlert] = useAtom(alertSystemAtom);
@@ -47,6 +48,19 @@ const AddMenu: React.FC = () => {
     });
   };
 
+  useHotkeys([
+    {
+      hotkey: "C",
+      callback: handleAddDrawing,
+      options: { ignoreInputs: true },
+    },
+    {
+      hotkey: "Shift+C",
+      callback: handleAddFolder,
+      options: { ignoreInputs: true },
+    },
+  ]);
+
   return (
     <DropdownMenu.Root modal={false}>
       <DropdownMenu.Trigger>
@@ -55,11 +69,17 @@ const AddMenu: React.FC = () => {
         </IconButton>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
-        <DropdownMenu.Item onClick={handleAddDrawing}>
+        <DropdownMenu.Item
+          onClick={handleAddDrawing}
+          shortcut={formatForDisplay("C")}
+        >
           <PenToolIcon className="size-4 opacity-70" />
           <span>Add drawing</span>
         </DropdownMenu.Item>
-        <DropdownMenu.Item onClick={handleAddFolder}>
+        <DropdownMenu.Item
+          onClick={handleAddFolder}
+          shortcut={formatForDisplay("Shift+C")}
+        >
           <FolderPlusIcon className="size-4 opacity-70" />
           <span>Add folder</span>
         </DropdownMenu.Item>
