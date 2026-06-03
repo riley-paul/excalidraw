@@ -6,7 +6,7 @@ import { Link } from "@tanstack/react-router";
 
 const NoSearchResultsScreen: React.FC = () => {
   return (
-    <Empty.Root>
+    <Empty.Root className="px-6 md:px-6 py-20 md:py-20">
       <Empty.Header>
         <Empty.Media variant="icon">
           <SearchXIcon />
