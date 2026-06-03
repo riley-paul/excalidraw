@@ -61,8 +61,12 @@ export default function useIsDirtyWorker({
     return () => worker.terminate();
   }, []);
 
-  // immediately perform check once API and worker are ready
-  useEffect(performCheck, [excalidrawAPI, workerRef]);
+  // set initial clean baseline after Excalidraw has finished initializing
+  useEffect(() => {
+    if (!excalidrawAPI) return;
+    const id = setTimeout(updateIsDirtyWorker, 1_000);
+    return () => clearTimeout(id);
+  }, [excalidrawAPI]);
 
   // set up interval to perform checks
   useInterval(performCheck, checkInterval);

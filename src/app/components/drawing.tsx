@@ -19,6 +19,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useHotkey } from "@tanstack/react-hotkeys";
 import useIsDirtyWorker from "../hooks/use-is-dirty-worker";
 import { cn } from "@/lib/client/utils";
+import { useBlocker } from "@tanstack/react-router";
 
 type Props = { drawingId: string };
 
@@ -92,15 +93,13 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
 
   // useInterval(handleSave, isDirty ? null : 1_000 * 60 * 2);
 
-  // useBlocker({
-  //   shouldBlockFn: () => {
-  //     if (!isDirty) return false;
-  //     const confirmMessage =
-  //       "You have unsaved changes. Do you really want to leave?";
-  //     return !confirm(confirmMessage);
-  //   },
-  //   enableBeforeUnload: () => isDirty,
-  // });
+  useBlocker({
+    shouldBlockFn: () => {
+      if (!isDirty) return false;
+      return !confirm("You have unsaved changes. Do you really want to leave?");
+    },
+    enableBeforeUnload: () => isDirty,
+  });
 
   useHotkey("Mod+S", handleSave);
 
