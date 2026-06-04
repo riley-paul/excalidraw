@@ -9,10 +9,10 @@ import {
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useState } from "react";
 import { useDocumentTitle } from "usehooks-ts";
-import { Button, Spinner, Text } from "@radix-ui/themes";
+import { Button, Spinner, Text, Tooltip } from "@radix-ui/themes";
 import RadixProvider from "@/app/components/ui/radix-provider";
 import { actions } from "astro:actions";
-import { SaveIcon } from "lucide-react";
+import { CheckIcon, SaveIcon } from "lucide-react";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -34,7 +34,8 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
   const { openFolder } = useFileTree();
 
   // State
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
@@ -50,7 +51,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
   const handleSave = async () => {
     if (!excalidrawAPI) return;
 
-    setIsLoading(true);
+    setIsSaving(true);
 
     try {
       const elements = excalidrawAPI.getSceneElements();
@@ -76,12 +77,13 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     } catch (e) {
       console.error("Error saving drawing:", e);
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
     markAsClean();
   };
 
   const loadInitialData = async () => {
+    setIsLoading(true);
     const drawing = await actions.drawings.get.orThrow({
       id: drawingId,
       withContent: true,
@@ -89,6 +91,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     if (!drawing) throw new Error("Drawing content not found");
     const data = restore(JSON.parse(drawing.content ?? "{}"), null, null);
     markAsClean();
+    setIsLoading(false);
     return data;
   };
 
@@ -113,30 +116,32 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
     >
       <Footer>
         <RadixProvider appearance="light">
-          <div className="ml-3 flex items-center gap-3">
-            <Button
-              onClick={handleSave}
-              variant={isDirty ? "solid" : "surface"}
-              className="h-9!"
-              disabled={isLoading}
-            >
-              <Spinner loading={isLoading}>
-                <SaveIcon className="size-4" />
-              </Spinner>
-              Save
-            </Button>
-            <span className="flex items-center gap-1.5">
-              <div
-                className={cn(
-                  "size-2 rounded-full",
-                  isDirty ? "bg-amber-9" : "bg-green-9",
-                )}
-              />
-              <Text size="2" color="gray">
-                {isDirty ? "Unsaved changes" : "All changes saved"}
-              </Text>
-            </span>
-          </div>
+          {!isLoading && (
+            <div className="ml-3 flex items-center gap-3">
+              <Button
+                onClick={handleSave}
+                variant={isDirty ? "solid" : "surface"}
+                className="h-9!"
+                disabled={isSaving}
+              >
+                <Spinner loading={isSaving}>
+                  <SaveIcon className="size-4" />
+                </Spinner>
+                Save
+              </Button>
+              <span className="flex items-center gap-1.5">
+                <div
+                  className={cn(
+                    "size-2 rounded-full",
+                    isDirty ? "bg-amber-9" : "bg-green-9",
+                  )}
+                />
+                <Text size="2" color="gray">
+                  {isDirty ? "Unsaved changes" : "All changes saved"}
+                </Text>
+              </span>
+            </div>
+          )}
         </RadixProvider>
       </Footer>
     </Excalidraw>
