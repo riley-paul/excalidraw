@@ -48,11 +48,6 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
       options: { target: inputRef, preventDefault: true },
     },
     {
-      hotkey: "Mod+K",
-      callback: () => inputRef.current?.focus(),
-      options: { preventDefault: true },
-    },
-    {
       hotkey: "ArrowDown",
       callback: () => {
         const currentIdx = drawings.findIndex(
@@ -95,6 +90,7 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
   return (
     <TextField.Root
       ref={inputRef}
+      id="drawing-list-search"
       placeholder="Search..."
       variant="soft"
       className="flex-1"

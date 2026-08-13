@@ -20,6 +20,15 @@ const Sidebar: React.FC<React.PropsWithChildren> = ({ children }) => {
       options: { ignoreInputs: true },
     },
     {
+      hotkey: "Mod+K",
+      callback: () => {
+        setIsOpen(true);
+        const input = document.getElementById("drawing-list-search");
+        input?.focus();
+      },
+      options: { preventDefault: true },
+    },
+    {
       hotkey: "Escape",
       callback: () => {
         if (isMobile) {
