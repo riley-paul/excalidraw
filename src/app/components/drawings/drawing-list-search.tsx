@@ -5,7 +5,7 @@ import { SearchIcon, XIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { drawingsSortOptionAtom } from "./drawing-list.store";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { qDrawings } from "@/lib/client/queries";
 import { searchSelectionIdAtom } from "@/lib/client/store";
 import { useNavigate } from "@tanstack/react-router";
@@ -39,7 +39,7 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
   const setSearchDebounced = useDebounceCallback(setSearch, 500);
 
   const [sort] = useAtom(drawingsSortOptionAtom);
-  const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));
+  const { data: drawings = [] } = useQuery(qDrawings({ search, sort }));
 
   useHotkeys([
     {

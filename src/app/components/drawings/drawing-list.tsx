@@ -2,10 +2,10 @@ import React, { useEffect, useRef } from "react";
 import DrawingItem from "./drawing/drawing-item";
 import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder/folder-item";
-import { ScrollArea } from "@radix-ui/themes";
+import { ScrollArea, Spinner } from "@radix-ui/themes";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawings, qFolders } from "@/lib/client/queries";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
 
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { zDragData } from "./drag.utils";
@@ -56,8 +56,13 @@ const DrawingList: React.FC<Props> = ({ search }) => {
   const isSearching = Boolean(search && search.length > 0);
   const { isDragDisabled, isOverListItem } = useDrawingListContext();
 
-  const { data: drawings } = useSuspenseQuery(qDrawings({ search, sort }));
-  const { data: folders } = useSuspenseQuery(qFolders);
+  const [
+    { data: drawings = [], isLoading: drawingsLoading },
+    { data: folders = [], isLoading: foldersLoading },
+  ] = useQueries({
+    queries: [qDrawings({ search, sort }), qFolders],
+  });
+
   const treeNodes = buildTree(isSearching ? [] : folders, drawings);
 
   const { updateDrawing, updateFolder } = useMutations();
@@ -140,6 +145,14 @@ const DrawingList: React.FC<Props> = ({ search }) => {
       },
     });
   }, [isOverListItem]);
+
+  if (drawingsLoading || foldersLoading) {
+    return (
+      <div ref={elementRef} className="flex flex-1 items-center justify-center">
+        <Spinner size="3" />
+      </div>
+    );
+  }
 
   return (
     <ScrollArea

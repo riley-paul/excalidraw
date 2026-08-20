@@ -1,4 +1,3 @@
-import { qDrawings, qFolders } from "@/lib/client/queries";
 import { zDrawingsSearch } from "@/lib/types";
 import { useSuspenseQuery, type QueryClient } from "@tanstack/react-query";
 import {
@@ -18,30 +17,18 @@ import { DraftingCompassIcon } from "lucide-react";
 import DrawingListSearch from "@/app/components/drawings/drawing-list-search";
 import SortMenu from "@/app/components/drawings/sort-menu";
 import React from "react";
-import { createStore } from "jotai";
 import { z } from "astro/zod";
 import { DrawingListProvider } from "@/app/components/drawings/drawing-list.provider";
-import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
 import { formatFileSize } from "@/lib/client/utils";
-
-const store = createStore();
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   {
     component: Component,
     validateSearch: z.object({ search: zDrawingsSearch.optional() }),
-    loaderDeps: ({ search: { search } }) => {
-      const sort = store.get(drawingsSortOptionAtom);
-      return { search, sort };
-    },
-    loader: async ({ context, deps: { search, sort } }) => {
-      const [folders, drawings, user] = await Promise.all([
-        context.queryClient.ensureQueryData(qFolders),
-        context.queryClient.ensureQueryData(qDrawings({ search, sort })),
-        context.queryClient.ensureQueryData(qCurrentUser),
-      ]);
+    loader: async ({ context }) => {
+      const user = await context.queryClient.ensureQueryData(qCurrentUser);
       if (!user) throw new Error("No user");
-      return { folders, drawings, user };
+      return { user };
     },
   },
 );
