@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import DrawingItem from "./drawing/drawing-item";
-import { buildTree, type TreeNode } from "./tree.utils";
+import { type TreeNode } from "./tree.utils";
 import FolderItem from "./folder/folder-item";
 import { ScrollArea, Spinner } from "@radix-ui/themes";
 import useFileTree from "@/app/hooks/use-file-tree";
@@ -12,13 +12,9 @@ import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element
 import useDraggableState from "@/app/hooks/use-draggable-state";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import { cn } from "@/app/lib/utils";
-import { useAtom } from "jotai";
 import { useDrawingListContext } from "./drawing-list.provider";
-import { drawingsSortOptionAtom } from "./drawing-list.store";
 import NoSearchResultsScreen from "../screens/no-search-results";
 import NoDrawingsScreen from "../screens/no-drawings";
-import { useQuery } from "@apollo/client/react";
-import { GetDrawingsAndFoldersDocument } from "@/app/gql.gen";
 import useDrawingMutations from "@/app/hooks/mutations/use-drawing-mutations";
 import useFolderMutations from "@/app/hooks/mutations/use-folder-mutations";
 
@@ -49,28 +45,13 @@ const TreeNodeComponent: React.FC<{
 };
 
 type Props = {
-  search: string | undefined;
+  treeNodes: TreeNode[];
+  isSearching: boolean;
+  loading: boolean;
 };
 
-const DrawingList: React.FC<Props> = ({ search }) => {
-  const [sort] = useAtom(drawingsSortOptionAtom);
-  const isSearching = Boolean(search && search.length > 0);
+const DrawingList: React.FC<Props> = ({ loading, isSearching, treeNodes }) => {
   const { isDragDisabled, isOverListItem } = useDrawingListContext();
-
-  const { data: { folders = [], drawings = [] } = {}, loading } = useQuery(
-    GetDrawingsAndFoldersDocument,
-    {
-      variables: {
-        query: {
-          sortDirection: sort.direction,
-          sortField: sort.field,
-          search,
-        },
-      },
-    },
-  );
-
-  const treeNodes = buildTree(isSearching ? [] : folders, drawings);
 
   const {
     updateDrawingMutation: [updateDrawing],

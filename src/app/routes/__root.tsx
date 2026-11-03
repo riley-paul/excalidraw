@@ -19,9 +19,12 @@ import React from "react";
 import { z } from "astro/zod";
 import { DrawingListProvider } from "@/app/components/drawings/drawing-list.provider";
 import { formatFileSize } from "@/app/lib/utils";
-import { useSuspenseQuery } from "@apollo/client/react";
-import { GetMeDocument } from "../gql.gen";
+import { useQuery, useSuspenseQuery } from "@apollo/client/react";
+import { GetDrawingsAndFoldersDocument, GetMeDocument } from "../gql.gen";
 import type { ApolloClient } from "@apollo/client";
+import { drawingsSortOptionAtom } from "../components/drawings/drawing-list.store";
+import { useAtom } from "jotai";
+import { buildTree } from "../components/drawings/tree.utils";
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -37,6 +40,7 @@ export const Route = createRootRouteWithContext<{
 function Component() {
   const navigate = useNavigate();
   const { search } = Route.useSearch();
+  const [sort] = useAtom(drawingsSortOptionAtom);
 
   const { data: { me: user } = {} } = useSuspenseQuery(GetMeDocument);
 
@@ -44,6 +48,22 @@ function Component() {
 
   const setSearch = (search: string | undefined) =>
     navigate({ to: ".", search: (prev) => ({ ...prev, search }) });
+
+  const { data: { folders = [], drawings = [] } = {}, loading } = useQuery(
+    GetDrawingsAndFoldersDocument,
+    {
+      variables: {
+        query: {
+          sortDirection: sort.direction,
+          sortField: sort.field,
+          search,
+        },
+      },
+    },
+  );
+
+  const isSearching = Boolean(search && search.length > 0);
+  const treeNodes = buildTree(isSearching ? [] : folders, drawings);
 
   return (
     <main className="flex max-w-screen">
@@ -57,7 +77,11 @@ function Component() {
         </header>
         <Separator size="4" />
         <div className="flex items-center gap-2 p-3">
-          <DrawingListSearch search={search} setSearch={setSearch} />
+          <DrawingListSearch
+            search={search}
+            setSearch={setSearch}
+            drawings={drawings}
+          />
           <SortMenu />
         </div>
         <Separator size="4" />
@@ -69,7 +93,11 @@ function Component() {
           }
         >
           <DrawingListProvider isDragDisabled={Boolean(search)}>
-            <DrawingList search={search} />
+            <DrawingList
+              isSearching={isSearching}
+              loading={loading}
+              treeNodes={treeNodes}
+            />
           </DrawingListProvider>
         </React.Suspense>
         <Separator size="4" />

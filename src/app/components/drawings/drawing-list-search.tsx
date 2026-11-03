@@ -4,18 +4,21 @@ import { useAtom } from "jotai";
 import { SearchIcon, XIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
-import { drawingsSortOptionAtom } from "./drawing-list.store";
 import { searchSelectionIdAtom } from "@/app/lib/store";
 import { useNavigate } from "@tanstack/react-router";
-import { useQuery } from "@apollo/client/react";
-import { GetDrawingsDocument } from "@/app/gql.gen";
+import { type ShallowDrawingFragment } from "@/app/gql.gen";
 
 type Props = {
   search: string | undefined;
   setSearch: (search: string | undefined) => void;
+  drawings: ShallowDrawingFragment[];
 };
 
-const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
+const DrawingListSearch: React.FC<Props> = ({
+  search,
+  setSearch,
+  drawings,
+}) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
 
@@ -37,17 +40,6 @@ const DrawingListSearch: React.FC<Props> = ({ search, setSearch }) => {
   }, [search]);
 
   const setSearchDebounced = useDebounceCallback(setSearch, 500);
-
-  const [sort] = useAtom(drawingsSortOptionAtom);
-  const { data: { drawings = [] } = {} } = useQuery(GetDrawingsDocument, {
-    variables: {
-      query: {
-        sortDirection: sort.direction,
-        sortField: sort.field,
-        search: search,
-      },
-    },
-  });
 
   useHotkeys([
     {
