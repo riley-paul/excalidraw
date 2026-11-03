@@ -80,15 +80,6 @@ export async function invalidateSession(
   await db.delete(UserSession).where(eq(UserSession.id, sessionId));
 }
 
-export async function invalidateAllSessions(
-  context: APIContext,
-  userId: string,
-): Promise<void> {
-  const { env } = context.locals;
-  const db = createDb(env);
-  await db.delete(UserSession).where(eq(UserSession.userId, userId));
-}
-
 export function setSessionTokenCookie(
   context: APIContext,
   token: string,

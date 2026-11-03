@@ -17,10 +17,6 @@ export type DraggableState =
       closestEdge: Edge | null;
     };
 
-export type DraggableStateClassnames = {
-  [Key in DraggableState["type"]]?: React.HTMLAttributes<HTMLDivElement>["className"];
-};
-
 export default function useDraggableState() {
   const [draggableState, setDraggableState] = React.useState<DraggableState>({
     type: "idle",

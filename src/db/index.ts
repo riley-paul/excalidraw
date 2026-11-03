@@ -16,5 +16,3 @@ export const createDb = (env: Env) => {
   });
   return drizzle({ client, relations });
 };
-
-export type Db = ReturnType<typeof createDb>;

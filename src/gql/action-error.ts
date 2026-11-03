@@ -47,12 +47,4 @@ export class ActionError extends GraphQLError {
     this.code = code;
     this.status = status;
   }
-
-  static codeToStatus(code: ActionErrorCode): number {
-    return codeToStatus[code];
-  }
-}
-
-export function isActionError(error: unknown): error is ActionError {
-  return error instanceof ActionError;
 }

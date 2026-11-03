@@ -12,7 +12,6 @@ export type UserSessionInfo = {
 };
 
 export const zDrawingsSearch = z.string().max(100);
-export type DrawingsSearch = z.infer<typeof zDrawingsSearch>;
 
 export const zDrawingName = z.string().trim().min(1).max(100);
 
@@ -28,12 +27,6 @@ const zDrawingsSort = z.object({
 });
 export type DrawingsSortField = z.infer<typeof zDrawingsSortField>;
 export type DrawingsSort = z.infer<typeof zDrawingsSort>;
-
-export const zDrawingsQueryParams = z.object({
-  search: zDrawingsSearch.optional(),
-  sort: zDrawingsSort.optional(),
-});
-export type DrawingsQueryParams = z.infer<typeof zDrawingsQueryParams>;
 
 export const defaultDrawingSort: DrawingsSort = {
   field: "updatedAt",
