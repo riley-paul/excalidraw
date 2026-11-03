@@ -19,6 +19,8 @@ import { useBlocker } from "@tanstack/react-router";
 import { ignoreDirtyAtom, jotaiStore } from "@/lib/client/store";
 import { GetDrawingDocument } from "../gql.gen";
 import { useApolloClient, useSuspenseQuery } from "@apollo/client/react";
+import useDrawingMutations from "@/app/hooks/mutations/use-drawing-mutations";
+import { toast } from "sonner";
 
 type Props = { drawingId: string };
 
@@ -32,7 +34,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
 
   const { name, parentFolderId } = drawing;
 
-  // const { saveDrawing } = useMutations();
+  const { saveDrawing } = useDrawingMutations();
   const { openFolder } = useFileTree();
 
   // State
@@ -75,13 +77,21 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
         type: "image/png",
       });
 
-      // await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
+      await saveDrawing({ drawingId, thumbnail, content });
+      apolloClient.cache.modify({
+        id: apolloClient.cache.identify(drawing),
+        fields: { content: () => contentJson },
+      });
+      markAsClean();
+      toast.success("Drawing saved successfully!");
     } catch (e) {
       console.error("Error saving drawing:", e);
+      toast.error("Could not save drawing", {
+        description: e instanceof Error ? e.message : undefined,
+      });
     } finally {
       setIsSaving(false);
     }
-    markAsClean();
   };
 
   const loadInitialData = async () => {

@@ -12,7 +12,9 @@ export default function useFolderMutations() {
     refetchQueries: [GetFoldersDocument, GetDrawingsAndFoldersDocument],
   });
 
-  const updateFolderMutation = useMutation(UpdateFolderDocument);
+  const updateFolderMutation = useMutation(UpdateFolderDocument, {
+    refetchQueries: [GetFoldersDocument, GetDrawingsAndFoldersDocument],
+  });
 
   const deleteFolderMutation = useMutation(DeleteFolderDocument, {
     update: (cache, { data }) => {

@@ -1,5 +1,4 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
-import useFileTree from "@/app/hooks/use-file-tree";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import {
@@ -85,10 +84,8 @@ const DrawingMenu: React.FC<Props> = ({ drawing, isOpen, setIsOpen }) => {
     if (!parentFolder) {
       await updateDrawing({
         variables: { drawingId: drawing.id, input: { parentFolderId: null } },
-        onCompleted: () => {
-          toast.success(`Moved to root folder`);
-        },
       });
+      toast.success(`Moved to root folder`);
       return;
     }
     await updateDrawing({
@@ -96,23 +93,14 @@ const DrawingMenu: React.FC<Props> = ({ drawing, isOpen, setIsOpen }) => {
         drawingId: drawing.id,
         input: { parentFolderId: parentFolder.id },
       },
-      onCompleted: () => {
-        toast.success(`Moved to "${parentFolder.name}"`);
-        openFolder(parentFolder.id);
-      },
     });
+    toast.success(`Moved to ${parentFolder.name}`);
   };
 
-  const handleDuplicateDrawing = () => {
-    duplicateDrawing({
-      variables: { drawingId: drawing.id },
-      onCompleted: () => {
-        toast.success(`Duplicated "${drawing.name}"`);
-      },
-    });
+  const handleDuplicateDrawing = async () => {
+    await duplicateDrawing({ variables: { drawingId: drawing.id } });
+    toast.success(`Duplicated drawing "${drawing.name}"`);
   };
-
-  const { openFolder } = useFileTree();
 
   return (
     <DropdownMenu.Root modal={false} open={isOpen} onOpenChange={setIsOpen}>
