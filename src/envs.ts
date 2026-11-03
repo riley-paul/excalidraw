@@ -11,6 +11,7 @@ const zEnv = z.object({
   SITE: z.url().default("http://localhost:4321"),
   DATABASE_URL: z.url().default(""),
   DATABASE_AUTH_TOKEN: z.string().optional(),
+  API_KEY: z.string().optional(),
 });
 
 export type Environment = z.infer<typeof zEnv> & Env;
