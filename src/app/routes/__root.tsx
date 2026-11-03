@@ -1,5 +1,5 @@
 import { zDrawingsSearch } from "@/lib/types";
-import { useSuspenseQuery, type QueryClient } from "@tanstack/react-query";
+import { type QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
   Outlet,
@@ -7,7 +7,6 @@ import {
 } from "@tanstack/react-router";
 
 import UserMenu from "@/app/components/user-menu";
-import { qCurrentUser } from "@/lib/client/queries";
 import DrawingList from "@/app/components/drawings/drawing-list";
 import Sidebar from "@/app/components/sidebar/sidebar";
 import { Heading, Progress, Separator, Spinner, Text } from "@radix-ui/themes";
@@ -20,24 +19,26 @@ import React from "react";
 import { z } from "astro/zod";
 import { DrawingListProvider } from "@/app/components/drawings/drawing-list.provider";
 import { formatFileSize } from "@/lib/client/utils";
+import { useSuspenseQuery } from "@apollo/client/react";
+import { GetMeDocument } from "../gql.gen";
+import type { ApolloClient } from "@apollo/client";
 
-export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
-  {
-    component: Component,
-    validateSearch: z.object({ search: zDrawingsSearch.optional() }),
-    loader: async ({ context }) => {
-      const user = await context.queryClient.query(qCurrentUser);
-      if (!user) throw new Error("No user");
-      return { user };
-    },
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+  apolloClient: ApolloClient;
+}>()({
+  component: Component,
+  validateSearch: z.object({ search: zDrawingsSearch.optional() }),
+  loader: async ({ context }) => {
+    await context.apolloClient.query({ query: GetMeDocument });
   },
-);
+});
 
 function Component() {
   const navigate = useNavigate();
   const { search } = Route.useSearch();
 
-  const { data: user } = useSuspenseQuery(qCurrentUser);
+  const { data: { me: user } = {} } = useSuspenseQuery(GetMeDocument);
 
   if (!user) throw new Error("No user");
 

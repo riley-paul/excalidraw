@@ -1,11 +1,11 @@
-import type { UserSelect } from "@/lib/types";
 import { Avatar, DropdownMenu, Text } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import { ChevronsUpDownIcon, LogOutIcon, Trash2Icon } from "lucide-react";
 import { alertSystemAtom } from "./alert-system/alert-system.store";
 import useMutations from "../hooks/use-mutations";
+import type { UserFragment } from "../gql.gen";
 
-type Props = { user: UserSelect };
+type Props = { user: UserFragment };
 
 export const UserMenu: React.FC<Props> = ({ user }) => {
   const [, dispatchAlert] = useAtom(alertSystemAtom);

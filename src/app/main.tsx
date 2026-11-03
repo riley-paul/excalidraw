@@ -17,6 +17,15 @@ import NotFoundScreen from "./components/screens/not-found";
 import ErrorScreen from "./components/screens/error";
 import { Provider } from "jotai";
 import { jotaiStore } from "@/lib/client/store";
+import {
+  ApolloClient,
+  HttpLink,
+  InMemoryCache,
+  onlineSource,
+  RefetchEventManager,
+  windowFocusSource,
+} from "@apollo/client";
+import { ApolloProvider } from "@apollo/client/react";
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
@@ -30,9 +39,20 @@ const queryClient = new QueryClient({
   }),
 });
 
+const apolloClient = new ApolloClient({
+  link: new HttpLink({ uri: "/graphql", useGETForQueries: true }),
+  cache: new InMemoryCache(),
+  refetchEventManager: new RefetchEventManager({
+    sources: {
+      online: onlineSource,
+      windowFocus: windowFocusSource,
+    },
+  }),
+});
+
 const router = createRouter({
   routeTree,
-  context: { queryClient },
+  context: { queryClient, apolloClient },
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
@@ -49,15 +69,17 @@ declare module "@tanstack/react-router" {
 
 const App: React.FC = () => {
   return (
-    <Provider store={jotaiStore}>
-      <QueryClientProvider client={queryClient}>
-        <RadixProvider>
-          <RouterProvider router={router} />
-          <CustomToaster />
-          <AlertSystem />
-        </RadixProvider>
-      </QueryClientProvider>
-    </Provider>
+    <ApolloProvider client={apolloClient}>
+      <Provider store={jotaiStore}>
+        <QueryClientProvider client={queryClient}>
+          <RadixProvider>
+            <RouterProvider router={router} />
+            <CustomToaster />
+            <AlertSystem />
+          </RadixProvider>
+        </QueryClientProvider>
+      </Provider>
+    </ApolloProvider>
   );
 };
 

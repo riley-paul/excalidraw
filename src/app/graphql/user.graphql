@@ -1,0 +1,9 @@
+query GetMe {
+  me {
+    ...User
+  }
+}
+
+mutation DeleteUser {
+  deleteUser
+}

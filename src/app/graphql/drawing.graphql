@@ -1,0 +1,11 @@
+query GetDrawings($query: DrawingsQueryArgs) {
+  drawings(query: $query) {
+    ...ShallowDrawing
+  }
+}
+
+mutation CreateDrawing($input: CreateDrawingInput!) {
+  createDrawing(input: $input) {
+    ...ShallowDrawing
+  }
+}

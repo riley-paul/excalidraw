@@ -3,4 +3,13 @@ fragment User on UserObjectType {
   name
   email
   avatarUrl
+  storageLimit
+  storageUsed
+}
+
+fragment ShallowDrawing on DrawingObjectType {
+  id
+  name
+  fileSize
+  savedAt
 }
