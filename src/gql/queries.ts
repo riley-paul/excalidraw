@@ -1,5 +1,6 @@
 import { createDb } from "@/db";
 import { builder } from "./gql-builder";
+import { ActionError } from "./action-error";
 
 const DrawingsSortFieldEnum = builder.enumType("DrawingsSortField", {
   values: ["name", "updatedAt", "createdAt", "fileSize"],
@@ -24,7 +25,11 @@ builder.queryFields((t) => ({
       const user = await db.query.User.findFirst(
         query({ where: { id: { eq: ctx.userId } } }),
       );
-      if (!user) throw new Error("User not found");
+      if (!user)
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: "User not found.",
+        });
       return user;
     },
   }),

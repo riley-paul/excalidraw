@@ -12,7 +12,7 @@ query GetDrawing($drawingId: ID!) {
 
 mutation CreateDrawing($input: CreateDrawingInput!) {
   createDrawing(input: $input) {
-    ...ShallowDrawing
+    ...Drawing
   }
 }
 
@@ -25,5 +25,11 @@ mutation UpdateDrawing($drawingId: ID!, $input: UpdateDrawingInput!) {
 mutation DeleteDrawing($drawingId: ID!) {
   deleteDrawing(drawingId: $drawingId) {
     ...ShallowDrawing
+  }
+}
+
+mutation DuplicateDrawing($drawingId: ID!) {
+  duplicateDrawing(drawingId: $drawingId) {
+    ...Drawing
   }
 }

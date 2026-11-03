@@ -28,6 +28,7 @@ const DrawingMenu: React.FC<Props> = ({ drawing, isOpen, setIsOpen }) => {
   const {
     deleteDrawingMutation: [deleteDrawing],
     updateDrawingMutation: [updateDrawing],
+    duplicateDrawingMutation: [duplicateDrawing],
   } = useDrawingMutations();
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
@@ -103,7 +104,12 @@ const DrawingMenu: React.FC<Props> = ({ drawing, isOpen, setIsOpen }) => {
   };
 
   const handleDuplicateDrawing = () => {
-    // duplicateDrawing.mutate({ id });
+    duplicateDrawing({
+      variables: { drawingId: drawing.id },
+      onCompleted: () => {
+        toast.success(`Duplicated "${drawing.name}"`);
+      },
+    });
   };
 
   const { openFolder } = useFileTree();

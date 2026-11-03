@@ -1,6 +1,7 @@
 import {
   CreateDrawingDocument,
   DeleteDrawingDocument,
+  DuplicateDrawingDocument,
   GetDrawingsAndFoldersDocument,
   GetDrawingsDocument,
   UpdateDrawingDocument,
@@ -56,9 +57,23 @@ export default function useDrawingMutations() {
     },
   });
 
+  const duplicateDrawingMutation = useMutation(DuplicateDrawingDocument, {
+    refetchQueries: [GetDrawingsDocument, GetDrawingsAndFoldersDocument],
+    onCompleted: (data) => {
+      const newDrawingId = data.duplicateDrawing?.id;
+      if (!newDrawingId) return;
+      router.invalidate();
+      router.navigate({
+        to: "/drawing/$drawingId",
+        params: { drawingId: newDrawingId },
+      });
+    },
+  });
+
   return {
     createDrawingMutation,
     updateDrawingMutation,
     deleteDrawingMutation,
+    duplicateDrawingMutation,
   };
 }

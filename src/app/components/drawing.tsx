@@ -1,4 +1,3 @@
-import useMutations from "@/app/hooks/use-mutations";
 import {
   Excalidraw,
   exportToBlob,
@@ -11,7 +10,6 @@ import { useEffect, useState } from "react";
 import { useDocumentTitle } from "usehooks-ts";
 import { Button, Spinner, Text } from "@radix-ui/themes";
 import RadixProvider from "@/app/components/ui/radix-provider";
-import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { useHotkey } from "@tanstack/react-hotkeys";
@@ -20,11 +18,12 @@ import { cn } from "@/lib/client/utils";
 import { useBlocker } from "@tanstack/react-router";
 import { ignoreDirtyAtom, jotaiStore } from "@/lib/client/store";
 import { GetDrawingDocument } from "../gql.gen";
-import { useSuspenseQuery } from "@apollo/client/react";
+import { useApolloClient, useSuspenseQuery } from "@apollo/client/react";
 
 type Props = { drawingId: string };
 
 const Drawing: React.FC<Props> = ({ drawingId }) => {
+  const apolloClient = useApolloClient();
   const { data: { drawing } = {} } = useSuspenseQuery(GetDrawingDocument, {
     variables: { drawingId },
   });
@@ -33,7 +32,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
 
   const { name, parentFolderId } = drawing;
 
-  const { saveDrawing } = useMutations();
+  // const { saveDrawing } = useMutations();
   const { openFolder } = useFileTree();
 
   // State
@@ -76,7 +75,7 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
         type: "image/png",
       });
 
-      await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
+      // await saveDrawing.mutateAsync({ id: drawingId, content, thumbnail });
     } catch (e) {
       console.error("Error saving drawing:", e);
     } finally {
@@ -87,9 +86,9 @@ const Drawing: React.FC<Props> = ({ drawingId }) => {
 
   const loadInitialData = async () => {
     setIsLoading(true);
-    const drawing = await actions.drawings.get.orThrow({
-      id: drawingId,
-      withContent: true,
+    const { data: { drawing } = {} } = await apolloClient.query({
+      query: GetDrawingDocument,
+      variables: { drawingId },
     });
     if (!drawing) throw new Error("Drawing content not found");
     const data = restore(JSON.parse(drawing.content ?? "{}"), null, null);

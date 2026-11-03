@@ -1,4 +1,5 @@
 import { builder } from "../gql-builder";
+import { ActionError } from "../action-error";
 import * as tables from "@/db/schema";
 import { and, eq } from "drizzle-orm";
 import { createDb } from "@/db";
@@ -83,7 +84,11 @@ builder.mutationFields((t) => ({
         }),
       );
 
-      if (!folder) throw new Error("Folder not found");
+      if (!folder)
+        throw new ActionError({
+          code: "NOT_FOUND",
+          message: `Folder with id ${folderId} not found.`,
+        });
 
       await db.delete(tables.Folder).where(eq(tables.Folder.id, folderId));
       return folder;
