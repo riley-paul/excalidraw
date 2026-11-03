@@ -3,12 +3,6 @@ import { routeTree } from "./routeTree.gen";
 
 import React from "react";
 import "@excalidraw/excalidraw/index.css";
-import {
-  MutationCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { toast } from "sonner";
 import AlertSystem from "@/app/components/alert-system/alert-system";
 import RadixProvider from "@/app/components/ui/radix-provider";
 import CustomToaster from "@/app/components/ui/custom-toaster";
@@ -27,18 +21,6 @@ import {
 } from "@apollo/client";
 import { ApolloProvider } from "@apollo/client/react";
 
-const queryClient = new QueryClient({
-  defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } },
-  mutationCache: new MutationCache({
-    onError: (error) => {
-      console.error(error);
-      toast.error("Something went wrong", {
-        description: error.message ?? "Server Error",
-      });
-    },
-  }),
-});
-
 const apolloClient = new ApolloClient({
   link: new HttpLink({ uri: "/graphql", useGETForQueries: true }),
   cache: new InMemoryCache(),
@@ -52,7 +34,7 @@ const apolloClient = new ApolloClient({
 
 const router = createRouter({
   routeTree,
-  context: { queryClient, apolloClient },
+  context: { apolloClient },
   defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
@@ -71,13 +53,11 @@ const App: React.FC = () => {
   return (
     <ApolloProvider client={apolloClient}>
       <Provider store={jotaiStore}>
-        <QueryClientProvider client={queryClient}>
-          <RadixProvider>
-            <RouterProvider router={router} />
-            <CustomToaster />
-            <AlertSystem />
-          </RadixProvider>
-        </QueryClientProvider>
+        <RadixProvider>
+          <RouterProvider router={router} />
+          <CustomToaster />
+          <AlertSystem />
+        </RadixProvider>
       </Provider>
     </ApolloProvider>
   );

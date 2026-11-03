@@ -1,5 +1,4 @@
 import { zDrawingsSearch } from "@/lib/types";
-import { type QueryClient } from "@tanstack/react-query";
 import {
   createRootRouteWithContext,
   Outlet,
@@ -27,7 +26,6 @@ import { useAtom } from "jotai";
 import { buildTree } from "../components/drawings/tree.utils";
 
 export const Route = createRootRouteWithContext<{
-  queryClient: QueryClient;
   apolloClient: ApolloClient;
 }>()({
   component: Component,
