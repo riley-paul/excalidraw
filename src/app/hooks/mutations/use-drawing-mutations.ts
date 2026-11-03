@@ -1,4 +1,9 @@
-import { CreateDrawingDocument, GetDrawingsDocument } from "@/app/gql.gen";
+import {
+  CreateDrawingDocument,
+  DeleteDrawingDocument,
+  GetDrawingsDocument,
+  UpdateDrawingDocument,
+} from "@/app/gql.gen";
 import { useMutation } from "@apollo/client/react";
 import { useRouter } from "@tanstack/react-router";
 
@@ -6,7 +11,9 @@ export default function useDrawingMutations() {
   const router = useRouter();
 
   const createDrawingMutation = useMutation(CreateDrawingDocument, {
-    refetchQueries: [GetDrawingsDocument],
+    update: (cache) => {
+      cache.evict({ fieldName: "drawings" });
+    },
     onCompleted: (data) => {
       const newDrawingId = data.createDrawing?.id;
       if (!newDrawingId) return;
@@ -18,7 +25,13 @@ export default function useDrawingMutations() {
     },
   });
 
+  const updateDrawingMutation = useMutation(UpdateDrawingDocument, {});
+
+  const deleteDrawingMutation = useMutation(DeleteDrawingDocument, {});
+
   return {
     createDrawingMutation,
+    updateDrawingMutation,
+    deleteDrawingMutation,
   };
 }

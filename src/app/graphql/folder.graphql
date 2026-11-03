@@ -12,3 +12,21 @@ query GetDrawingsAndFolders($query: DrawingsQueryArgs) {
     ...Folder
   }
 }
+
+mutation CreateFolder($input: CreateFolderInput!) {
+  createFolder(input: $input) {
+    ...Folder
+  }
+}
+
+mutation UpdateFolder($folderId: ID!, $input: UpdateFolderInput!) {
+  updateFolder(folderId: $folderId, input: $input) {
+    ...Folder
+  }
+}
+
+mutation DeleteFolder($folderId: ID!) {
+  deleteFolder(folderId: $folderId) {
+    ...Folder
+  }
+}

@@ -1,10 +1,9 @@
-import { qFolders } from "@/lib/client/queries";
 import { DropdownMenu } from "@radix-ui/themes";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { FolderInputIcon } from "lucide-react";
 import React from "react";
 import { buildTree, type TreeNode } from "./tree.utils";
-import type { FolderFragment } from "@/app/gql.gen";
+import { GetFoldersDocument, type FolderFragment } from "@/app/gql.gen";
+import { useQuery } from "@apollo/client/react";
 
 type Props = {
   id: string;
@@ -46,7 +45,7 @@ const MoveMenuItem: React.FC<{ folderNode: TreeNode } & Props> = ({
 };
 
 const MoveSubMenu: React.FC<Props> = ({ id, parentFolderId, handleMove }) => {
-  const { data: folders } = useSuspenseQuery(qFolders);
+  const { data: { folders = [] } = {} } = useQuery(GetFoldersDocument);
   const folderNodes = buildTree(folders, []);
 
   return (

@@ -15,3 +15,15 @@ mutation CreateDrawing($input: CreateDrawingInput!) {
     ...ShallowDrawing
   }
 }
+
+mutation UpdateDrawing($drawingId: ID!, $input: UpdateDrawingInput!) {
+  updateDrawing(drawingId: $drawingId, input: $input) {
+    ...ShallowDrawing
+  }
+}
+
+mutation DeleteDrawing($drawingId: ID!) {
+  deleteDrawing(drawingId: $drawingId) {
+    ...ShallowDrawing
+  }
+}

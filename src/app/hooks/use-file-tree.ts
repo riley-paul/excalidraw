@@ -1,8 +1,8 @@
 import { getParentFolderIds } from "@/app/components/drawings/tree.utils";
-import { qFolders } from "@/lib/client/queries";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@apollo/client/react";
 import { useAtom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
+import { GetFoldersDocument } from "../gql.gen";
 
 const openFoldersAtom = atomWithStorage<Record<string, boolean>>(
   "openFolders",
@@ -11,7 +11,7 @@ const openFoldersAtom = atomWithStorage<Record<string, boolean>>(
 
 export default function useFileTree() {
   const [openFolders, setOpenFolders] = useAtom(openFoldersAtom);
-  const { data: folders = [] } = useQuery(qFolders);
+  const { data: { folders = [] } = {} } = useQuery(GetFoldersDocument);
 
   const closeFolder = (folderId: string) => {
     setOpenFolders((prev) => ({
