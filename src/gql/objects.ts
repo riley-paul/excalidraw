@@ -13,12 +13,12 @@ builder.drizzleObject("User", {
     storageLimit: t.exposeInt("storageLimit"),
     storageUsed: t.field({
       type: "Int",
-      resolve: async (_user, _, ctx) => {
+      resolve: async (user, _, ctx) => {
         const db = createDb(ctx.env);
         const [{ storageUsed }] = await db
           .select({ storageUsed: sum(table.Drawing.fileSize) })
           .from(table.Drawing)
-          .where(eq(table.Drawing.userId, ctx.userId));
+          .where(eq(table.Drawing.userId, user.id));
         return Number(storageUsed);
       },
     }),
@@ -30,8 +30,19 @@ builder.drizzleObject("Drawing", {
   fields: (t) => ({
     id: t.exposeID("id"),
     name: t.exposeString("name"),
+    parentFolderId: t.exposeID("parentFolderId", { nullable: true }),
     fileSize: t.exposeInt("fileSize", { nullable: true }),
     savedAt: t.exposeString("savedAt", { nullable: true }),
+    updatedAt: t.exposeString("updatedAt"),
+    content: t.field({
+      type: "String",
+      nullable: true,
+      resolve: async (drawing, _, ctx) => {
+        const bucket = ctx.env.R2_BUCKET;
+        const content = await bucket.get(drawing.id);
+        return content ? await content.text() : null;
+      },
+    }),
   }),
 });
 
@@ -40,5 +51,6 @@ builder.drizzleObject("Folder", {
   fields: (t) => ({
     id: t.exposeID("id"),
     name: t.exposeString("name"),
+    parentFolderId: t.exposeID("parentFolderId", { nullable: true }),
   }),
 });

@@ -64,4 +64,18 @@ builder.queryFields((t) => ({
       return drawings;
     },
   }),
+
+  folders: t.drizzleField({
+    type: ["Folder"],
+    resolve: async (query, _root, _args, ctx) => {
+      const db = createDb(ctx.env);
+      const folders = await db.query.Folder.findMany(
+        query({
+          where: { userId: { eq: ctx.userId } },
+          orderBy: { name: "asc" },
+        }),
+      );
+      return folders;
+    },
+  }),
 }));

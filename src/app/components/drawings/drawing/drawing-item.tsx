@@ -1,4 +1,3 @@
-import type { DrawingSelect } from "@/lib/types";
 import { cn, formatFileSize } from "@/lib/client/utils";
 import { Text } from "@radix-ui/themes";
 import { Link, useParams, useSearch } from "@tanstack/react-router";
@@ -10,13 +9,14 @@ import ItemContainer from "../item-container";
 import { getItemPadding } from "../tree.utils";
 import { useAtom } from "jotai";
 import { searchSelectionIdAtom } from "@/lib/client/store";
+import type { ShallowDrawingFragment } from "@/app/gql.gen";
 
 type Props = {
-  drawing: DrawingSelect;
+  drawing: ShallowDrawingFragment;
   depth: number;
 };
 
-const DrawingThumbnail: React.FC<{ drawing: DrawingSelect }> = ({
+const DrawingThumbnail: React.FC<{ drawing: ShallowDrawingFragment }> = ({
   drawing,
 }) => {
   const [showFallback, setShowFallback] = React.useState(false);

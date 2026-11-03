@@ -10,6 +10,19 @@ fragment User on UserObjectType {
 fragment ShallowDrawing on DrawingObjectType {
   id
   name
+  parentFolderId
   fileSize
   savedAt
+  updatedAt
+}
+
+fragment Drawing on DrawingObjectType {
+  ...ShallowDrawing
+  content
+}
+
+fragment Folder on FolderObjectType {
+  id
+  name
+  parentFolderId
 }

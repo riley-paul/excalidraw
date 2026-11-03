@@ -1,21 +1,21 @@
-import type { DrawingSelect, FolderSelect } from "@/lib/types";
+import type { FolderFragment, ShallowDrawingFragment } from "@/app/gql.gen";
 
 type FolderNode = {
   type: "folder";
   depth: number;
   children: TreeNode[];
-} & FolderSelect;
+} & FolderFragment;
 
 type DrawingNode = {
   type: "drawing";
   depth: number;
-} & DrawingSelect;
+} & ShallowDrawingFragment;
 
 export type TreeNode = FolderNode | DrawingNode;
 
 export function buildTree(
-  folders: FolderSelect[],
-  drawings: DrawingSelect[],
+  folders: FolderFragment[],
+  drawings: ShallowDrawingFragment[],
 ): TreeNode[] {
   const folderMap: Record<string, FolderNode> = {};
 
@@ -71,7 +71,7 @@ export function buildTree(
 
 export function getParentFolderIds(
   folderId: string,
-  folders: FolderSelect[],
+  folders: FolderFragment[],
 ): string[] {
   const folderMap = new Map(folders.map((f) => [f.id, f]));
 

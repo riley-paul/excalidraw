@@ -4,8 +4,6 @@ import { buildTree, type TreeNode } from "./tree.utils";
 import FolderItem from "./folder/folder-item";
 import { ScrollArea, Spinner } from "@radix-ui/themes";
 import useFileTree from "@/app/hooks/use-file-tree";
-import { qDrawings, qFolders } from "@/lib/client/queries";
-import { useQueries } from "@tanstack/react-query";
 
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { zDragData } from "./drag.utils";
@@ -20,6 +18,8 @@ import { useDrawingListContext } from "./drawing-list.provider";
 import { drawingsSortOptionAtom } from "./drawing-list.store";
 import NoSearchResultsScreen from "../screens/no-search-results";
 import NoDrawingsScreen from "../screens/no-drawings";
+import { useQuery } from "@apollo/client/react";
+import { GetDrawingsAndFoldersDocument } from "@/app/gql.gen";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -56,12 +56,18 @@ const DrawingList: React.FC<Props> = ({ search }) => {
   const isSearching = Boolean(search && search.length > 0);
   const { isDragDisabled, isOverListItem } = useDrawingListContext();
 
-  const [
-    { data: drawings = [], isLoading: drawingsLoading },
-    { data: folders = [], isLoading: foldersLoading },
-  ] = useQueries({
-    queries: [qDrawings({ search, sort }), qFolders],
-  });
+  const { data: { folders = [], drawings = [] } = {}, loading } = useQuery(
+    GetDrawingsAndFoldersDocument,
+    {
+      variables: {
+        query: {
+          sortDirection: sort.direction,
+          sortField: sort.field,
+          search,
+        },
+      },
+    },
+  );
 
   const treeNodes = buildTree(isSearching ? [] : folders, drawings);
 
@@ -146,7 +152,7 @@ const DrawingList: React.FC<Props> = ({ search }) => {
     });
   }, [isOverListItem]);
 
-  if (drawingsLoading || foldersLoading) {
+  if (loading) {
     return (
       <div ref={elementRef} className="flex flex-1 items-center justify-center">
         <Spinner size="3" />

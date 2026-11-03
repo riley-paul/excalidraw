@@ -4,6 +4,12 @@ query GetDrawings($query: DrawingsQueryArgs) {
   }
 }
 
+query GetDrawing($drawingId: ID!) {
+  drawing(drawingId: $drawingId) {
+    ...Drawing
+  }
+}
+
 mutation CreateDrawing($input: CreateDrawingInput!) {
   createDrawing(input: $input) {
     ...ShallowDrawing

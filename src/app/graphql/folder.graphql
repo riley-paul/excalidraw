@@ -1,0 +1,14 @@
+query GetFolders {
+  folders {
+    ...Folder
+  }
+}
+
+query GetDrawingsAndFolders($query: DrawingsQueryArgs) {
+  drawings(query: $query) {
+    ...ShallowDrawing
+  }
+  folders {
+    ...Folder
+  }
+}

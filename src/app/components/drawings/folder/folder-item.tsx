@@ -1,4 +1,3 @@
-import type { FolderSelect } from "@/lib/types";
 import { cn } from "@/lib/client/utils";
 import { Text } from "@radix-ui/themes";
 import React from "react";
@@ -6,9 +5,10 @@ import FolderMenu from "./folder-menu";
 import { FolderIcon, FolderOpenIcon } from "lucide-react";
 import ItemContainer from "../item-container";
 import { getItemPadding } from "../tree.utils";
+import type { FolderFragment } from "@/app/gql.gen";
 
 type Props = {
-  folder: FolderSelect;
+  folder: FolderFragment;
   onClick: () => void;
   isExpanded?: boolean;
   depth: number;

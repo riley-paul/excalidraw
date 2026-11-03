@@ -4,12 +4,12 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { FolderInputIcon } from "lucide-react";
 import React from "react";
 import { buildTree, type TreeNode } from "./tree.utils";
-import type { FolderSelect } from "@/lib/types";
+import type { FolderFragment } from "@/app/gql.gen";
 
 type Props = {
   id: string;
   parentFolderId: string | null;
-  handleMove: (folder: FolderSelect | null) => Promise<void>;
+  handleMove: (folder: FolderFragment | null) => Promise<void>;
 };
 
 const MoveMenuItem: React.FC<{ folderNode: TreeNode } & Props> = ({

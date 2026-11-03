@@ -1,7 +1,6 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import useFileTree from "@/app/hooks/use-file-tree";
 import useMutations from "@/app/hooks/use-mutations";
-import type { DrawingSelect, FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import {
@@ -17,9 +16,10 @@ import { toast } from "sonner";
 import { useCopyToClipboard } from "usehooks-ts";
 import { z } from "astro/zod";
 import MoveSubMenu from "../move-sub-menu";
+import type { FolderFragment, ShallowDrawingFragment } from "@/app/gql.gen";
 
 type Props = {
-  drawing: DrawingSelect;
+  drawing: ShallowDrawingFragment;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 };
@@ -79,7 +79,7 @@ const DrawingMenu: React.FC<Props> = ({
     window.open(link, "_blank");
   };
 
-  const handleMoveDrawing = async (folder: FolderSelect | null) => {
+  const handleMoveDrawing = async (folder: FolderFragment | null) => {
     if (!folder) {
       await updateDrawing.mutateAsync({ id, parentFolderId: null });
       toast.success(`Moved to root folder`);

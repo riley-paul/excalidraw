@@ -1,7 +1,6 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import useFileTree from "@/app/hooks/use-file-tree";
 import useMutations from "@/app/hooks/use-mutations";
-import type { FolderSelect } from "@/lib/types";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import {
@@ -15,9 +14,10 @@ import React from "react";
 import { toast } from "sonner";
 import { z } from "astro/zod";
 import MoveSubMenu from "../move-sub-menu";
+import type { FolderFragment } from "@/app/gql.gen";
 
 type Props = {
-  folder: FolderSelect;
+  folder: FolderFragment;
   isOpen: boolean;
   setIsOpen: (isOpen: boolean) => void;
 };
@@ -104,7 +104,7 @@ const FolderMenu: React.FC<Props> = ({
 
   const { openFolder } = useFileTree();
 
-  const handleMoveFolder = async (folder: FolderSelect | null) => {
+  const handleMoveFolder = async (folder: FolderFragment | null) => {
     if (!folder) {
       await updateFolder.mutateAsync({ id, parentFolderId: null });
       toast.success(`Moved to root folder`);
