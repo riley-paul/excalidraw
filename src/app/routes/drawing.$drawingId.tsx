@@ -5,7 +5,7 @@ import Drawing from "@/app/components/drawing";
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
   loader: async ({ params: { drawingId }, context: { queryClient } }) => {
-    const drawing = await queryClient.fetchQuery(qDrawing(drawingId));
+    const drawing = await queryClient.query(qDrawing(drawingId));
     if (!drawing) throw notFound();
     return drawing;
   },

@@ -5,7 +5,7 @@ import FolderItem from "./folder/folder-item";
 import { ScrollArea, Spinner } from "@radix-ui/themes";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawings, qFolders } from "@/lib/client/queries";
-import { useQueries, useSuspenseQuery } from "@tanstack/react-query";
+import { useQueries } from "@tanstack/react-query";
 
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { zDragData } from "./drag.utils";

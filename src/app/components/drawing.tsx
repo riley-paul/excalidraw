@@ -9,10 +9,10 @@ import {
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useEffect, useState } from "react";
 import { useDocumentTitle } from "usehooks-ts";
-import { Button, Spinner, Text, Tooltip } from "@radix-ui/themes";
+import { Button, Spinner, Text } from "@radix-ui/themes";
 import RadixProvider from "@/app/components/ui/radix-provider";
 import { actions } from "astro:actions";
-import { CheckIcon, SaveIcon } from "lucide-react";
+import { SaveIcon } from "lucide-react";
 import useFileTree from "@/app/hooks/use-file-tree";
 import { qDrawing } from "@/lib/client/queries";
 import { useSuspenseQuery } from "@tanstack/react-query";

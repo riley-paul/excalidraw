@@ -26,7 +26,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     component: Component,
     validateSearch: z.object({ search: zDrawingsSearch.optional() }),
     loader: async ({ context }) => {
-      const user = await context.queryClient.ensureQueryData(qCurrentUser);
+      const user = await context.queryClient.query(qCurrentUser);
       if (!user) throw new Error("No user");
       return { user };
     },
