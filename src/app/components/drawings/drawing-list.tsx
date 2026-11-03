@@ -7,7 +7,6 @@ import useFileTree from "@/app/hooks/use-file-tree";
 
 import { monitorForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import { zDragData } from "./drag.utils";
-import useMutations from "@/app/hooks/use-mutations";
 import invariant from "tiny-invariant";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import useDraggableState from "@/app/hooks/use-draggable-state";
@@ -20,6 +19,8 @@ import NoSearchResultsScreen from "../screens/no-search-results";
 import NoDrawingsScreen from "../screens/no-drawings";
 import { useQuery } from "@apollo/client/react";
 import { GetDrawingsAndFoldersDocument } from "@/app/gql.gen";
+import useDrawingMutations from "@/app/hooks/mutations/use-drawing-mutations";
+import useFolderMutations from "@/app/hooks/mutations/use-folder-mutations";
 
 const TreeNodeComponent: React.FC<{
   node: TreeNode;
@@ -71,7 +72,14 @@ const DrawingList: React.FC<Props> = ({ search }) => {
 
   const treeNodes = buildTree(isSearching ? [] : folders, drawings);
 
-  const { updateDrawing, updateFolder } = useMutations();
+  const {
+    updateDrawingMutation: [updateDrawing],
+  } = useDrawingMutations();
+
+  const {
+    updateFolderMutation: [updateFolder],
+  } = useFolderMutations();
+
   const { openFolder } = useFileTree();
 
   useEffect(() => {
@@ -85,26 +93,56 @@ const DrawingList: React.FC<Props> = ({ search }) => {
         const targetData = zDragData.parse(target.data);
 
         if (targetData.type === "folder") {
-          const data = { id: sourceData.id, parentFolderId: targetData.id };
-          if (sourceData.type === "drawing") updateDrawing.mutate(data);
-          if (sourceData.type === "folder") updateFolder.mutate(data);
+          if (sourceData.type === "drawing")
+            updateDrawing({
+              variables: {
+                drawingId: sourceData.id,
+                input: { parentFolderId: targetData.id },
+              },
+            });
+          if (sourceData.type === "folder")
+            updateFolder({
+              variables: {
+                folderId: sourceData.id,
+                input: { parentFolderId: targetData.id },
+              },
+            });
           openFolder(targetData.id);
         }
 
         if (targetData.type === "drawing") {
-          const data = {
-            id: sourceData.id,
-            parentFolderId: targetData.parentFolderId,
-          };
-          if (sourceData.type === "drawing") updateDrawing.mutate(data);
-          if (sourceData.type === "folder") updateFolder.mutate(data);
+          if (sourceData.type === "drawing")
+            updateDrawing({
+              variables: {
+                drawingId: sourceData.id,
+                input: { parentFolderId: targetData.parentFolderId },
+              },
+            });
+          if (sourceData.type === "folder")
+            updateFolder({
+              variables: {
+                folderId: sourceData.id,
+                input: { parentFolderId: targetData.parentFolderId },
+              },
+            });
           if (targetData.parentFolderId) openFolder(targetData.parentFolderId);
         }
 
         if (targetData.type === "root") {
-          const data = { id: sourceData.id, parentFolderId: null };
-          if (sourceData.type === "drawing") updateDrawing.mutate(data);
-          if (sourceData.type === "folder") updateFolder.mutate(data);
+          if (sourceData.type === "drawing")
+            updateDrawing({
+              variables: {
+                drawingId: sourceData.id,
+                input: { parentFolderId: null },
+              },
+            });
+          if (sourceData.type === "folder")
+            updateFolder({
+              variables: {
+                folderId: sourceData.id,
+                input: { parentFolderId: null },
+              },
+            });
         }
       },
     });

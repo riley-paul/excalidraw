@@ -6,14 +6,14 @@ import { createDb } from "@/db";
 const CreateFolderInput = builder.inputType("CreateFolderInput", {
   fields: (t) => ({
     name: t.string({ required: true }),
-    parentFolderId: t.string({ required: false }),
+    parentFolderId: t.id({ required: false }),
   }),
 });
 
 const UpdateFolderInput = builder.inputType("UpdateFolderInput", {
   fields: (t) => ({
     name: t.string({ required: false }),
-    parentFolderId: t.string({ required: false }),
+    parentFolderId: t.id({ required: false }),
   }),
 });
 
@@ -28,7 +28,7 @@ builder.mutationFields((t) => ({
         .insert(tables.Folder)
         .values({
           name: args.input.name,
-          parentFolderId: args.input.parentFolderId ?? null,
+          parentFolderId: args.input.parentFolderId,
           userId: ctx.userId,
         })
         .returning();

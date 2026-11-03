@@ -3,14 +3,21 @@ import { useAtom } from "jotai/react";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import { z } from "astro/zod";
-import useMutations from "@/app/hooks/use-mutations";
 import { FolderPlusIcon, PenToolIcon, PlusIcon } from "lucide-react";
 import { formatForDisplay, useHotkeys } from "@tanstack/react-hotkeys";
+import useFolderMutations from "../hooks/mutations/use-folder-mutations";
+import useDrawingMutations from "../hooks/mutations/use-drawing-mutations";
 
 const AddMenu: React.FC = () => {
   const [, dispatchAlert] = useAtom(alertSystemAtom);
 
-  const { createFolder, createDrawing } = useMutations();
+  const {
+    createFolderMutation: [createFolder],
+  } = useFolderMutations();
+
+  const {
+    createDrawingMutation: [createDrawing],
+  } = useDrawingMutations();
 
   const handleAddDrawing = () => {
     dispatchAlert({
@@ -23,7 +30,7 @@ const AddMenu: React.FC = () => {
         placeholder: "Enter drawing name",
         schema: z.string().min(1).max(100),
         handleSubmit: (value: string) => {
-          createDrawing.mutate({ name: value });
+          createDrawing({ variables: { input: { name: value } } });
           dispatchAlert({ type: "close" });
         },
       },
@@ -41,7 +48,7 @@ const AddMenu: React.FC = () => {
         placeholder: "Enter folder name",
         schema: z.string().min(1).max(100),
         handleSubmit: (value: string) => {
-          createFolder.mutate({ name: value });
+          createFolder({ variables: { input: { name: value } } });
           dispatchAlert({ type: "close" });
         },
       },

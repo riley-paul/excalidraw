@@ -1,6 +1,7 @@
 import {
   CreateDrawingDocument,
   DeleteDrawingDocument,
+  GetDrawingsAndFoldersDocument,
   GetDrawingsDocument,
   UpdateDrawingDocument,
 } from "@/app/gql.gen";
@@ -11,9 +12,7 @@ export default function useDrawingMutations() {
   const router = useRouter();
 
   const createDrawingMutation = useMutation(CreateDrawingDocument, {
-    update: (cache) => {
-      cache.evict({ fieldName: "drawings" });
-    },
+    refetchQueries: [GetDrawingsDocument, GetDrawingsAndFoldersDocument],
     onCompleted: (data) => {
       const newDrawingId = data.createDrawing?.id;
       if (!newDrawingId) return;

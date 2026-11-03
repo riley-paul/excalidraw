@@ -6,14 +6,14 @@ import { createDb } from "@/db";
 const CreateDrawingInput = builder.inputType("CreateDrawingInput", {
   fields: (t) => ({
     name: t.string({ required: true }),
-    parentFolderId: t.string({ required: false }),
+    parentFolderId: t.id({ required: false }),
   }),
 });
 
 const UpdateDrawingInput = builder.inputType("UpdateDrawingInput", {
   fields: (t) => ({
     name: t.string({ required: false }),
-    parentFolderId: t.string({ required: false }),
+    parentFolderId: t.id({ required: false }),
   }),
 });
 
@@ -50,7 +50,7 @@ builder.mutationFields((t) => ({
         .update(tables.Drawing)
         .set({
           name: input.name ?? undefined,
-          parentFolderId: input.parentFolderId ?? undefined,
+          parentFolderId: input.parentFolderId,
         })
         .where(
           and(

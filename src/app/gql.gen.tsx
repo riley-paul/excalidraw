@@ -5,12 +5,12 @@ export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' |
 import type { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type CreateDrawingInput = {
   name: string;
-  parentFolderId?: string | null | undefined;
+  parentFolderId?: string | number | null | undefined;
 };
 
 export type CreateFolderInput = {
   name: string;
-  parentFolderId?: string | null | undefined;
+  parentFolderId?: string | number | null | undefined;
 };
 
 export type DrawingsQueryArgs = {
@@ -31,12 +31,12 @@ export type SortDirection =
 
 export type UpdateDrawingInput = {
   name?: string | null | undefined;
-  parentFolderId?: string | null | undefined;
+  parentFolderId?: string | number | null | undefined;
 };
 
 export type UpdateFolderInput = {
   name?: string | null | undefined;
-  parentFolderId?: string | null | undefined;
+  parentFolderId?: string | number | null | undefined;
 };
 
 export type GetDrawingsQueryVariables = Exact<{
