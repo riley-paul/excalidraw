@@ -11,7 +11,7 @@ import invariant from "tiny-invariant";
 import { dropTargetForElements } from "@atlaskit/pragmatic-drag-and-drop/element/adapter";
 import useDraggableState from "@/app/hooks/use-draggable-state";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
-import { cn } from "@/lib/client/utils";
+import { cn } from "@/app/lib/utils";
 import { useAtom } from "jotai";
 import { useDrawingListContext } from "./drawing-list.provider";
 import { drawingsSortOptionAtom } from "./drawing-list.store";

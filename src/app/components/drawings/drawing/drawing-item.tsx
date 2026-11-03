@@ -1,4 +1,4 @@
-import { cn, formatFileSize } from "@/lib/client/utils";
+import { cn, formatFileSize } from "@/app/lib/utils";
 import { Text } from "@radix-ui/themes";
 import { Link, useParams, useSearch } from "@tanstack/react-router";
 import React from "react";
@@ -8,7 +8,7 @@ import { ImageIcon } from "lucide-react";
 import ItemContainer from "../item-container";
 import { getItemPadding } from "../tree.utils";
 import { useAtom } from "jotai";
-import { searchSelectionIdAtom } from "@/lib/client/store";
+import { searchSelectionIdAtom } from "@/app/lib/store";
 import type { ShallowDrawingFragment } from "@/app/gql.gen";
 
 type Props = {

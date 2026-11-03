@@ -1,4 +1,4 @@
-import { cn } from "@/lib/client/utils";
+import { cn } from "@/app/lib/utils";
 import { Text } from "@radix-ui/themes";
 import React from "react";
 import FolderMenu from "./folder-menu";

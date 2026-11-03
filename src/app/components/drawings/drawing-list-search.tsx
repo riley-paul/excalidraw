@@ -5,7 +5,7 @@ import { SearchIcon, XIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { useDebounceCallback } from "usehooks-ts";
 import { drawingsSortOptionAtom } from "./drawing-list.store";
-import { searchSelectionIdAtom } from "@/lib/client/store";
+import { searchSelectionIdAtom } from "@/app/lib/store";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@apollo/client/react";
 import { GetDrawingsDocument } from "@/app/gql.gen";

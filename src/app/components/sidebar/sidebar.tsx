@@ -2,7 +2,7 @@ import React from "react";
 
 import { useAtom } from "jotai";
 import { desktopSidebarOpenAtom, mobileSidebarOpenAtom } from "./sidebar.store";
-import { cn } from "@/lib/client/utils";
+import { cn } from "@/app/lib/utils";
 import { useIsMobile } from "@/app/hooks/use-mobile";
 import RadixProvider from "../ui/radix-provider";
 import { useHotkeys } from "@tanstack/react-hotkeys";

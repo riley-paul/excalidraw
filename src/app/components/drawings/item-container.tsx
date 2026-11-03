@@ -1,4 +1,4 @@
-import { centerDragPreviewOnMouse, cn } from "@/lib/client/utils";
+import { centerDragPreviewOnMouse, cn } from "@/app/lib/utils";
 import React, { useEffect, useRef } from "react";
 import { extractClosestEdge } from "@atlaskit/pragmatic-drag-and-drop-hitbox/closest-edge";
 import {

@@ -16,7 +16,7 @@ import LoadingScreen from "./components/screens/loading";
 import NotFoundScreen from "./components/screens/not-found";
 import ErrorScreen from "./components/screens/error";
 import { Provider } from "jotai";
-import { jotaiStore } from "@/lib/client/store";
+import { jotaiStore } from "@/app/lib/store";
 import {
   ApolloClient,
   HttpLink,

@@ -18,7 +18,7 @@ import SortMenu from "@/app/components/drawings/sort-menu";
 import React from "react";
 import { z } from "astro/zod";
 import { DrawingListProvider } from "@/app/components/drawings/drawing-list.provider";
-import { formatFileSize } from "@/lib/client/utils";
+import { formatFileSize } from "@/app/lib/utils";
 import { useSuspenseQuery } from "@apollo/client/react";
 import { GetMeDocument } from "../gql.gen";
 import type { ApolloClient } from "@apollo/client";

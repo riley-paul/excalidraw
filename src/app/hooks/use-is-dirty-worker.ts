@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import IsDirtyWorker from "@/lib/client/isDirtyWorker?worker";
+import IsDirtyWorker from "@/app/lib/isDirtyWorker?worker";
 import type {
   IsDirtyMessage,
   IsDirtyResponse,
-} from "@/lib/client/isDirtyWorker.types";
+} from "@/app/lib/isDirtyWorker.types";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import { useInterval } from "usehooks-ts";
 
