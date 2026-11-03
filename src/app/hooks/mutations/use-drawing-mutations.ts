@@ -26,7 +26,35 @@ export default function useDrawingMutations() {
 
   const updateDrawingMutation = useMutation(UpdateDrawingDocument, {});
 
-  const deleteDrawingMutation = useMutation(DeleteDrawingDocument, {});
+  // const saveDrawing = useMutation({
+  //   mutationFn: (data: { id: string; content: File; thumbnail: File }) => {
+  //     const formData = new FormData();
+  //     formData.append("id", data.id);
+  //     formData.append("content", data.content);
+  //     formData.append("thumbnail", data.thumbnail);
+  //     return actions.drawings.save.orThrow(formData);
+  //   },
+  //   onSuccess: (data) => {
+  //     queryClient.setQueriesData<DrawingSelect[]>(
+  //       { queryKey: drawingsQueriesKey },
+  //       (prev) => {
+  //         if (!prev) return prev;
+  //         return prev.map((d) => (d.id === data.id ? { ...d, ...data } : d));
+  //       },
+  //     );
+  //     queryClient.invalidateQueries({ queryKey: qCurrentUser.queryKey });
+  //     toast.success("Drawing saved successfully!");
+  //   },
+  // });
+
+  const deleteDrawingMutation = useMutation(DeleteDrawingDocument, {
+    update: (cache, { data }) => {
+      const deletedDrawing = data?.deleteDrawing;
+      if (!deletedDrawing) return;
+
+      cache.evict({ id: cache.identify(deletedDrawing) });
+    },
+  });
 
   return {
     createDrawingMutation,

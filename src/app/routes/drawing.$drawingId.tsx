@@ -1,13 +1,16 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { qDrawing } from "@/lib/client/queries";
 import Drawing from "@/app/components/drawing";
+import { GetDrawingDocument } from "../gql.gen";
 
 export const Route = createFileRoute("/drawing/$drawingId")({
   component: RouteComponent,
-  loader: async ({ params: { drawingId }, context: { queryClient } }) => {
-    const drawing = await queryClient.query(qDrawing(drawingId));
+  loader: async ({ params: { drawingId }, context }) => {
+    const { data: { drawing } = {} } = await context.apolloClient.query({
+      query: GetDrawingDocument,
+      variables: { drawingId },
+    });
     if (!drawing) throw notFound();
-    return drawing;
+    return { drawing };
   },
 });
 

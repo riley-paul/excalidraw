@@ -1,6 +1,5 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
 import useFileTree from "@/app/hooks/use-file-tree";
-import useMutations from "@/app/hooks/use-mutations";
 import { DropdownMenu, IconButton } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import {
@@ -17,6 +16,7 @@ import { useCopyToClipboard } from "usehooks-ts";
 import { z } from "astro/zod";
 import MoveSubMenu from "../move-sub-menu";
 import type { FolderFragment, ShallowDrawingFragment } from "@/app/gql.gen";
+import useDrawingMutations from "@/app/hooks/mutations/use-drawing-mutations";
 
 type Props = {
   drawing: ShallowDrawingFragment;
@@ -24,12 +24,11 @@ type Props = {
   setIsOpen: (isOpen: boolean) => void;
 };
 
-const DrawingMenu: React.FC<Props> = ({
-  drawing: { id, name, parentFolderId },
-  isOpen,
-  setIsOpen,
-}) => {
-  const { removeDrawing, updateDrawing, duplicateDrawing } = useMutations();
+const DrawingMenu: React.FC<Props> = ({ drawing, isOpen, setIsOpen }) => {
+  const {
+    deleteDrawingMutation: [deleteDrawing],
+    updateDrawingMutation: [updateDrawing],
+  } = useDrawingMutations();
 
   const [, dispatchAlert] = useAtom(alertSystemAtom);
   const [, copyToClipboard] = useCopyToClipboard();
@@ -40,9 +39,9 @@ const DrawingMenu: React.FC<Props> = ({
       data: {
         type: "delete",
         title: "Delete Drawing",
-        message: `Are you sure you want to delete "${name}"? This action cannot be undone.`,
+        message: `Are you sure you want to delete "${drawing.name}"? This action cannot be undone.`,
         handleDelete: () => {
-          removeDrawing.mutate({ id });
+          deleteDrawing({ variables: { drawingId: drawing.id } });
           dispatchAlert({ type: "close" });
         },
       },
@@ -56,11 +55,13 @@ const DrawingMenu: React.FC<Props> = ({
         type: "input",
         title: "Rename Drawing",
         message: "Update the name of your drawing",
-        value: name,
+        value: drawing.name,
         placeholder: "Enter new drawing name",
         schema: z.string().min(1).max(100),
-        handleSubmit: (value: string) => {
-          updateDrawing.mutate({ id, name: value });
+        handleSubmit: (name: string) => {
+          updateDrawing({
+            variables: { drawingId: drawing.id, input: { name } },
+          });
           dispatchAlert({ type: "close" });
           toast.success("Drawing updated successfully");
         },
@@ -69,29 +70,40 @@ const DrawingMenu: React.FC<Props> = ({
   };
 
   const handleCopyLink = () => {
-    const link = `${window.location.origin}/drawing/${id}`;
+    const link = `${window.location.origin}/drawing/${drawing.id}`;
     copyToClipboard(link);
     toast.success("Link copied to clipboard", { description: link });
   };
 
   const handleOpenInNewTab = () => {
-    const link = `${window.location.origin}/drawing/${id}`;
+    const link = `${window.location.origin}/drawing/${drawing.id}`;
     window.open(link, "_blank");
   };
 
-  const handleMoveDrawing = async (folder: FolderFragment | null) => {
-    if (!folder) {
-      await updateDrawing.mutateAsync({ id, parentFolderId: null });
-      toast.success(`Moved to root folder`);
+  const handleMoveDrawing = async (parentFolder: FolderFragment | null) => {
+    if (!parentFolder) {
+      await updateDrawing({
+        variables: { drawingId: drawing.id, input: { parentFolderId: null } },
+        onCompleted: () => {
+          toast.success(`Moved to root folder`);
+        },
+      });
       return;
     }
-    await updateDrawing.mutateAsync({ id, parentFolderId: folder.id });
-    toast.success(`Moved to "${folder.name}"`);
-    openFolder(folder.id);
+    await updateDrawing({
+      variables: {
+        drawingId: drawing.id,
+        input: { parentFolderId: parentFolder.id },
+      },
+      onCompleted: () => {
+        toast.success(`Moved to "${parentFolder.name}"`);
+        openFolder(parentFolder.id);
+      },
+    });
   };
 
   const handleDuplicateDrawing = () => {
-    duplicateDrawing.mutate({ id });
+    // duplicateDrawing.mutate({ id });
   };
 
   const { openFolder } = useFileTree();
@@ -120,8 +132,8 @@ const DrawingMenu: React.FC<Props> = ({
           <span>Duplicate</span>
         </DropdownMenu.Item>
         <MoveSubMenu
-          id={id}
-          parentFolderId={parentFolderId}
+          id={drawing.id}
+          parentFolderId={drawing.parentFolderId}
           handleMove={handleMoveDrawing}
         />
         <DropdownMenu.Separator />

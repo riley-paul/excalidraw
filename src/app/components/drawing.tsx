@@ -14,18 +14,21 @@ import RadixProvider from "@/app/components/ui/radix-provider";
 import { actions } from "astro:actions";
 import { SaveIcon } from "lucide-react";
 import useFileTree from "@/app/hooks/use-file-tree";
-import { qDrawing } from "@/lib/client/queries";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useHotkey } from "@tanstack/react-hotkeys";
 import useIsDirtyWorker from "../hooks/use-is-dirty-worker";
 import { cn } from "@/lib/client/utils";
 import { useBlocker } from "@tanstack/react-router";
 import { ignoreDirtyAtom, jotaiStore } from "@/lib/client/store";
+import { GetDrawingDocument } from "../gql.gen";
+import { useSuspenseQuery } from "@apollo/client/react";
 
 type Props = { drawingId: string };
 
 const Drawing: React.FC<Props> = ({ drawingId }) => {
-  const { data: drawing } = useSuspenseQuery(qDrawing(drawingId));
+  const { data: { drawing } = {} } = useSuspenseQuery(GetDrawingDocument, {
+    variables: { drawingId },
+  });
+
   if (!drawing) throw new Error("Drawing not found");
 
   const { name, parentFolderId } = drawing;

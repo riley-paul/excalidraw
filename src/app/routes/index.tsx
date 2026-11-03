@@ -1,18 +1,21 @@
 import { alertSystemAtom } from "@/app/components/alert-system/alert-system.store";
-import useMutations from "@/app/hooks/use-mutations";
 import { zDrawingName } from "@/lib/types";
 import { Button } from "@radix-ui/themes";
 import { createFileRoute } from "@tanstack/react-router";
 import { useAtom } from "jotai";
 import { HomeIcon, PlusIcon } from "lucide-react";
 import Empty from "../components/ui/empty";
+import useDrawingMutations from "../hooks/mutations/use-drawing-mutations";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { createDrawing } = useMutations();
+  const {
+    createDrawingMutation: [createDrawing],
+  } = useDrawingMutations();
+
   const [, dispatchAlert] = useAtom(alertSystemAtom);
 
   const handleAddDrawing = () => {
@@ -25,8 +28,8 @@ function RouteComponent() {
         value: "",
         placeholder: "Enter drawing name",
         schema: zDrawingName,
-        handleSubmit: (value: string) => {
-          createDrawing.mutate({ name: value });
+        handleSubmit: (name: string) => {
+          createDrawing({ variables: { input: { name } } });
           dispatchAlert({ type: "close" });
         },
       },

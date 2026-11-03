@@ -2,14 +2,16 @@ import { Avatar, DropdownMenu, Text } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import { ChevronsUpDownIcon, LogOutIcon, Trash2Icon } from "lucide-react";
 import { alertSystemAtom } from "./alert-system/alert-system.store";
-import useMutations from "../hooks/use-mutations";
 import type { UserFragment } from "../gql.gen";
+import useUserMutations from "../hooks/mutations/use-user-mutations";
 
 type Props = { user: UserFragment };
 
 export const UserMenu: React.FC<Props> = ({ user }) => {
   const [, dispatchAlert] = useAtom(alertSystemAtom);
-  const { deleteAccount } = useMutations();
+  const {
+    deleteAccountMutation: [deleteAccount],
+  } = useUserMutations();
 
   const handleDeleteAccount = () => {
     dispatchAlert({
@@ -20,7 +22,7 @@ export const UserMenu: React.FC<Props> = ({ user }) => {
         message:
           "This action cannot be undone. This will permanently delete your account and remove your data from our servers.",
         handleDelete: () => {
-          deleteAccount.mutate({});
+          deleteAccount();
           dispatchAlert({ type: "close" });
         },
       },

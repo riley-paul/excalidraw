@@ -14,7 +14,14 @@ export default function useFolderMutations() {
 
   const updateFolderMutation = useMutation(UpdateFolderDocument);
 
-  const deleteFolderMutation = useMutation(DeleteFolderDocument);
+  const deleteFolderMutation = useMutation(DeleteFolderDocument, {
+    update: (cache, { data }) => {
+      const deletedFolder = data?.deleteFolder;
+      if (!deletedFolder) return;
+
+      cache.evict({ id: cache.identify(deletedFolder) });
+    },
+  });
 
   return {
     createFolderMutation,
